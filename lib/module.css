@@ -1,0 +1,15 @@
+#typo3-funcmenu select {
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.functitle {
+	font-size: 15px !important;
+	font-weight: bold;
+	width: 100%;
+	text-align: left;
+}
+
+.pidlist li {
+	padding-bottom: 5px;
+}
