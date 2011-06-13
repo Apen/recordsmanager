@@ -1,0 +1,8 @@
+# cat=basic; type=boolean; label= Enable the "Add" module
+enabledAdd = 1
+
+# cat=basic; type=boolean; label= Enable the "Edit" module
+enabledEdit = 1
+
+# cat=basic; type=boolean; label= Enable the "Export" module
+enabledExport = 1
