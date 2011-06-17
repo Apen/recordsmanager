@@ -1,3 +1,7 @@
+2011-06-14 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Add a better method to hide fields in the tceforms to have the dividers2tabs
+	* Add sorting on column
+	* Bugfix on the datepicker on TYPO3 4.3<
 2011-06-13 CERDAN Yohann  <cerdanyohann@yahoo.fr>
     * Update documentation
 	* Add PL language
