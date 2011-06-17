@@ -163,6 +163,10 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 				$query['GROUPBY'] .= ($row['extragroupby'] != '') ? $row['extragroupby'] : '';
 				$query['ORDERBY'] = '';
 				$query['ORDERBY'] .= ($row['extraorderby'] != '') ? $row['extraorderby'] : '';
+				$orderby = t3lib_div::_GP('orderby');
+				if ($orderby !== NULL) {
+					$query['ORDERBY'] = $orderby;
+				}
 				$query['LIMIT'] = '';
 				$query['LIMIT'] .= ($row['extralimit'] != '') ? $row['extralimit'] : '';
 				$this->exportMode = ($row['exportmode'] != '') ? $row['exportmode'] : 'xml';
@@ -386,6 +390,9 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		if ($enddate !== null) {
 			$listURL .= '&enddate=' . $enddate;
 		}
+		$orderby = t3lib_div::_GP('orderby');
+		$listURL .= ($orderby !== null) ? '&orderby=' . $orderby : '';
+		$listURLOrig .= ($orderby !== null) ? '&orderby=' . $orderby : '';
 		$currentPage = floor(($firstElementNumber + 1) / $iLimit) + 1;
 		// First
 		if ($currentPage > 1) {
@@ -435,10 +442,18 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		          . '<a href="#"  onClick="jumpToUrl(\'' . $listURLOrig . '&nbPerPage=\'+document.getElementById(\'nbPerPage\').value+\'&startdate=\'+document.getElementById(\'tceforms-datetimefield-startdate\').value+\'&enddate=\'+document.getElementById(\'tceforms-datetimefield-enddate\').value);">'
 		          . '<img width="16" height="16" title="" alt="" src="sysext/t3skin/icons/gfx/refresh_n.gif"></a>';
 
+		if (t3lib_div::int_from_ver(TYPO3_version) < 4004000) {
+			$iconStartDate = '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/datepicker.gif', '', 0) . ' style="cursor:pointer; vertical-align:middle;" alt=""' . ' id="picker-tceforms-datetimefield-startdate" />';
+			$iconEndDate = '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/datepicker.gif', '', 0) . ' style="cursor:pointer; vertical-align:middle;" alt=""' . ' id="picker-tceforms-datetimefield-enddate" />';
+		} else {
+			$iconStartDate = t3lib_iconWorks::getSpriteIcon('actions-edit-pick-date', array('style' => 'cursor:pointer;', 'id' => 'picker-tceforms-datetimefield-startdate'));
+			$iconEndDate = t3lib_iconWorks::getSpriteIcon('actions-edit-pick-date', array('style' => 'cursor:pointer;', 'id' => 'picker-tceforms-datetimefield-enddate'));
+		}
+
 		$dates = $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_common.xml:start') . ':&nbsp;<input type="text" id="tceforms-datetimefield-startdate" value="' . $startdate . '" name="startdate">&nbsp;'
-		         . '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/datepicker.gif', '', 0) . ' style="cursor:pointer; vertical-align:middle;" alt=""' . ' id="picker-tceforms-datetimefield-startdate" />'
+		         . $iconStartDate
 		         . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_common.xml:stop') . ':&nbsp;<input type="text" id="tceforms-datetimefield-enddate" value="' . $enddate . '" name="enddate">&nbsp;'
-		         . '<img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/datepicker.gif', '', 0) . ' style="cursor:pointer; vertical-align:middle;" alt=""' . ' id="picker-tceforms-datetimefield-enddate" />';
+		         . $iconEndDate;
 
 		$content .= '<div id="typo3-dblist-pagination">'
 		            . $first . $previous
@@ -542,8 +557,11 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		global $TCA;
 		$tableHeader = array();
 		$conf = $TCA[$table];
+		$listURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
 		foreach ($row as $fieldName => $fieldValue) {
 			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
+			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20DESC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/reddown.gif"></a>';
+			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20ASC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/redup.gif"></a>';
 			$tableHeader[$fieldName] = $title;
 		}
 		return $tableHeader;

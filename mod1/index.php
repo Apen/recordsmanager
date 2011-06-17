@@ -41,6 +41,7 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 	public $pageinfo;
 	protected $items = array();
 	protected $currentItem = array();
+	protected $disableFields = '';
 	protected $nbElementsPerPage = 10;
 
 	/**
@@ -144,6 +145,11 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 		foreach ($this->items as $key => $row) {
 			if ((string)$this->MOD_SETTINGS['function'] == $key) {
 				$this->currentItem = $row;
+				// disabledFields
+				$disabledFields = tx_recordsmanager_flexfill::getDiffFieldsFromTable($row['sqltable'], $this->currentItem['sqlfieldsinsert']);
+				foreach ($disabledFields as $disabledField) {
+					$this->disabledFields .= '&overrideVals[' . $row['sqltable'] . '][' . $disabledField . '][disabled]=1';
+				}
 				$query = array();
 				// we need to have the uid
 				if (!t3lib_div::inList($row['sqlfields'], 'uid')) {
@@ -158,6 +164,10 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 				$query['GROUPBY'] .= ($row['extragroupby'] != '') ? $row['extragroupby'] : '';
 				$query['ORDERBY'] = '';
 				$query['ORDERBY'] .= ($row['extraorderby'] != '') ? $row['extraorderby'] : '';
+				$orderby = t3lib_div::_GP('orderby');
+				if ($orderby !== NULL) {
+					$query['ORDERBY'] = $orderby;
+				}
 				$query['LIMIT'] = '';
 				$query['LIMIT'] .= ($row['extralimit'] != '') ? $row['extralimit'] : '';
 				$content = $this->drawTable($query, $row['title']);
@@ -216,7 +226,9 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 			$records['actions'] = '<a onclick="top.launchView(\'' . $table . '\',' . $row['uid'] . ',\'\');return false;" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/zoom2.gif"/></a>';
 			$editLink = 'alt_doc.php?returnUrl=%2Ftypo3%2Fmod.php%3FM%3DtxrecordsmanagerM1_edit&amp;edit[' . $table . '][' . $row['uid'] . ']=edit';
 			if ($this->currentItem['sqlfieldsinsert'] !== '') {
-				$editLink .= '&columnsOnly=' . $this->currentItem['sqlfieldsinsert'];
+				// old method with "columnsOnly" do not show the tabs, now process with "overrideVals"
+				//$editLink .= '&columnsOnly=' . $this->currentItem['sqlfieldsinsert'];
+				$editLink .= $this->disabledFields;
 			}
 			$records['actions'] .= '<a onclick="window.location.href=\'' . $editLink . '\'; return false;" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/edit2.gif"/></a>';
 			$records['actions'] .= '<a onclick="return deleteRecord(\'' . $table . '\',\'' . $row['uid'] . '\',unescape(\'%2Ftypo3%2Fmod.php%3FM%3DtxrecordsmanagerM1_edit\'));" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/garbage.gif"/></a>';
@@ -248,6 +260,9 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 			$listURLOrig = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
 			$listURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
 			$listURL .= '&nbPerPage=' . $iLimit;
+			$orderby = t3lib_div::_GP('orderby');
+			$listURL .= ($orderby !== null) ? '&orderby=' . $orderby : '';
+			$listURLOrig .= ($orderby !== null) ? '&orderby=' . $orderby : '';
 			$currentPage = floor(($firstElementNumber + 1) / $iLimit) + 1;
 			// First
 			if ($currentPage > 1) {
@@ -315,8 +330,11 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 		global $TCA;
 		$tableHeader = array();
 		$conf = $TCA[$table];
+		$listURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
 		foreach ($row as $fieldName => $fieldValue) {
 			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
+			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20DESC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/reddown.gif"></a>';
+			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20ASC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/redup.gif"></a>';
 			$tableHeader[$fieldName] = $title;
 		}
 		return $tableHeader;

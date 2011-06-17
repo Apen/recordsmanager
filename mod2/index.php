@@ -198,15 +198,22 @@ class  tx_recordsmanager_module2 extends t3lib_SCbase
 					$content .= '<td><a onclick="setFormValueOpenBrowser(\'db\',\'recordinsert|||pages|\'); return false;" href="#"><img width="15" height="15" border="0" src="sysext/t3skin/icons/gfx/insert3.gif"></a></td></tr></table>';
 				}
 
-				$this->content .= $this->doc->section($row['title'], $content, 0, 1);
+				$this->content .= $content;
 
 				$create = t3lib_div::_GP('create');
 
 				if ($create !== null) {
 					$returnUrl = rawurlencode('mod.php?M=txrecordsmanagerM1_insert');
 					$editLink = 'alt_doc.php?returnUrl=' . $returnUrl . '&edit[' . $row['sqltable'] . '][' . $create . ']=new';
+					// disabledFields
+					$disabledFields = tx_recordsmanager_flexfill::getDiffFieldsFromTable($row['sqltable'], $this->currentItem['sqlfieldsinsert']);
+					foreach ($disabledFields as $disabledField) {
+						$this->disabledFields .= '&overrideVals[' . $row['sqltable'] . '][' . $disabledField . '][disabled]=1';
+					}
 					if ($this->currentItem['sqlfieldsinsert'] !== '') {
-						$editLink .= '&columnsOnly=' . $this->currentItem['sqlfieldsinsert'];
+						// old method with "columnsOnly" do not show the tabs, now process with "overrideVals"
+						//$editLink .= '&columnsOnly=' . $this->currentItem['sqlfieldsinsert'];
+						$editLink .= $this->disabledFields;
 					}
 					$link = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . $GLOBALS['BACK_PATH'] . $editLink;
 					t3lib_utility_Http::redirect($link);
