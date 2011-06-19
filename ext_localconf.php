@@ -5,4 +5,7 @@ if (!defined('TYPO3_MODE')) {
 t3lib_extMgm::addUserTSConfig('
     options.saveDocNew.tx_recordsmanager_config=1
 ');
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsClass'][] = 'EXT:recordsmanager/hooks/class.tx_recordsmanager_callhooks.php:tx_recordsmanager_callhooks';
+
 ?>
