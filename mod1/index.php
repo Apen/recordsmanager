@@ -146,10 +146,10 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 			if ((string)$this->MOD_SETTINGS['function'] == $key) {
 				$this->currentItem = $row;
 				// disabledFields
-				$disabledFields = tx_recordsmanager_flexfill::getDiffFieldsFromTable($row['sqltable'], $this->currentItem['sqlfieldsinsert']);
-				foreach ($disabledFields as $disabledField) {
+				$this->disableFields = implode(',', tx_recordsmanager_flexfill::getDiffFieldsFromTable($row['sqltable'], $this->currentItem['sqlfieldsinsert']));
+				/*foreach ($disabledFields as $disabledField) {
 					$this->disabledFields .= '&overrideVals[' . $row['sqltable'] . '][' . $disabledField . '][disabled]=1';
-				}
+				}*/
 				$query = array();
 				// we need to have the uid
 				if (!t3lib_div::inList($row['sqlfields'], 'uid')) {
@@ -227,8 +227,8 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 			$editLink = 'alt_doc.php?returnUrl=%2Ftypo3%2Fmod.php%3FM%3DtxrecordsmanagerM1_edit&amp;edit[' . $table . '][' . $row['uid'] . ']=edit';
 			if ($this->currentItem['sqlfieldsinsert'] !== '') {
 				// old method with "columnsOnly" do not show the tabs, now process with "overrideVals"
-				//$editLink .= '&columnsOnly=' . $this->currentItem['sqlfieldsinsert'];
-				$editLink .= $this->disabledFields;
+				//$editLink .= '&recordsColumnsOnly=' . $this->currentItem['sqlfieldsinsert'];
+				$editLink .= '&recordsHide=' . $this->disableFields;
 			}
 			$records['actions'] .= '<a onclick="window.location.href=\'' . $editLink . '\'; return false;" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/edit2.gif"/></a>';
 			$records['actions'] .= '<a onclick="return deleteRecord(\'' . $table . '\',\'' . $row['uid'] . '\',unescape(\'%2Ftypo3%2Fmod.php%3FM%3DtxrecordsmanagerM1_edit\'));" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/garbage.gif"/></a>';

@@ -1,3 +1,6 @@
+2011-06-19 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Another optimization on the tceforms (with a hook)
+	* Bugfix on CSV title
 2011-06-14 CERDAN Yohann  <cerdanyohann@yahoo.fr>
 	* Add a better method to hide fields in the tceforms to have the dividers2tabs
 	* Add sorting on column

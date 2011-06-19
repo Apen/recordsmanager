@@ -274,11 +274,13 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 			$rows = $this->getAllResults($res, $query['FROM'], $convertData);
 
 			// TODO : process a powermail table
-			/*if ($query['FROM'] == 'tx_powermail_mails') {
-				foreach ($rows as $row) {
+			if ($query['FROM'] == 'tx_powermail_mails') {
+				/*t3lib_div::debug($rows);
+				foreach ($rows as $rowKey => $row) {
 					$piVars = t3lib_div::xml2array($row['piVars'], 'piVars');
-				}
-			}*/
+						t3lib_div::debug($piVars);
+				}*/
+			}
 
 			$dirName = PATH_site . 'typo3temp/';
 			$filename = 'TYPO3_' . $query['FROM'] . '_export_' . date('dmy-Hi') . '.xls';
@@ -361,7 +363,7 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($first) {
 				$first = 0;
-				$headers = $this->getResultRowTitles($row, $table);
+				$headers = $this->getResultRowTitlesOrderBy($row, $table);
 				$content .= $this->drawDBListHeader($headers);
 			}
 			$records = $this->getResultRow($row, $table);
@@ -535,13 +537,17 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 	 * @return array
 	 */
 
-	function getAllResults($res, $table, $convertData = true) {
+	function getAllResults($res, $table, $convertData = true, $orderBy = false) {
 		$first = 1;
 		$recordList = array();
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($first) {
 				$first = 0;
-				$recordList [] = self::getResultRowTitles($row, $table);
+				if ($orderBy === true) {
+					$recordList [] = self::getResultRowTitlesOrderBy($row, $table);
+				} else {
+					$recordList [] = self::getResultRowTitles($row, $table);
+				}
 			}
 			if ($convertData === true) {
 				$recordList [] = self::getResultRow($row, $table);
@@ -553,7 +559,7 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		return $recordList;
 	}
 
-	function getResultRowTitles($row, $table) {
+	function getResultRowTitlesOrderBy($row, $table) {
 		global $TCA;
 		$tableHeader = array();
 		$conf = $TCA[$table];
@@ -562,6 +568,18 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
 			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20DESC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/reddown.gif"></a>';
 			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20ASC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/redup.gif"></a>';
+			$tableHeader[$fieldName] = $title;
+		}
+		return $tableHeader;
+	}
+
+	function getResultRowTitles($row, $table) {
+		global $TCA;
+		$tableHeader = array();
+		$conf = $TCA[$table];
+		$listURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
+		foreach ($row as $fieldName => $fieldValue) {
+			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
 			$tableHeader[$fieldName] = $title;
 		}
 		return $tableHeader;
