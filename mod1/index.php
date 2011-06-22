@@ -92,6 +92,11 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 		$this->doc->backPath = $BACK_PATH;
 		$this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
 		// JavaScript
+		$returnUrl = rawurlencode('mod.php?M=txrecordsmanagerM1_edit');
+		$jumpToUrl = 'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect=' . $returnUrl . '&vC=' . $BE_USER->veriCode() . '&prErr=1&uPT=1';
+		if (t3lib_div::int_from_ver(TYPO3_version) >= 4005000) {
+			$jumpToUrl .= t3lib_BEfunc::getUrlToken('tceAction');
+		}
 		$this->doc->JScode = '
 			<script language="javascript" type="text/javascript">
 			script_ended = 0;
@@ -99,9 +104,9 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 			document.location = URL;
 			}
 
-			function deleteRecord(table,id,url)	{	//
+			function deleteRecord(table,id)	{	//
 				if (confirm(' . $LANG->JScharCode($LANG->getLL('areyousure')) . '))	{
-					jumpToUrl("tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect="+escape(url)+"&vC=' . $BE_USER->veriCode() . '&prErr=1&uPT=1");
+					jumpToUrl("' . $jumpToUrl . '");
 				}
 				return false;
 			}
@@ -145,12 +150,9 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 		foreach ($this->items as $key => $row) {
 			if ((string)$this->MOD_SETTINGS['function'] == $key) {
 				$this->currentItem = $row;
-				// disabledFields
 				$this->disableFields = implode(',', tx_recordsmanager_flexfill::getDiffFieldsFromTable($row['sqltable'], $this->currentItem['sqlfieldsinsert']));
-				/*foreach ($disabledFields as $disabledField) {
-					$this->disabledFields .= '&overrideVals[' . $row['sqltable'] . '][' . $disabledField . '][disabled]=1';
-				}*/
 				$query = array();
+
 				// we need to have the uid
 				if (!t3lib_div::inList($row['sqlfields'], 'uid')) {
 					$query['SELECT'] = 'uid,' . $row['sqlfields'];
@@ -224,14 +226,14 @@ class tx_recordsmanager_module1 extends t3lib_SCbase
 			}
 			$records = $this->getResultRow($row, $table);
 			$records['actions'] = '<a onclick="top.launchView(\'' . $table . '\',' . $row['uid'] . ',\'\');return false;" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/zoom2.gif"/></a>';
-			$editLink = 'alt_doc.php?returnUrl=%2Ftypo3%2Fmod.php%3FM%3DtxrecordsmanagerM1_edit&amp;edit[' . $table . '][' . $row['uid'] . ']=edit';
+			$returnUrl = rawurlencode('mod.php?M=txrecordsmanagerM1_edit');
+			$editLink = 'alt_doc.php?returnUrl=' . $returnUrl . '&edit[' . $table . '][' . $row['uid'] . ']=edit';
 			if ($this->currentItem['sqlfieldsinsert'] !== '') {
-				// old method with "columnsOnly" do not show the tabs, now process with "overrideVals"
-				//$editLink .= '&recordsColumnsOnly=' . $this->currentItem['sqlfieldsinsert'];
 				$editLink .= '&recordsHide=' . $this->disableFields;
 			}
+			//$editLink = rawurlencode($editLink);
 			$records['actions'] .= '<a onclick="window.location.href=\'' . $editLink . '\'; return false;" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/edit2.gif"/></a>';
-			$records['actions'] .= '<a onclick="return deleteRecord(\'' . $table . '\',\'' . $row['uid'] . '\',unescape(\'%2Ftypo3%2Fmod.php%3FM%3DtxrecordsmanagerM1_edit\'));" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/garbage.gif"/></a>';
+			$records['actions'] .= '<a onclick="return deleteRecord(\'' . $table . '\',\'' . $row['uid'] . '\');" href="#"><img src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/garbage.gif"/></a>';
 			$content .= $this->drawDBListRows($records);
 		}
 		$content .= '</table>';

@@ -208,12 +208,7 @@ class  tx_recordsmanager_module2 extends t3lib_SCbase
 					$editLink = 'alt_doc.php?returnUrl=' . $returnUrl . '&edit[' . $row['sqltable'] . '][' . $create . ']=new';
 					// disabledFields
 					$this->disableFields = implode(',', tx_recordsmanager_flexfill::getDiffFieldsFromTable($row['sqltable'], $this->currentItem['sqlfieldsinsert']));
-					/*foreach ($disabledFields as $disabledField) {
-						$this->disabledFields .= '&overrideVals[' . $row['sqltable'] . '][' . $disabledField . '][disabled]=1';
-					}*/
 					if ($this->currentItem['sqlfieldsinsert'] !== '') {
-						// old method with "columnsOnly" do not show the tabs, now process with "overrideVals"
-						//$editLink .= '&columnsOnly=' . $this->currentItem['sqlfieldsinsert'];
 						$editLink .= '&recordsHide=' . $this->disableFields;
 					}
 					$link = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . $GLOBALS['BACK_PATH'] . $editLink;
