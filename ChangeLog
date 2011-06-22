@@ -1,3 +1,5 @@
+2011-06-21 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Bugfix on the token validation on the 4.5.x
 2011-06-19 CERDAN Yohann  <cerdanyohann@yahoo.fr>
 	* Another optimization on the tceforms (with a hook)
 	* Bugfix on CSV title
