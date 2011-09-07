@@ -19,6 +19,7 @@
 			<label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
 			<label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
 			<label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
+			<label index="tx_recordsmanager_config.exportfilterfield">Filter field (default tstamp)</label>
 			<label index="tx_recordsmanager_config.exportmode">Export mode</label>
 			<label index="tx_recordsmanager_config.exportmode.I.0">Normal</label>
 			<label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
@@ -42,6 +43,7 @@
 			<label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
 			<label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
 			<label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
+			<label index="tx_recordsmanager_config.exportfilterfield">Champ de filtrage (par défaut tstamp)</label>
 			<label index="tx_recordsmanager_config.exportmode">Mode d'exportation</label>
 			<label index="tx_recordsmanager_config.exportmode.I.0">Normal</label>
 			<label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
