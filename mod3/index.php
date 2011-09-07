@@ -174,15 +174,21 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 				// filter by date
 				$startdate = t3lib_div::_GP('startdate');
 				$enddate = t3lib_div::_GP('enddate');
+
+				$filterField = 'tstamp';
+				if (empty($row['exportfilterfield']) !== TRUE) {
+					$filterField = $row['exportfilterfield'];
+				}
+
 				if (($startdate !== null) && ($startdate != '')) {
 					list($day, $month, $year) = explode('-', $startdate);
 					$tstamp = mktime(0, 0, 0, $month, $day, $year);
-					$query['WHERE'] .= ' AND ' . $row['sqltable'] . '.tstamp>=' . $tstamp;
+					$query['WHERE'] .= ' AND ' . $row['sqltable'] . '.' . $filterField . '>=' . $tstamp;
 				}
 				if (($enddate !== null) && ($enddate != '')) {
 					list($day, $month, $year) = explode('-', $enddate);
 					$tstamp = mktime(0, 0, 0, $month, $day, $year);
-					$query['WHERE'] .= ' AND ' . $row['sqltable'] . '.tstamp<=' . $tstamp;
+					$query['WHERE'] .= ' AND ' . $row['sqltable'] . '.' . $filterField . '<=' . $tstamp;
 				}
 
 				$content = $this->drawTable($query, $LANG->getLL('datas'));
@@ -565,7 +571,8 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		$conf = $TCA[$table];
 		$listURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
 		foreach ($row as $fieldName => $fieldValue) {
-			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
+			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label']
+					                              : $fieldName, 1);
 			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20DESC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/reddown.gif"></a>';
 			$title .= '&nbsp;&nbsp;<a href="' . $listURL . '&orderby=' . $fieldName . '%20ASC"><img width="7" height="4" alt="" src="' . t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'sysext/t3skin/icons/gfx/redup.gif"></a>';
 			$tableHeader[$fieldName] = $title;
@@ -579,7 +586,8 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 		$conf = $TCA[$table];
 		$listURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . 'mod.php?M=' . t3lib_div::_GP('M');
 		foreach ($row as $fieldName => $fieldValue) {
-			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
+			$title = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label']
+					                              : $fieldName, 1);
 			$tableHeader[$fieldName] = $title;
 		}
 		return $tableHeader;

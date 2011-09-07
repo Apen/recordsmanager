@@ -19,6 +19,7 @@ CREATE TABLE tx_recordsmanager_config (
     extraorderby tinytext,
     extralimit tinytext,
     exportmode tinytext,
+	exportfilterfield tinytext,
 	sqlfieldsinsert tinytext,
 	permsgroup text,
 	insertdefaultpid tinytext,
