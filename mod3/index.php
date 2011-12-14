@@ -295,10 +295,10 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 			require_once(PATH_site . "typo3conf/ext/recordsmanager/lib/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php");
 
 			$fname = $dirName . $filename;
-			$workbook = &new writeexcel_workbook($fname);
-			$worksheet =& $workbook->addworksheet();
+			$workbook = new writeexcel_workbook($fname);
+			$worksheet = $workbook->addworksheet();
 
-			$header =& $workbook->addformat();
+			$header = $workbook->addformat();
 			$header->set_bold();
 			$header->set_size(12);
 
