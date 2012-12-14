@@ -64,7 +64,7 @@ $TCA['tx_recordsmanager_config'] = array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:recordsmanager/locallang_db.xml:tx_recordsmanager_config.extrawhere',
 			'config' => array(
-				'type' => 'input',
+				'type' => 'text',
 				'size' => '30',
 			)
 		),
