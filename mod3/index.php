@@ -599,7 +599,14 @@ class tx_recordsmanager_module3 extends t3lib_SCbase
 			if ((TYPO3_MODE == 'FE')) {
 				$GLOBALS['TSFE']->includeTCA();
 			}
-			$record[$fieldName] = t3lib_BEfunc::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
+			switch ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type']) {
+				case 'text':
+					$record[$fieldName] = strip_tags($fieldValue);
+					break;
+				default:
+					$record[$fieldName] = t3lib_BEfunc::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
+					break;
+			}
 		}
 		return $record;
 	}

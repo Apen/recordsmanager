@@ -14,7 +14,7 @@ CREATE TABLE tx_recordsmanager_config (
     type tinytext,
     sqltable tinytext,
     sqlfields text,
-    extrawhere tinytext,
+    extrawhere text,
     extragroupby tinytext,
     extraorderby tinytext,
     extralimit tinytext,
