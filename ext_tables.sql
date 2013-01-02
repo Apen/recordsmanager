@@ -20,6 +20,7 @@ CREATE TABLE tx_recordsmanager_config (
     extralimit tinytext,
     exportmode tinytext,
 	exportfilterfield text,
+	dateformat tinyint(4) DEFAULT '0' NOT NULL,
 	sqlfieldsinsert text,
 	permsgroup text,
 	insertdefaultpid tinytext,
