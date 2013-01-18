@@ -5,6 +5,15 @@ class tx_recordsmanager_flexfill
 	// List of exclude fields that are not process in insert/edit view
 	public $excludeFields = 'uid,pid,deleted,t3ver_oid,t3ver_id,t3ver_wsid,t3ver_label,t3ver_state,t3ver_stage,t3ver_count,t3ver_tstamp,t3ver_move_id,t3_origuid,l18n_parent,l18n_diffsource';
 
+	public function getTables (&$params, &$fObj) {
+		$tables = array_keys($GLOBALS['TCA']);
+		sort($tables);
+		$params['items'] = array();
+		foreach ($tables as $table) {
+			$params['items'][] = array($table, $table); 
+		}
+	}
+	
 	public function getFields(&$params, &$fObj) {
 		if ($params['row']['sqltable'] != '') {
 			$res = $GLOBALS['TYPO3_DB']->sql_query('SHOW COLUMNS FROM ' . $params['row']['sqltable']);
