@@ -43,10 +43,7 @@ $TCA['tx_recordsmanager_config'] = array(
 			'label'   => 'LLL:EXT:recordsmanager/locallang_db.xml:tx_recordsmanager_config.sqltable',
 			'config'  => Array(
 				'type'    => 'select',
-				'special' => 'tables',
-				'items'   => Array(
-					Array('', '')
-				)
+				'itemsProcFunc' => 'tx_recordsmanager_flexfill->getTables',
 			)
 		),
 		'sqlfields'         => array(
