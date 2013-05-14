@@ -12,15 +12,15 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Records management in a BE module',
-	'description' => 'Add modules to easily manage your records (insert, edit & export) in one place.',
+	'description' => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
 	'category' => 'module',
 	'shy' => 0,
-	'version' => '1.0.13',
+	'version' => '1.1.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
-	'TYPO3_version' => '4.2.0-6.0.99',
+	'TYPO3_version' => '4.5.0-6.0.99',
 	'PHP_version' => '5.0.0-0.0.0',
 	'module' => '',
 	'state' => 'stable',

@@ -1,0 +1,8 @@
+# Module configuration
+module.tx_recordsmanager {
+	view {
+		templateRootPath = EXT:recordsmanager/Resources/Private/Backend/Templates/
+		partialRootPath = EXT:recordsmanager/Resources/Private/Backend/Partials/
+		layoutRootPath = EXT:recordsmanager/Resources/Private/Backend/Layouts/
+	}
+}
