@@ -1,0 +1,40 @@
+{namespace rm=Tx_Recordsmanager_ViewHelpers}
+
+<f:layout name="Default"/>
+
+<f:section name="content">
+
+    <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 10, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
+        <table cellspacing="1" cellpadding="2" border="0" class="typo3-dblist">
+            <tbody>
+            <tr class="t3-row-header">
+                <f:for each="{headers}" as="headerlabel" key="headerfield">
+                    <td class="cell">
+                        {headerlabel}
+                        <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
+                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/reddown.gif">
+                        </f:link.action>
+                        <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
+                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/redup.gif">
+                        </f:link.action>
+                    </td>
+                </f:for>
+            </tr>
+            <f:for each="{paginatedRows}" as="row">
+                <tr class="db_list_normal">
+                    <f:for each="{row}" as="field">
+                        <td class="cell">{field}</td>
+                    </f:for>
+                </tr>
+            </f:for>
+            </tbody>
+        </table>
+    </rm:widget.paginate>
+
+    <f:for each="{exportmodes}" as="exportmode">
+        <br/>
+        <input type="button" value="{f:translate(key:'download',arguments:{0:'{exportmode.0}'})}" onclick="window.location.href='{exportmode.1}';">
+        <br/>
+    </f:for>
+
+</f:section>
