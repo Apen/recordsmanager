@@ -79,7 +79,7 @@ class Tx_Recordsmanager_Eid_Index
 	}
 
 	/**
-	 * Export records if neededl
+	 * Export records if needed
 	 *
 	 * @param Tx_Recordsmanager_Utility_Query $query
 	 */

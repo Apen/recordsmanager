@@ -27,85 +27,91 @@ $TCA['tx_recordsmanager_config'] = array(
 );
 
 if (TYPO3_MODE == 'BE') {
-	// add module after 'Web'
-	if (!isset($TBE_MODULES['txrecordsmanagerM1'])) {
-		$temp_TBE_MODULES = array();
-		foreach ($TBE_MODULES as $key => $val) {
-			if ($key === 'web') {
-				$temp_TBE_MODULES[$key] = $val;
-				$temp_TBE_MODULES['txrecordsmanagerM1'] = $val;
-			} else {
-				$temp_TBE_MODULES[$key] = $val;
-			}
-		}
-		$TBE_MODULES = $temp_TBE_MODULES;
-		unset($temp_TBE_MODULES);
-	}
-
-	Tx_Extbase_Utility_Extension::registerModule(
-		$_EXTKEY,
-		'txrecordsmanagerM1',
-		'',
-		'',
-		array(),
-		array(
-		     'access' => 'user,group',
-		     'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.gif',
-		     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:recordsmanagertitle',
-		)
-	);
 
 	$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['recordsmanager']);
 
-	if ($conf['enabledAdd'] == 1) {
-		Tx_Extbase_Utility_Extension::registerModule(
-			$_EXTKEY,
-			'txrecordsmanagerM1', // Make module a submodule of 'web'
-			'insert', // Submodule key
-			'', // Position
-			array(
-			     'Insert' => 'index',
-			),
-			array(
-			     'access' => 'user,group',
-			     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/insert.gif',
-			     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:inserttitle',
-			)
-		);
-	}
+	if (($conf['enabledAdd'] == 1) || ($conf['enabledEdit'] == 1) || ($conf['enabledExport'] == 1)) {
 
-	if ($conf['enabledEdit'] == 1) {
-		Tx_Extbase_Utility_Extension::registerModule(
-			$_EXTKEY,
-			'txrecordsmanagerM1', // Make module a submodule of 'web'
-			'edit', // Submodule key
-			'', // Position
-			array(
-			     'Edit' => 'index',
-			),
-			array(
-			     'access' => 'user,group',
-			     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/edit.gif',
-			     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:edittitle',
-			)
-		);
-	}
+		// add module after 'Web'
+		if (!isset($TBE_MODULES['txrecordsmanagerM1'])) {
+			$temp_TBE_MODULES = array();
+			foreach ($TBE_MODULES as $key => $val) {
+				if ($key === 'web') {
+					$temp_TBE_MODULES[$key] = $val;
+					$temp_TBE_MODULES['txrecordsmanagerM1'] = $val;
+				} else {
+					$temp_TBE_MODULES[$key] = $val;
+				}
+			}
+			$TBE_MODULES = $temp_TBE_MODULES;
+			unset($temp_TBE_MODULES);
+		}
 
-	if ($conf['enabledExport'] == 1) {
 		Tx_Extbase_Utility_Extension::registerModule(
 			$_EXTKEY,
-			'txrecordsmanagerM1', // Make module a submodule of 'web'
-			'export', // Submodule key
-			'', // Position
-			array(
-			     'Export' => 'index',
-			),
+			'txrecordsmanagerM1',
+			'',
+			'',
+			array(),
 			array(
 			     'access' => 'user,group',
-			     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.gif',
-			     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:exporttitle',
+			     'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.gif',
+			     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:recordsmanagertitle',
 			)
 		);
+
+
+		if ($conf['enabledAdd'] == 1) {
+			Tx_Extbase_Utility_Extension::registerModule(
+				$_EXTKEY,
+				'txrecordsmanagerM1', // Make module a submodule of 'web'
+				'insert', // Submodule key
+				'', // Position
+				array(
+				     'Insert' => 'index',
+				),
+				array(
+				     'access' => 'user,group',
+				     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/insert.gif',
+				     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:inserttitle',
+				)
+			);
+		}
+
+		if ($conf['enabledEdit'] == 1) {
+			Tx_Extbase_Utility_Extension::registerModule(
+				$_EXTKEY,
+				'txrecordsmanagerM1', // Make module a submodule of 'web'
+				'edit', // Submodule key
+				'', // Position
+				array(
+				     'Edit' => 'index',
+				),
+				array(
+				     'access' => 'user,group',
+				     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/edit.gif',
+				     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:edittitle',
+				)
+			);
+		}
+
+		if ($conf['enabledExport'] == 1) {
+			Tx_Extbase_Utility_Extension::registerModule(
+				$_EXTKEY,
+				'txrecordsmanagerM1', // Make module a submodule of 'web'
+				'export', // Submodule key
+				'', // Position
+				array(
+				     'Export' => 'index',
+				),
+				array(
+				     'access' => 'user,group',
+				     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.gif',
+				     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:exporttitle',
+				)
+			);
+		}
+
 	}
 
 	t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'recordsmanager');
