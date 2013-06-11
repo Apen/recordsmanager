@@ -23,8 +23,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Tx_Recordsmanager_Utility_Config
-{
+class Tx_Recordsmanager_Utility_Config {
 
 	/**
 	 * Get all config of recordsmanager
@@ -80,7 +79,16 @@ class Tx_Recordsmanager_Utility_Config
 					$record[$fieldName] = '';
 				}
 			} else {
-				$record[$fieldName] = t3lib_BEfunc::getProcessedValue($table, $fieldName, $fieldValue, 0, 1, 1, $row['uid'], TRUE);
+				if (!t3lib_div::inList('input', $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'])) {
+					$record[$fieldName] = t3lib_BEfunc::getProcessedValue($table, $fieldName, $fieldValue, 0, 1, 1, $row['uid'], TRUE);
+				} else {
+					$record[$fieldName] = $fieldValue;
+				}
+				if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'input') {
+					if (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'datetime') || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'date')) {
+						$record[$fieldName] = $fieldValue;
+					}
+				}
 				if (empty($record[$fieldName])) {
 					$record[$fieldName] = $fieldValue;
 				}
@@ -91,12 +99,19 @@ class Tx_Recordsmanager_Utility_Config
 			if ($export === TRUE) {
 				// add path to files
 				if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] == 'file') {
-					$files = t3lib_div::trimExplode(',', $record[$fieldName]);
-					$newFiles = array();
-					foreach ($files as $file) {
-						$newFiles[] = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
+					if (!empty($record[$fieldName])) {
+						$files = t3lib_div::trimExplode(',', $record[$fieldName]);
+						$newFiles = array();
+						foreach ($files as $file) {
+							$newFiles[] = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
+						}
+						$record[$fieldName] = implode(', ', $newFiles);
 					}
-					$record[$fieldName] = implode(', ', $newFiles);
+				}
+				if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' && !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE'])) {
+					$lCobj = t3lib_div::makeInstance('tslib_cObj');
+					$lCobj->start(array(), '');
+					$record[$fieldName] = $lCobj->parseFunc($record[$fieldName], array(), '< lib.parseFunc_RTE');
 				}
 			}
 		}
