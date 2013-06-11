@@ -23,8 +23,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Tx_Recordsmanager_Utility_Query
-{
+class Tx_Recordsmanager_Utility_Query {
 	protected $query;
 	protected $checkPids = TRUE;
 	protected $exportMode = FALSE;
@@ -91,6 +90,13 @@ class Tx_Recordsmanager_Utility_Query
 			if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
 				$records = array_merge($records, Tx_Recordsmanager_Utility_Powermail::getRow($records, $powermailHeaders));
 				$records = array_intersect_key($records, $this->headers);
+			}
+			if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
+				$arrayToEncode = array();
+				$arrayToEncode['uidconfig'] = $this->config['uid'];
+				$arrayToEncode['uidrecord'] = $records['uid'];
+				$arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
+				$records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
 			}
 			$this->rows[] = $records;
 		}
