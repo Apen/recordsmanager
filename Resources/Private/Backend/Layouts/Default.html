@@ -1,0 +1,52 @@
+{namespace rm=Tx_Recordsmanager_ViewHelpers}
+
+<f:be.container>
+    <div class="typo3-fullDoc">
+        <div id="typo3-docheader">
+            <div id="typo3-docheader-row1">
+                <div class="buttonsleft">
+                </div>
+                <div class="buttonsright">
+                    <f:be.buttons.shortcut/>
+                </div>
+            </div>
+            <div id="typo3-docheader-row2">
+                <div class="docheader-row2-left">
+                    <select onchange="jumpToUrl(this.options[this.selectedIndex].value, this);">
+                        <f:for each="{menuitems}" as="menuitem">
+                            <f:if condition="{arguments.menuitem} == {menuitem.uid}">
+                                <f:then>
+                                    <option value="{f:uri.action(arguments: {menuitem: '{menuitem.uid}'})}" selected="selected">
+                                        {menuitem.title}
+                                    </option>
+                                </f:then>
+                                <f:else>
+                                    <option value="{f:uri.action(arguments: {menuitem: '{menuitem.uid}'})}">
+                                        {menuitem.title}
+                                    </option>
+                                </f:else>
+                            </f:if>
+                        </f:for>
+                    </select>
+                </div>
+                <f:if condition="{exportmodes}">
+                    <div class="docheader-row2-right">
+                        <form action="{f:uri.action(addQueryString:1,arguments:{filter:'filter'})}" method="post">
+                            <f:form.textfield name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[startdate]" value="{startdate}" id="tceforms-datefield-startdate"/>
+                            <span style="cursor:pointer;" id="picker-tceforms-datefield-startdate" class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-pick-date">&nbsp;</span>
+                            <f:form.textfield name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[enddate]" value="{enddate}" id="tceforms-datefield-enddate"/>
+                            <span style="cursor:pointer;" id="picker-tceforms-datefield-enddate" class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-pick-date">&nbsp;</span>
+                            <input type="submit" value="OK">
+                        </form>
+                    </div>
+                </f:if>
+            </div>
+        </div>
+        <div id="typo3-docbody">
+            <div id="typo3-inner-docbody">
+                <f:flashMessages renderMode="div"/>
+                <f:render section="content"/>
+            </div>
+        </div>
+    </div>
+</f:be.container>

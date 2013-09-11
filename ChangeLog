@@ -1,0 +1,19 @@
+2011-12-14 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Bugfix for large sql fields
+	* Improvements on excel export for PHP 5.3
+2011-09-07 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Add a parameter for the field to filter the date in export mode
+2011-06-21 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Bugfix on the token validation on the 4.5.x
+2011-06-19 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Another optimization on the tceforms (with a hook)
+	* Bugfix on CSV title
+2011-06-14 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* Add a better method to hide fields in the tceforms to have the dividers2tabs
+	* Add sorting on column
+	* Bugfix on the datepicker on TYPO3 4.3<
+2011-06-13 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+    * Update documentation
+	* Add PL language
+2011-06-11 CERDAN Yohann  <cerdanyohann@yahoo.fr>
+	* initial upload

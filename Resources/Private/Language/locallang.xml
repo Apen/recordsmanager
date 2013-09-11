@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for module &quot;txrecordsmanagerM1&quot;</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="recordsmanagertitle">Records manager</label>
+            <label index="inserttitle">Add</label>
+            <label index="edittitle">Edit</label>
+            <label index="exporttitle">Export</label>
+            <label index="choose">Choose an action :</label>
+            <label index="addrecords">The following pages in the root line contain some records :</label>
+            <label index="storage">Storage Folders</label>
+            <label index="storageadmin">Storage Folders defined by the admin</label>
+            <label index="datas">Number</label>
+            <label index="pid">PID</label>
+            <label index="selectpid">Select a page folder where you want to add a record :</label>
+            <label index="norecords">No available data</label>
+            <label index="areyousure">Are you sure that you want to delete this record ?</label>
+            <label index="download">Click to download file in %s format</label>
+        </languageKey>
+        <languageKey index="fr" type="array">
+            <label index="recordsmanagertitle">Gestion des enregistrements</label>
+            <label index="inserttitle">Ajouter</label>
+            <label index="edittitle">Modifier</label>
+            <label index="exporttitle">Exporter</label>
+            <label index="choose">Choisir une action :</label>
+            <label index="addrecords">Les pages suivantes de l'arborescence contiennent des enregistrements :</label>
+            <label index="storage">Dossier de stockage</label>
+            <label index="storageadmin">Dossier de stockage définit par l'administrateur</label>
+            <label index="datas">Nombre</label>
+            <label index="pid">PID</label>
+            <label index="selectpid">Selectionner une page où insérer un enregistrement :</label>
+            <label index="norecords">Aucune donnée disponible</label>
+            <label index="areyousure">Etes-vous sur de vouloir supprimer cet enregistrement ?</label>
+            <label index="download">Cliquer pour télécharger le fichier au format %s</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+            <label index="recordsmanagertitle">Menedżer rekordów</label>
+            <label index="inserttitle">Dodaj</label>
+            <label index="edittitle">Edycja</label>
+            <label index="exporttitle">Eksport</label>
+            <label index="choose">Wybierz akcję :</label>
+            <label index="addrecords">Następujące strony w linii root zawierają rekordy :</label>
+            <label index="storage">Foldery przechowujące rekordy</label>
+            <label index="storageadmin">Foldery przechowujące rekordy zdefiniowane przez administratora</label>
+            <label index="datas">Liczba</label>
+            <label index="pid">PID</label>
+            <label index="selectpid">Wybierz folder strony, do którego chcesz dodać rekord :</label>
+            <label index="norecords">Brak dostępnych danych</label>
+            <label index="areyousure">Jesteś pewny, że chcesz usunąć ten rekord ?</label>
+            <label index="download">Kliknij aby pobrać plik w formacie %s</label>
+        </languageKey>
+    </data>
+</T3locallang>
