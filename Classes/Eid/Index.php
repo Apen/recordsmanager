@@ -35,6 +35,7 @@ class Tx_Recordsmanager_Eid_Index
 		require_once('typo3conf/ext/recordsmanager/Classes/Utility/Query.php');
 		require_once('typo3conf/ext/recordsmanager/Classes/Utility/Config.php');
 		require_once('typo3conf/ext/recordsmanager/Classes/Utility/Powermail.php');
+		require_once('typo3conf/ext/recordsmanager/Classes/Utility/Misc.php');
 		require_once('typo3conf/ext/recordsmanager/Classes/Controller/ExportController.php');
 		$this->initTSFE();
 		tslib_eidtools::connectDB();

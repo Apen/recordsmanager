@@ -97,6 +97,10 @@ class Tx_Recordsmanager_Utility_Query {
 				$arrayToEncode['uidrecord'] = $records['uid'];
 				$arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
 				$records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
+				// add special typoscript value
+				$markerValues = Tx_Recordsmanager_Utility_Misc::convertToMarkerArray($records);
+				$extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
+				$records = array_merge($records, Tx_Recordsmanager_Utility_Misc::loadAndExecTS($extraTs));
 			}
 			$this->rows[] = $records;
 		}
@@ -200,4 +204,5 @@ class Tx_Recordsmanager_Utility_Query {
 	public function setExportMode($exportMode) {
 		$this->exportMode = $exportMode;
 	}
+
 }
