@@ -19,6 +19,7 @@
             <label index="tx_recordsmanager_config.extrawhere">Extra WHERE (AND xxx)</label>
             <label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
             <label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
+            <label index="tx_recordsmanager_config.extrats">Extra typoscript code</label>
             <label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
             <label index="tx_recordsmanager_config.exportfilterfield">Filter field (default tstamp)</label>
             <label index="tx_recordsmanager_config.exportmode">Export mode</label>

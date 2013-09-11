@@ -74,6 +74,14 @@ $TCA['tx_recordsmanager_config'] = array(
 				'size' => '30',
 			)
 		),
+		'extrats'           => array(
+			'exclude' => 0,
+			'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extrats',
+			'config'  => array(
+				'type' => 'text',
+				'size' => '100',
+			)
+		),
 		'extraorderby'      => array(
 			'exclude' => 0,
 			'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extraorderby',
@@ -182,7 +190,7 @@ $TCA['tx_recordsmanager_config'] = array(
 		'0' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfields, sqlfieldsinsert, extrawhere, extragroupby, extraorderby, extralimit, permsgroup'),
 		'1' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfieldsinsert, insertdefaultpid, insertchoosepid, permsgroup'),
 		'2' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, exportmode, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, exportfilterfield, dateformat, permsgroup, excludefields'),
-		'3' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, eidkey, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, dateformat, excludefields')
+		'3' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, eidkey, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, dateformat, excludefields, extrats')
 	),
 	'palettes'    => array(
 		'1' => array('showitem' => '')
