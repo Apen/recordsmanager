@@ -54,9 +54,9 @@ if (TYPO3_MODE == 'BE') {
 			'',
 			array(),
 			array(
-			     'access' => 'user,group',
-			     'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.gif',
-			     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:recordsmanagertitle',
+				'access' => 'user,group',
+				'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.gif',
+				'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:recordsmanagertitle',
 			)
 		);
 
@@ -68,12 +68,12 @@ if (TYPO3_MODE == 'BE') {
 				'insert', // Submodule key
 				'', // Position
 				array(
-				     'Insert' => 'index',
+					'Insert' => 'index',
 				),
 				array(
-				     'access' => 'user,group',
-				     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/insert.gif',
-				     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:inserttitle',
+					'access' => 'user,group',
+					'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/insert.gif',
+					'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:inserttitle',
 				)
 			);
 		}
@@ -85,12 +85,12 @@ if (TYPO3_MODE == 'BE') {
 				'edit', // Submodule key
 				'', // Position
 				array(
-				     'Edit' => 'index',
+					'Edit' => 'index',
 				),
 				array(
-				     'access' => 'user,group',
-				     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/edit.gif',
-				     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:edittitle',
+					'access' => 'user,group',
+					'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/edit.gif',
+					'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:edittitle',
 				)
 			);
 		}
@@ -102,19 +102,20 @@ if (TYPO3_MODE == 'BE') {
 				'export', // Submodule key
 				'', // Position
 				array(
-				     'Export' => 'index',
+					'Export' => 'index',
 				),
 				array(
-				     'access' => 'user,group',
-				     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.gif',
-				     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:exporttitle',
+					'access' => 'user,group',
+					'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.gif',
+					'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:exporttitle',
 				)
 			);
 		}
 
 	}
 
-	t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'recordsmanager');
+	//t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'recordsmanager');
+	t3lib_extMgm::addTypoScriptSetup('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:recordsmanager/Configuration/TypoScript/setup.txt">');
 }
 
 ?>
