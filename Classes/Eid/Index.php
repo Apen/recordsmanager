@@ -22,11 +22,10 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-class Tx_Recordsmanager_Eid_Index
-{
+class Tx_Recordsmanager_Eid_Index {
 	/**
 	 * Current configuration record
+	 *
 	 * @var array
 	 */
 	protected $currentConfig;
@@ -132,7 +131,12 @@ class Tx_Recordsmanager_Eid_Index
 	 * Set the current config record
 	 */
 	public function setCurrentConfig($eidkey) {
-		$this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'type=3 AND deleted=0 AND eidkey="' . mysql_real_escape_string($eidkey) . '"');
+		if (Tx_Recordsmanager_Utility_Misc::intFromVer(TYPO3_version) >= 6002000) {
+			$protect = 'mysqli_real_escape_string';
+		} else {
+			$protect = 'mysql_real_escape_string';
+		}
+		$this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'type=3 AND deleted=0 AND eidkey="' . $protect($eidkey) . '"');
 		if (empty($this->currentConfig)) {
 			die('You need to specify a CORRECT tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
 		}

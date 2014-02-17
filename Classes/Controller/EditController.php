@@ -22,9 +22,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Controller_ActionController
-{
+class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Controller_ActionController {
 	protected $currentConfig;
 
 	/**
@@ -88,7 +86,7 @@ class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Control
 		$arguments = $this->request->getArguments();
 		$returnUrl = $this->getReturnUrl();
 		$deleteUrl = 'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&vC=' . $GLOBALS['BE_USER']->veriCode() . '&prErr=1&uPT=1';
-		if (t3lib_div::int_from_ver(TYPO3_version) >= 4005000) {
+		if (Tx_Recordsmanager_Utility_Misc::intFromVer(TYPO3_version) >= 4005000) {
 			$deleteUrl .= t3lib_BEfunc::getUrlToken('tceAction');
 		}
 		return $deleteUrl;
