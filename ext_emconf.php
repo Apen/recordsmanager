@@ -3,7 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "recordsmanager".
  *
- * Auto generated 04-12-2015 15:41
+ * Auto generated 04-12-2015 15:42
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array (
 	'description' => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
 	'category' => 'module',
 	'shy' => 0,
-	'version' => '1.1.8',
+	'version' => '1.1.9',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
