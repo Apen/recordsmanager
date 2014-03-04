@@ -195,7 +195,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
 		$rows = array_merge(array($query->getHeaders()), $query->getRows());
 
 		foreach ($rows as $row) {
-			$rowArr[] = self::cleanString(t3lib_div::csvValues($row));
+			$rowArr[] = self::cleanString(t3lib_div::csvValues($row), TRUE);
 		}
 
 		if (count($rowArr)) {
@@ -284,7 +284,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
 	 * @param $string
 	 * @return string
 	 */
-	public function cleanString($string) {
+	public function cleanString($string, $deleteLr = FALSE) {
 		$quotes = array(
 			"\xe2\x82\xac" => "\xc2\x80", /* EURO SIGN */
 			"\xe2\x80\x9a" => "\xc2\x82", /* SINGLE LOW-9 QUOTATION MARK */
@@ -316,6 +316,9 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
 		);
 		$string = strtr($string, $quotes);
 		$string = utf8_decode($string);
+		if ($deleteLr === TRUE) {
+			$string = str_replace(array("\r\n", "\n\r", "\n", "\r"), " ", $string);
+		}
 		return $string;
 	}
 
