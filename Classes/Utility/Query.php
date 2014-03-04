@@ -22,7 +22,6 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 class Tx_Recordsmanager_Utility_Query {
 	protected $query;
 	protected $checkPids = TRUE;
@@ -84,6 +83,10 @@ class Tx_Recordsmanager_Utility_Query {
 					$this->headers = array_intersect_key($this->headers, array_flip(t3lib_div::trimExplode(',', $this->config['sqlfields'])));
 					$powermailHeaders = Tx_Recordsmanager_Utility_Powermail::getHeadersFromRow(Tx_Recordsmanager_Utility_Powermail::getLastRecord($this->query));
 					$this->headers = array_merge($this->headers, $powermailHeaders);
+				}
+				if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
+					$extraTsHeaders = array_keys(Tx_Recordsmanager_Utility_Misc::loadAndExecTS($this->config['extrats']));
+					$this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
 				}
 			}
 			$records = Tx_Recordsmanager_Utility_Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
