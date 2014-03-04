@@ -22,9 +22,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Controller_ActionController
-{
+class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Controller_ActionController {
 	protected $currentConfig;
 
 	/**
@@ -173,14 +171,18 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
 	 *
 	 * @param Tx_Recordsmanager_Utility_Query $query
 	 */
-	public function exportToXML(Tx_Recordsmanager_Utility_Query $query) {
+	public function exportToXML(Tx_Recordsmanager_Utility_Query $query, $forceDisplay = FALSE) {
 		$xmlData = self::exportRecordsToXML($query->getQuery());
-		$filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xml';
-		$mimeType = 'application/octet-stream';
-		header('Content-Type: ' . $mimeType);
-		header('Content-Disposition: attachment; filename=' . $filename);
-		echo utf8_decode($xmlData);
-		exit;
+		if ($forceDisplay === FALSE) {
+			$filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xml';
+			$mimeType = 'application/octet-stream';
+			header('Content-Type: ' . $mimeType);
+			header('Content-Disposition: attachment; filename=' . $filename);
+			echo utf8_decode($xmlData);
+			exit;
+		} else {
+			echo utf8_decode($xmlData);
+		}
 	}
 
 	/**
@@ -188,7 +190,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
 	 *
 	 * @param Tx_Recordsmanager_Utility_Query $query
 	 */
-	public function exportToCSV(Tx_Recordsmanager_Utility_Query $query) {
+	public function exportToCSV(Tx_Recordsmanager_Utility_Query $query, $forceDisplay = FALSE) {
 		$rowArr = array();
 		$rows = array_merge(array($query->getHeaders()), $query->getRows());
 
@@ -197,12 +199,16 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
 		}
 
 		if (count($rowArr)) {
-			$filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
-			$mimeType = 'application/octet-stream';
-			header('Content-Type: ' . $mimeType);
-			header('Content-Disposition: attachment; filename=' . $filename);
-			echo(implode(CRLF, $rowArr));
-			exit;
+			if ($forceDisplay === FALSE) {
+				$filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
+				$mimeType = 'application/octet-stream';
+				header('Content-Type: ' . $mimeType);
+				header('Content-Disposition: attachment; filename=' . $filename);
+				echo(implode(CRLF, $rowArr));
+				exit;
+			} else {
+				echo(implode(CRLF, $rowArr));
+			}
 		}
 	}
 

@@ -91,10 +91,10 @@ class Tx_Recordsmanager_Eid_Index {
 		$query->execQuery();
 		switch ($mode) {
 			case 'xml':
-				Tx_Recordsmanager_Controller_ExportController::exportToXML($query);
+				Tx_Recordsmanager_Controller_ExportController::exportToXML($query, TRUE);
 				break;
 			case 'csv':
-				Tx_Recordsmanager_Controller_ExportController::exportToCSV($query);
+				Tx_Recordsmanager_Controller_ExportController::exportToCSV($query, TRUE);
 				break;
 			case 'excel':
 				Tx_Recordsmanager_Controller_ExportController::exportToEXCEL($query);
