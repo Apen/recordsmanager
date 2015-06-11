@@ -119,7 +119,7 @@ $TCA['tx_recordsmanager_config'] = array(
 				'default'  => 0,
 				'minitems' => 1,
 				'maxitems' => 10,
-				'size'     => 2,
+				'size'     => 5,
 			)
 		),
 		'sqlfieldsinsert'   => array(
