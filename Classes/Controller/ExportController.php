@@ -200,7 +200,8 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
         $rows = array_merge(array($query->getHeaders()), $query->getRows());
 
         foreach ($rows as $row) {
-            $rowArr[] = self::cleanString(t3lib_div::csvValues($row), TRUE);
+            // utf8 with BOM for Excel
+            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(t3lib_div::csvValues($row), TRUE));
         }
 
         if (count($rowArr)) {
