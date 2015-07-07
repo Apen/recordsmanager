@@ -4,43 +4,47 @@
 
 <f:section name="content">
 
-    <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 10, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
-        <table cellspacing="1" cellpadding="2" border="0" class="typo3-dblist">
-            <tbody>
-            <tr class="t3-row-header">
-                <f:for each="{headers}" as="headerlabel" key="headerfield">
-                    <td class="cell">
-                        {headerlabel}
-                        <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
-                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/reddown.gif">
-                        </f:link.action>
-                        <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
-                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/redup.gif">
-                        </f:link.action>
-                    </td>
-                </f:for>
-                <td class="cell"></td>
-            </tr>
-            <f:for each="{paginatedRows}" as="row">
-                <tr class="db_list_normal">
-                    <f:for each="{row}" as="field">
-                        <td class="cell">{field}</td>
+    <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 20, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
+        <div class="table-fit">
+            <table class="typo3-dblist table table-hover">
+                <thead>
+                <tr class="t3-row-header">
+                    <f:for each="{headers}" as="headerlabel" key="headerfield">
+                        <th class="cell">
+                            {headerlabel}
+                            <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
+                                <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
+                            </f:link.action>
+                            <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
+                                <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
+                            </f:link.action>
+                        </th>
                     </f:for>
-                    <td class="cell">
-                        <a onclick="top.launchView('{currentconfig.sqltable}','{row.uid}','');return false;" href="#">
-                            <img src="sysext/t3skin/icons/gfx/zoom2.gif">
-                        </a>
-                        <a onclick="jumpToUrl('alt_doc.php?returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}');" href="#">
-                            <img src="sysext/t3skin/icons/gfx/edit2.gif">
-                        </a>
-                        <a onclick="return deleteRecord('{currentconfig.sqltable}','{row.uid}');" href="#">
-                            <img src="sysext/t3skin/icons/gfx/garbage.gif">
-                        </a>
-                    </td>
+                    <th class="cell"></th>
                 </tr>
-            </f:for>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <f:for each="{paginatedRows}" as="row">
+                    <tr class="db_list_normal">
+                        <f:for each="{row}" as="field">
+                            <td class="cell">{field}</td>
+                        </f:for>
+                        <td class="cell">
+                            <a onclick="top.launchView('{currentconfig.sqltable}','{row.uid}','');return false;" href="#" class="btn btn-default">
+                                <rm:spriteManagerIcon iconName="actions-document-info"/>
+                            </a>
+                            <a onclick="jumpToUrl('alt_doc.php?returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}');" href="#" class="btn btn-default">
+                                <rm:spriteManagerIcon iconName="actions-document-open"/>
+                            </a>
+                            <a onclick="return deleteRecord('{currentconfig.sqltable}','{row.uid}');" href="#" class="btn btn-default">
+                                <rm:spriteManagerIcon iconName="actions-edit-delete"/>
+                            </a>
+                        </td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </div>
     </rm:widget.paginate>
 
     <script language="javascript" type="text/javascript">
@@ -50,8 +54,8 @@
         }
 
         function deleteRecord(table, id) {
-            var areyousure = "]]>{f:translate(key:'areyousure') -> rm:raw()}<![CDATA[";
-            var deleteurl = "]]>{deleteurl -> rm:raw()}<![CDATA[";
+            var areyousure = "]]>{f:translate(key:'areyousure') -> f:format.raw()}<![CDATA[";
+            var deleteurl = "]]>{deleteurl -> f:format.raw()}<![CDATA[";
             if (confirm(areyousure)) {
                 jumpToUrl(deleteurl);
             }

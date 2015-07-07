@@ -1,3 +1,5 @@
+{namespace t3prof=Tx_Typo3profiler_ViewHelpers}
+
 <f:if condition="{configuration.insertAbove}">
     <f:render section="paginator" arguments="{pagination: pagination,configuration:configuration}"/>
 </f:if>
@@ -11,12 +13,18 @@
 <f:section name="linkFirst">
     <f:if condition="{noLink}">
         <f:then>
-            <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_first_disabled.gif">
+            <li class="disabled" style="display:inline;">
+                <span>
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-first"/>
+                </span>
+            </li>
         </f:then>
         <f:else>
-            <f:widget.link arguments="{currentPage: 0}">
-                <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_first.gif">
-            </f:widget.link>
+            <li style="display:inline;">
+                <f:widget.link arguments="{currentPage: 0}">
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-first"/>
+                </f:widget.link>
+            </li>
         </f:else>
     </f:if>
 </f:section>
@@ -24,12 +32,18 @@
 <f:section name="linkPrevious">
     <f:if condition="{noLink}">
         <f:then>
-            <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_previous_disabled.gif">
+            <li class="disabled" style="display:inline;">
+                <span>
+                     <t3prof:spriteManagerIcon iconName="actions-view-paging-previous"/>
+                </span>
+            </li>
         </f:then>
         <f:else>
-            <f:widget.link arguments="{currentPage: pagination.previousPage}">
-                <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_previous.gif">
-            </f:widget.link>
+            <li style="display:inline;">
+                <f:widget.link arguments="{currentPage: pagination.previousPage}">
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-previous"/>
+                </f:widget.link>
+            </li>
         </f:else>
     </f:if>
 </f:section>
@@ -37,12 +51,18 @@
 <f:section name="linkNext">
     <f:if condition="{noLink}">
         <f:then>
-            <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_next_disabled.gif">
+            <li class="disabled" style="display:inline;">
+                <span>
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-next"/>
+                </span>
+            </li>
         </f:then>
         <f:else>
-            <f:widget.link arguments="{currentPage: pagination.nextPage}">
-                <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_next.gif">
-            </f:widget.link>
+            <li style="display:inline;">
+                <f:widget.link arguments="{currentPage: pagination.nextPage}">
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-next"/>
+                </f:widget.link>
+            </li>
         </f:else>
     </f:if>
 </f:section>
@@ -50,19 +70,25 @@
 <f:section name="linkLast">
     <f:if condition="{noLink}">
         <f:then>
-            <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_last_disabled.gif">
+            <li class="disabled" style="display:inline;">
+                <span>
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-last"/>
+                </span>
+            </li>
         </f:then>
         <f:else>
-            <f:widget.link arguments="{currentPage: pagination.numberOfPages}">
-                <img width="16" height="16" src="sysext/t3skin/icons/gfx/control_last.gif">
-            </f:widget.link>
+            <li style="display:inline;">
+                <f:widget.link arguments="{currentPage: pagination.numberOfPages}">
+                    <t3prof:spriteManagerIcon iconName="actions-view-paging-last"/>
+                </f:widget.link>
+            </li>
         </f:else>
     </f:if>
 </f:section>
 
 <f:section name="paginator">
     <f:if condition="{pagination.numberOfPages} > 1">
-        <div id="typo3-dblist-pagination">
+        <ul class="typo3-dblist-pagination pagination pagination-block" style="padding-left:0; margin-bottom:15px;">
             <f:if condition="{pagination.previousPage}">
                 <f:then>
                     <f:if condition="{configuration.showFirstLast}">
@@ -79,11 +105,11 @@
                     </f:if>
                 </f:else>
             </f:if>
-            <span class="bar">&nbsp;</span>
-            <span class="pageIndicator">{f:translate(key:'LLL:EXT:lang/locallang_mod_web_list.xml:rangeIndicator',arguments:{0:'{pagination.firstPageItem}',1:'{pagination.lastPageItem}'})}</span>
-            <span class="bar">&nbsp;</span>
-            <span class="pageIndicator">{f:translate(key:'LLL:EXT:lang/locallang_mod_web_list.xml:pageIndicator',arguments:{0:'{pagination.current}',1:'{pagination.numberOfPages}'})}</span>
-            <span class="bar">&nbsp;</span>
+            <li style="display:inline;">
+                <span class="pageIndicator">{f:translate(key:'LLL:EXT:lang/locallang_mod_web_list.xml:rangeIndicator',arguments:{0:'{pagination.firstPageItem}',1:'{pagination.lastPageItem}'})}
+                    /
+                {f:translate(key:'LLL:EXT:lang/locallang_mod_web_list.xml:pageIndicator',arguments:{0:'{pagination.current}',1:'{pagination.numberOfPages}'})}</span>
+            </li>
             <f:if condition="{pagination.nextPage}">
                 <f:then>
                     <f:render section="linkNext" arguments="{pagination: pagination,configuration:configuration}"/>
@@ -100,6 +126,6 @@
                     </f:if>
                 </f:else>
             </f:if>
-        </div>
+        </ul>
     </f:if>
 </f:section>

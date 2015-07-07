@@ -1,9 +1,11 @@
 <?php
 
+namespace Sng\Recordsmanager\Utility;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
+ *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Tx_Recordsmanager_Utility_Config {
+class Config {
 
 	/**
 	 * Get all config of recordsmanager
@@ -73,14 +75,14 @@ class Tx_Recordsmanager_Utility_Config {
 	public function getResultRow($row, $table, $excludeFields = '', $export = FALSE) {
 		$record = array();
 		foreach ($row as $fieldName => $fieldValue) {
-			if (!t3lib_div::inList($excludeFields, $fieldName)) {
-				$record[$fieldName] = t3lib_BEfunc::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
+			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($excludeFields, $fieldName)) {
+				$record[$fieldName] = \TYPO3\CMS\Backend\Utility\BackendUtility::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
 				if (trim($record[$fieldName]) == 'N/A') {
 					$record[$fieldName] = '';
 				}
 			} else {
-				if (!t3lib_div::inList('input', $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'])) {
-					$record[$fieldName] = t3lib_BEfunc::getProcessedValue($table, $fieldName, $fieldValue, 0, 1, 1, $row['uid'], TRUE);
+				if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList('input', $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'])) {
+					$record[$fieldName] = \TYPO3\CMS\Backend\Utility\BackendUtility::getProcessedValue($table, $fieldName, $fieldValue, 0, 1, 1, $row['uid'], TRUE);
 				} else {
 					$record[$fieldName] = $fieldValue;
 				}
@@ -100,16 +102,16 @@ class Tx_Recordsmanager_Utility_Config {
 				// add path to files
 				if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] == 'file') {
 					if (!empty($record[$fieldName])) {
-						$files = t3lib_div::trimExplode(',', $record[$fieldName]);
+						$files = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $record[$fieldName]);
 						$newFiles = array();
 						foreach ($files as $file) {
-							$newFiles[] = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
+							$newFiles[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
 						}
 						$record[$fieldName] = implode(', ', $newFiles);
 					}
 				}
 				if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' && !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE'])) {
-					$lCobj = t3lib_div::makeInstance('tslib_cObj');
+					$lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 					$lCobj->start(array(), '');
 					$record[$fieldName] = $lCobj->parseFunc($record[$fieldName], array(), '< lib.parseFunc_RTE');
 				}

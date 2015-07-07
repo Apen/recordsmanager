@@ -1,9 +1,11 @@
 <?php
 
+namespace Sng\Recordsmanager\Controller;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
+ *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,7 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Controller_ActionController {
+class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	protected $currentConfig;
 
 	/**
@@ -31,7 +33,7 @@ class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Control
 	 * @return void
 	 */
 	public function indexAction() {
-		$allConfigs = Tx_Recordsmanager_Utility_Config::getAllConfigs(0);
+		$allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(0);
 		$this->currentConfig = $allConfigs[0];
 		$this->setCurrentConfig();
 
@@ -45,7 +47,7 @@ class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Control
 		$this->view->assign('menuitems', $allConfigs);
 		$this->view->assign('returnurl', rawurlencode($this->getReturnUrl()));
 		$this->view->assign('deleteurl', $this->getDeleteUrl());
-		$this->view->assign('disableFields', implode(',', tx_recordsmanager_flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
+		$this->view->assign('disableFields', implode(',', \tx_recordsmanager_flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
 	}
 
 	/**
@@ -56,7 +58,7 @@ class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Control
 	public function buildQuery() {
 		$arguments = $this->request->getArguments();
 
-		$queryObject = new Tx_Recordsmanager_Utility_Query();
+		$queryObject = new  \Sng\Recordsmanager\Utility\Query();
 		$queryObject->setConfig($this->currentConfig);
 		$queryObject->buildQuery();
 
@@ -86,8 +88,8 @@ class Tx_Recordsmanager_Controller_EditController extends Tx_Extbase_MVC_Control
 		$arguments = $this->request->getArguments();
 		$returnUrl = $this->getReturnUrl();
 		$deleteUrl = 'tce_db.php?cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&vC=' . $GLOBALS['BE_USER']->veriCode() . '&prErr=1&uPT=1';
-		if (Tx_Recordsmanager_Utility_Misc::intFromVer(TYPO3_version) >= 4005000) {
-			$deleteUrl .= t3lib_BEfunc::getUrlToken('tceAction');
+		if (\Sng\Recordsmanager\Utility\Misc::intFromVer(TYPO3_version) >= 4005000) {
+			$deleteUrl .= \TYPO3\CMS\Backend\Utility\BackendUtility::getUrlToken('tceAction');
 		}
 		return $deleteUrl;
 	}

@@ -4,32 +4,95 @@
 
 <f:section name="content">
 
-    <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 10, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
-        <table cellspacing="1" cellpadding="2" border="0" class="typo3-dblist">
-            <tbody>
-            <tr class="t3-row-header">
-                <f:for each="{headers}" as="headerlabel" key="headerfield">
-                    <td class="cell">
-                        {headerlabel}
-                        <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
-                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/reddown.gif">
-                        </f:link.action>
-                        <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
-                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/redup.gif">
-                        </f:link.action>
-                    </td>
-                </f:for>
-            </tr>
-            <f:for each="{paginatedRows}" as="row">
-                <tr class="db_list_normal">
-                    <f:for each="{row}" as="field">
-                        <td class="cell">{field}</td>
+    <form action="{f:uri.action(addQueryString:1,arguments:{filter:'filter'})}" method="post" class="form-inline form-inline-spaced">
+        <f:if condition="{moreThanSeven}">
+            <f:then>
+                <div class="form-group">
+                    <label for="tceforms-datefield-startdate">
+                        <f:translate key="LLL:EXT:lang/locallang_common.xlf:from"/>
+                    </label>
+
+                    <div class="input-group input-group-sm">
+                        <f:form.textfield
+                                name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[startdate]"
+                                id="tceforms-datefield-startdate"
+                                value="{startdate}"
+                                class="form-control input-sm t3js-datetimepicker t3js-clearable"
+                                additionalAttributes="{data-date-type:'date'}"
+                                />
+                        <span class="input-group-btn">
+                            <label class="btn btn-default" for="tceforms-datefield-startdate">
+                                <span class="fa fa-calendar"></span>
+                            </label>
+                        </span>
+                    </div>
+                    <label for="tceforms-datefield-enddate">
+                        <f:translate key="LLL:EXT:lang/locallang_common.xlf:to"/>
+                    </label>
+
+                    <div class="input-group input-group-sm">
+                        <f:form.textfield
+                                name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[enddate]"
+                                id="tceforms-datefield-enddate"
+                                value="{enddate}"
+                                class="form-control input-sm t3js-datetimepicker t3js-clearable"
+                                additionalAttributes="{data-date-type:'date'}"
+                                />
+                        <span class="input-group-btn">
+                            <label class="btn btn-default" for="tceforms-datefield-enddate">
+                                <span class="fa fa-calendar"></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <input type="submit" value="OK"/>
+                    </div>
+                </div>
+            </f:then>
+            <f:else>
+                <f:translate key="LLL:EXT:lang/locallang_common.xlf:from"/>
+                <f:form.textfield name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[startdate]" value="{startdate}" id="tceforms-datefield-startdate"/>
+                <span style="cursor:pointer;" id="picker-tceforms-datefield-startdate" class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-pick-date">&nbsp;</span>
+                <f:translate key="LLL:EXT:lang/locallang_common.xlf:to"/>
+                <f:form.textfield name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[enddate]" value="{enddate}" id="tceforms-datefield-enddate"/>
+                <span style="cursor:pointer;" id="picker-tceforms-datefield-enddate" class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-pick-date">&nbsp;</span>
+                <input type="submit" value="OK"/>
+            </f:else>
+        </f:if>
+    </form>
+
+    <f:if condition="{rows}">
+        <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 20, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
+            <div class="table-fit">
+                <table class="typo3-dblist table table-hover">
+                    <thead>
+                    <tr class="t3-row-header">
+                        <f:for each="{headers}" as="headerlabel" key="headerfield">
+                            <th class="cell">
+                                {headerlabel}
+                                <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
+                                    <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
+                                </f:link.action>
+                                <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
+                                    <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
+                                </f:link.action>
+                            </th>
+                        </f:for>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <f:for each="{paginatedRows}" as="row">
+                        <tr class="db_list_normal">
+                            <f:for each="{row}" as="field">
+                                <td class="cell">{field}</td>
+                            </f:for>
+                        </tr>
                     </f:for>
-                </tr>
-            </f:for>
-            </tbody>
-        </table>
-    </rm:widget.paginate>
+                    </tbody>
+                </table>
+            </div>
+        </rm:widget.paginate>
+    </f:if>
 
     <f:for each="{exportmodes}" as="exportmode">
         <br/>
