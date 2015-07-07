@@ -1,9 +1,11 @@
 <?php
 
+namespace Sng\Recordsmanager\Utility;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
+ *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,7 +24,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class Tx_Recordsmanager_Utility_Query {
+
+class Query {
     protected $query;
     protected $checkPids = TRUE;
     protected $exportMode = FALSE;
@@ -43,7 +46,7 @@ class Tx_Recordsmanager_Utility_Query {
             }
         }
 
-        if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
+        if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
             $this->query['SELECT'] = '*';
         }
         return $this->query;
@@ -55,7 +58,7 @@ class Tx_Recordsmanager_Utility_Query {
     public function buildQuery() {
         if (!empty($this->config['sqlfields'])) {
             // we need to have the uid
-            if (!t3lib_div::inList($this->config['sqlfields'], 'uid')) {
+            if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->config['sqlfields'], 'uid')) {
                 $this->query['SELECT'] = 'uid,' . $this->config['sqlfields'];
             } else {
                 $this->query['SELECT'] = $this->config['sqlfields'];
@@ -82,20 +85,20 @@ class Tx_Recordsmanager_Utility_Query {
         while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             if ($first) {
                 $first = FALSE;
-                $this->headers = Tx_Recordsmanager_Utility_Config::getResultRowTitles($row, $this->query['FROM']);
-                if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
-                    $this->headers = array_intersect_key($this->headers, array_flip(t3lib_div::trimExplode(',', $this->config['sqlfields'])));
-                    $powermailHeaders = Tx_Recordsmanager_Utility_Powermail::getHeadersFromRow(Tx_Recordsmanager_Utility_Powermail::getLastRecord($this->query));
+                $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
+                if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+                    $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
+                    $powermailHeaders = \Sng\Recordsmanager\Utility\Powermail::getHeadersFromRow(\Sng\Recordsmanager\Utility\Powermail::getLastRecord($this->query));
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
                 if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
-                    $extraTsHeaders = array_keys(Tx_Recordsmanager_Utility_Misc::loadAndExecTS($this->config['extrats']));
+                    $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats']));
                     $this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
                 }
             }
-            $records = Tx_Recordsmanager_Utility_Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
-            if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
-                $records = array_merge($records, Tx_Recordsmanager_Utility_Powermail::getRow($records, $powermailHeaders));
+            $records = \Sng\Recordsmanager\Utility\Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
+            if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+                $records = array_merge($records, \Sng\Recordsmanager\Utility\Powermail::getRow($records, $powermailHeaders));
                 $records = array_intersect_key($records, $this->headers);
             }
             if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
@@ -105,9 +108,9 @@ class Tx_Recordsmanager_Utility_Query {
                 $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
                 // add special typoscript value
-                $markerValues = Tx_Recordsmanager_Utility_Misc::convertToMarkerArray($records);
+                $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);
                 $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
-                $records = array_merge($records, Tx_Recordsmanager_Utility_Misc::loadAndExecTS($extraTs));
+                $records = array_merge($records, \Sng\Recordsmanager\Utility\Misc::loadAndExecTS($extraTs));
             }
             $this->rows[] = $records;
         }
@@ -123,7 +126,7 @@ class Tx_Recordsmanager_Utility_Query {
         $pids = array();
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT pid', $this->query['FROM'], $this->query['WHERE'], $this->query['GROUPBY'], $this->query['ORDERBY'], $this->query['LIMIT']);
         while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-            $pageinfo = t3lib_BEfunc::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
+            $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
             if ($pageinfo !== FALSE) {
                 $pids[] = $row['pid'];
             }
@@ -158,6 +161,10 @@ class Tx_Recordsmanager_Utility_Query {
 
     public function getRows() {
         return $this->rows;
+    }
+
+    public function getNbRows() {
+        return count($this->rows);
     }
 
     public function setSelect($value) {

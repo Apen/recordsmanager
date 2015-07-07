@@ -38,7 +38,7 @@
  * @package    TYPO3
  * @subpackage Recordsmanager
  */
-class Tx_Recordsmanager_ViewHelpers_Widget_PaginateViewHelper extends Tx_Fluid_Core_Widget_AbstractWidgetViewHelper
+class Tx_Recordsmanager_ViewHelpers_Widget_PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper
 {
 
 	/**

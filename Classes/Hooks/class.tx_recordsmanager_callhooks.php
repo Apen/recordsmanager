@@ -5,7 +5,7 @@ class tx_recordsmanager_callhooks
 	private static $dateformat;
 
 	public function getMainFields_preProcess($table, $row, $parent) {
-		$recordsHide = explode(',', t3lib_div::_GP('recordsHide'));
+		$recordsHide = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('recordsHide'));
 		if (count($recordsHide) > 0) {
 			$parent->hiddenFieldListArr = array_merge($parent->hiddenFieldListArr, $recordsHide);
 		}

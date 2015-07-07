@@ -34,7 +34,7 @@ class tx_recordsmanager_flexfill
 	 */
 	public function getTableTCA($table) {
 		global $TCA;
-		t3lib_div::loadTCA($table);
+		//\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA($table);
 		return $TCA[$table];
 	}
 
@@ -46,7 +46,7 @@ class tx_recordsmanager_flexfill
 			$tableTCA = self::getTableTCA($params['row']['sqltable']);
 			$params['items'] = array();
 			foreach ($tableTCA['columns'] as $field => $fieldValue) {
-				if (!t3lib_div::inList($this->excludeFields, $field)) {
+				if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->excludeFields, $field)) {
 					$params['items'][] = array($field, $field);
 				}
 			}
@@ -60,7 +60,7 @@ class tx_recordsmanager_flexfill
 		$fields = array();
 		$res = $GLOBALS['TYPO3_DB']->sql_query('SHOW COLUMNS FROM ' . $table);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_row($res)) {
-			if (!t3lib_div::inList(self::excludeFields, $row[0])) {
+			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList(self::excludeFields, $row[0])) {
 				$label = $row[0];
 				$value = $row[0];
 				$fields [] = $value;

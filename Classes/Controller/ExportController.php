@@ -1,9 +1,11 @@
 <?php
 
+namespace Sng\Recordsmanager\Controller;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
+ *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,7 +24,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Controller_ActionController {
+
+class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
     protected $currentConfig;
 
     /**
@@ -31,7 +34,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
      * @return void
      */
     public function indexAction() {
-        $allConfigs = Tx_Recordsmanager_Utility_Config::getAllConfigs(2);
+        $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(2);
         $this->currentConfig = $allConfigs[0];
         $this->setCurrentConfig();
 
@@ -43,12 +46,17 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
         $query->execQuery();
         $this->exportRecords($query);
 
-        $this->view->assign('headers', $query->getHeaders());
-        $this->view->assign('rows', $query->getRows());
+        $this->view->assign('moreThanSeven', version_compare(TYPO3_version, '7.0.0', '>='));
+
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $this->request->getArguments());
         $this->view->assign('menuitems', $allConfigs);
-        $this->view->assign('exportmodes', $this->getExportUrls());
+
+        if ($query->getNbRows() > 0) {
+            $this->view->assign('headers', $query->getHeaders());
+            $this->view->assign('rows', $query->getRows());
+            $this->view->assign('exportmodes', $this->getExportUrls());
+        }
     }
 
     /**
@@ -56,18 +64,20 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
      */
     public function buildCalendar() {
         $arguments = $this->request->getArguments();
-        $doc = t3lib_div::makeInstance('template');
+        $doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $pageRenderer = $doc->getPageRenderer();
-        if (version_compare(TYPO3_version, '6.2.0', '>=')) {
+
+        if (version_compare(TYPO3_version, '7.0.0', '>=')) {
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
+        } else {
             $pageRenderer->addJsFile($this->backPath . 'sysext/backend/Resources/Public/JavaScript/tceforms.js');
             $pageRenderer->addJsFile($this->backPath . 'js/extjs/ux/Ext.ux.DateTimePicker.js');
-        } else {
-            $pageRenderer->addJsFile('/t3lib/js/extjs/tceforms.js', NULL, FALSE);
-            $pageRenderer->addJsFile('/t3lib/js/extjs/ux/Ext.ux.DateTimePicker.js', NULL, FALSE);
         }
+
         $typo3Settings = array(
             'dateFormat' => array('j-n-Y', 'd/m/Y')
         );
+
         $pageRenderer->addInlineSettingArray('', $typo3Settings);
         $styleLines = array();
         $styleLines[] = 'div#typo3-docbody{top:58px;}';
@@ -87,7 +97,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
      */
     public function getExportUrls() {
         $urlsExport = array();
-        $modes = t3lib_div::trimExplode(',', $this->currentConfig['exportmode']);
+        $modes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->currentConfig['exportmode']);
         foreach ($modes as $mode) {
             $urlsExport[] = array($mode, $this->getExportUrl($mode));
         }
@@ -116,7 +126,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
     /**
      * Export records if neededl
      *
-     * @param Tx_Recordsmanager_Utility_Query $query
+     * @param \Sng\Recordsmanager\Utility\Query $query
      */
     public function exportRecords($query) {
         $arguments = $this->request->getArguments();
@@ -138,7 +148,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
     /**
      * Build the query array
      *
-     * @return Tx_Recordsmanager_Utility_Query
+     * @return \Sng\Recordsmanager\Utility\Query
      */
     public function buildQuery() {
         $arguments = $this->request->getArguments();
@@ -148,7 +158,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
-        $queryObject = new Tx_Recordsmanager_Utility_Query();
+        $queryObject = new \Sng\Recordsmanager\Utility\Query();
         $queryObject->setConfig($this->currentConfig);
         $queryObject->buildQuery();
 
@@ -174,9 +184,9 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
     /**
      * Export to XML
      *
-     * @param Tx_Recordsmanager_Utility_Query $query
+     * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToXML(Tx_Recordsmanager_Utility_Query $query, $forceDisplay = FALSE) {
+    public function exportToXML(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = FALSE) {
         $xmlData = self::exportRecordsToXML($query->getQuery());
         if ($forceDisplay === FALSE) {
             $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xml';
@@ -193,15 +203,15 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
     /**
      * Export to CSV
      *
-     * @param Tx_Recordsmanager_Utility_Query $query
+     * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToCSV(Tx_Recordsmanager_Utility_Query $query, $forceDisplay = FALSE) {
+    public function exportToCSV(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = FALSE) {
         $rowArr = array();
         $rows = array_merge(array($query->getHeaders()), $query->getRows());
 
         foreach ($rows as $row) {
             // utf8 with BOM for Excel
-            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(t3lib_div::csvValues($row), TRUE));
+            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(\TYPO3\CMS\Core\Utility\GeneralUtility::csvValues($row), TRUE));
         }
 
         if (count($rowArr)) {
@@ -221,9 +231,9 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
     /**
      * Export to Excel
      *
-     * @param Tx_Recordsmanager_Utility_Query $query
+     * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToEXCEL(Tx_Recordsmanager_Utility_Query $query) {
+    public function exportToEXCEL(\Sng\Recordsmanager\Utility\Query $query) {
         $rows = array_merge(array($query->getHeaders()), $query->getRows());
 
         $dirName = PATH_site . 'typo3temp/';
@@ -233,7 +243,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
         require_once(PATH_site . "typo3conf/ext/recordsmanager/Resources/Private/Php/php_writeexcel-0.3.0/class.writeexcel_worksheet.inc.php");
 
         $fname = $dirName . $filename;
-        $workbook = new writeexcel_workbook($fname);
+        $workbook = new \writeexcel_workbook($fname);
         $worksheet = $workbook->addworksheet();
 
         $header = $workbook->addformat();
@@ -274,7 +284,7 @@ class Tx_Recordsmanager_Controller_ExportController extends Tx_Extbase_MVC_Contr
      * @return string
      */
     public function exportRecordsToXML($query) {
-        $xmlObj = t3lib_div::makeInstance('t3lib_xml', 'typo3_export');
+        $xmlObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\\Recordsmanager\\Utility\\Xml', 'typo3_export');
         $xmlObj->setRecFields($query['FROM'], $query['SELECT']);
         $xmlObj->renderHeader();
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($query['SELECT'], $query['FROM'], $query['WHERE'], $query['GROUPBY'], $query['ORDERBY'], $query['LIMIT']);
