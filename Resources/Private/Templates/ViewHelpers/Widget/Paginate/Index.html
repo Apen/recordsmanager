@@ -1,4 +1,4 @@
-{namespace t3prof=Tx_Typo3profiler_ViewHelpers}
+{namespace rm=Tx_Recordsmanager_ViewHelpers}
 
 <f:if condition="{configuration.insertAbove}">
     <f:render section="paginator" arguments="{pagination: pagination,configuration:configuration}"/>
@@ -15,14 +15,14 @@
         <f:then>
             <li class="disabled" style="display:inline;">
                 <span>
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-first"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-first"/>
                 </span>
             </li>
         </f:then>
         <f:else>
             <li style="display:inline;">
                 <f:widget.link arguments="{currentPage: 0}">
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-first"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-first"/>
                 </f:widget.link>
             </li>
         </f:else>
@@ -34,14 +34,14 @@
         <f:then>
             <li class="disabled" style="display:inline;">
                 <span>
-                     <t3prof:spriteManagerIcon iconName="actions-view-paging-previous"/>
+                     <rm:spriteManagerIcon iconName="actions-view-paging-previous"/>
                 </span>
             </li>
         </f:then>
         <f:else>
             <li style="display:inline;">
                 <f:widget.link arguments="{currentPage: pagination.previousPage}">
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-previous"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-previous"/>
                 </f:widget.link>
             </li>
         </f:else>
@@ -53,14 +53,14 @@
         <f:then>
             <li class="disabled" style="display:inline;">
                 <span>
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-next"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-next"/>
                 </span>
             </li>
         </f:then>
         <f:else>
             <li style="display:inline;">
                 <f:widget.link arguments="{currentPage: pagination.nextPage}">
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-next"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-next"/>
                 </f:widget.link>
             </li>
         </f:else>
@@ -72,14 +72,14 @@
         <f:then>
             <li class="disabled" style="display:inline;">
                 <span>
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-last"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-last"/>
                 </span>
             </li>
         </f:then>
         <f:else>
             <li style="display:inline;">
                 <f:widget.link arguments="{currentPage: pagination.numberOfPages}">
-                    <t3prof:spriteManagerIcon iconName="actions-view-paging-last"/>
+                    <rm:spriteManagerIcon iconName="actions-view-paging-last"/>
                 </f:widget.link>
             </li>
         </f:else>
