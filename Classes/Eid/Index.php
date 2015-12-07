@@ -3,7 +3,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
+ *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,7 +22,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class Tx_Recordsmanager_Eid_Index {
+class Tx_Recordsmanager_Eid_Index
+{
     /**
      * Current configuration record
      *
@@ -30,7 +31,8 @@ class Tx_Recordsmanager_Eid_Index {
      */
     protected $currentConfig;
 
-    public function __construct() {
+    public function __construct()
+    {
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Query.php');
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Config.php');
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Powermail.php');
@@ -43,7 +45,8 @@ class Tx_Recordsmanager_Eid_Index {
     /**
      * Exec the eid
      */
-    public function main() {
+    public function main()
+    {
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
         $this->exportRecords($query, $this->getFormat());
@@ -54,7 +57,8 @@ class Tx_Recordsmanager_Eid_Index {
      *
      * @return string
      */
-    public function getFormat() {
+    public function getFormat()
+    {
         $format = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('format');
         if (!empty($format)) {
             return strval($format);
@@ -68,7 +72,8 @@ class Tx_Recordsmanager_Eid_Index {
      *
      * @return string
      */
-    public function getConfig() {
+    public function getConfig()
+    {
         $config = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eidkey');
         if (!empty($config)) {
             return strval($config);
@@ -82,7 +87,8 @@ class Tx_Recordsmanager_Eid_Index {
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportRecords($query, $mode) {
+    public function exportRecords($query, $mode)
+    {
         $pid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pid');
         if (!empty($pid)) {
             $query->setWhere($query->getWhere() . ' AND pid=' . intval($pid));
@@ -90,10 +96,10 @@ class Tx_Recordsmanager_Eid_Index {
         $query->execQuery();
         switch ($mode) {
             case 'xml':
-                \Sng\Recordsmanager\Controller\ExportController::exportToXML($query, TRUE);
+                \Sng\Recordsmanager\Controller\ExportController::exportToXML($query, true);
                 break;
             case 'csv':
-                \Sng\Recordsmanager\Controller\ExportController::exportToCSV($query, TRUE);
+                \Sng\Recordsmanager\Controller\ExportController::exportToCSV($query, true);
                 break;
             case 'excel':
                 \Sng\Recordsmanager\Controller\ExportController::exportToEXCEL($query);
@@ -109,7 +115,8 @@ class Tx_Recordsmanager_Eid_Index {
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToJson(\Sng\Recordsmanager\Utility\Query $query) {
+    public function exportToJson(\Sng\Recordsmanager\Utility\Query $query)
+    {
         echo json_encode($query->getRows());
     }
 
@@ -118,10 +125,11 @@ class Tx_Recordsmanager_Eid_Index {
      *
      * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery() {
+    public function buildQuery()
+    {
         $queryObject = new \Sng\Recordsmanager\Utility\Query();
         $queryObject->setConfig($this->currentConfig);
-        $queryObject->setExportMode(TRUE);
+        $queryObject->setExportMode(true);
         $queryObject->buildQuery();
         return $queryObject;
     }
@@ -129,9 +137,10 @@ class Tx_Recordsmanager_Eid_Index {
     /**
      * Set the current config record
      */
-    public function setCurrentConfig($eidkey) {
+    public function setCurrentConfig($eidkey)
+    {
         $protect = 'mysqli_real_escape_string';
-        $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'type=3 AND deleted=0 AND eidkey="' . mysqli_real_escape_string($GLOBALS['TYPO3_DB']->getDatabaseHandle(),$eidkey) . '"');
+        $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'type=3 AND deleted=0 AND eidkey="' . mysqli_real_escape_string($GLOBALS['TYPO3_DB']->getDatabaseHandle(), $eidkey) . '"');
         if (empty($this->currentConfig)) {
             die('You need to specify a CORRECT tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
         }
@@ -140,14 +149,17 @@ class Tx_Recordsmanager_Eid_Index {
     /**
      * Init the TSFE array
      */
-    protected function initTSFE() {
-        $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
+    protected function initTSFE()
+    {
+        $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
+        \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
         $GLOBALS['TSFE']->initFEuser();
         $GLOBALS['TSFE']->set_no_cache();
         $GLOBALS['TSFE']->checkAlternativeIdMethods();
         $GLOBALS['TSFE']->determineId();
         $GLOBALS['TSFE']->initTemplate();
         $GLOBALS['TSFE']->getConfigArray();
+        \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
         $GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
         $GLOBALS['TSFE']->settingLanguage();
         $GLOBALS['TSFE']->settingLocale();

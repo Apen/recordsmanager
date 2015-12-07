@@ -3,7 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "recordsmanager".
  *
- * Auto generated 04-12-2015 15:42
+ * Auto generated 07-12-2015 15:10
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
@@ -15,16 +15,12 @@ $EM_CONF[$_EXTKEY] = array (
 	'description' => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
 	'category' => 'module',
 	'shy' => true,
-	'version' => '1.2.1',
-	'dependencies' => '',
-	'conflicts' => '',
+	'version' => '1.3.0',
 	'priority' => '',
 	'loadOrder' => '',
-	'TYPO3_version' => '6.2.0-7.3.99',
-	'PHP_version' => '5.0.0-5.6.99',
 	'module' => '',
 	'state' => 'stable',
-	'uploadfolder' => true,
+	'uploadfolder' => false,
 	'createDirs' => '',
 	'modify_tables' => '',
 	'clearcacheonload' => true,
@@ -34,6 +30,19 @@ $EM_CONF[$_EXTKEY] = array (
 	'author_company' => '',
 	'CGLcompliance' => NULL,
 	'CGLcompliance_note' => NULL,
+	'constraints' => 
+	array (
+		'depends' => 
+		array (
+			'TYPO3' => '6.2.0-7.6.99',
+		),
+		'conflicts' => 
+		array (
+		),
+		'suggests' => 
+		array (
+		),
+	),
 );
 
 ?>

@@ -25,7 +25,8 @@ namespace Sng\Recordsmanager\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Misc {
+class Misc
+{
 
     /**
      * This function return an array with ###value###
@@ -34,7 +35,8 @@ class Misc {
      * @param string $markerPrefix
      * @return array
      */
-    public static function convertToMarkerArray($array, $markerPrefix = '') {
+    public static function convertToMarkerArray($array, $markerPrefix = '')
+    {
         $temp = array();
         foreach ($array as $key => $val) {
             $temp[self::convertToMarker($key, $markerPrefix)] = $val;
@@ -49,7 +51,8 @@ class Misc {
      * @param string $markerPrefix
      * @return string
      */
-    public static function convertToMarker($value, $markerPrefix = '') {
+    public static function convertToMarker($value, $markerPrefix = '')
+    {
         return '###' . strtoupper($markerPrefix . $value) . '###';
     }
 
@@ -60,7 +63,8 @@ class Misc {
      * @param string $content
      * @return array
      */
-    public static function loadTS($conf, $content) {
+    public static function loadTS($conf, $content)
+    {
         /** @var $tsparser t3lib_tsparser */
         $tsparser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
         // Copy conf into existing setup
@@ -77,14 +81,15 @@ class Misc {
      * @param array $conf
      * @return array
      */
-    public static function loadAndExecTS($conf) {
+    public static function loadAndExecTS($conf)
+    {
         $tsArray = self::loadTS(array(), $conf);
         $datas = array();
         $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         foreach ($tsArray as $tsKey => $tsValue) {
             if (substr($tsKey, -1) == '.') {
                 $field = substr($tsKey, 0, -1);
-                $lCobj->start(NULL, NULL);
+                $lCobj->start(null, null);
                 $datas[$field] = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
             }
         }
@@ -97,7 +102,8 @@ class Misc {
      * @param    string $verNumberStr number on format x.x.x
      * @return   integer   Integer version of version number (where each part can count to 999)
      */
-    public static function intFromVer($verNumberStr) {
+    public static function intFromVer($verNumberStr)
+    {
         $verParts = explode('.', $verNumberStr);
         return intval((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
     }

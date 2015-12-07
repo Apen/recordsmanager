@@ -6,7 +6,7 @@ namespace Sng\Recordsmanager\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
+ *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,7 +26,8 @@ namespace Sng\Recordsmanager\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
     protected $currentConfig;
 
     /**
@@ -34,11 +35,12 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return void
      */
-    public function indexAction() {
+    public function indexAction()
+    {
         $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(1);
 
         if (empty($allConfigs)) {
-            return NULL;
+            return null;
         }
 
         $this->currentConfig = $allConfigs[0];
@@ -104,15 +106,17 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return string
      */
-    public function getReturnUrl() {
+    public function getReturnUrl()
+    {
         $arguments = $this->request->getArguments();
-        return $this->uriBuilder->reset()->setAddQueryString(TRUE)->uriFor();
+        return $this->uriBuilder->reset()->setAddQueryString(true)->uriFor();
     }
 
     /**
      * Set the current config record
      */
-    public function setCurrentConfig() {
+    public function setCurrentConfig()
+    {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {
             $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'uid=' . intval($arguments['menuitem']));
@@ -124,7 +128,8 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param int $id
      */
-    public function redirectToForm($id) {
+    public function redirectToForm($id)
+    {
         $arguments = $this->request->getArguments();
         $returnUrl = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
         if (!empty($arguments['menuitem'])) {
