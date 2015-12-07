@@ -25,7 +25,8 @@ namespace Sng\Recordsmanager\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
     protected $currentConfig;
 
     /**
@@ -33,16 +34,22 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return void
      */
-    public function indexAction() {
+    public function indexAction()
+    {
         $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(2);
+
+        if (empty($allConfigs)) {
+            return null;
+        }
+
         $this->currentConfig = $allConfigs[0];
         $this->setCurrentConfig();
 
         $this->buildCalendar();
         $query = $this->buildQuery();
-        $query->setCheckPids(FALSE);
+        $query->setCheckPids(false);
         $query->setConfig($this->currentConfig);
-        $query->setExportMode(TRUE);
+        $query->setExportMode(true);
         $query->execQuery();
         $this->exportRecords($query);
 
@@ -62,7 +69,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     /**
      * Build the calendar (load js and send datas)
      */
-    public function buildCalendar() {
+    public function buildCalendar()
+    {
         $arguments = $this->request->getArguments();
         $doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
         $pageRenderer = $doc->getPageRenderer();
@@ -95,7 +103,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return array
      */
-    public function getExportUrls() {
+    public function getExportUrls()
+    {
         $urlsExport = array();
         $modes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->currentConfig['exportmode']);
         foreach ($modes as $mode) {
@@ -109,7 +118,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return string
      */
-    public function getExportUrl($mode) {
+    public function getExportUrl($mode)
+    {
         $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
         $arguments = $this->request->getArguments();
         $urlArguments = array();
@@ -120,7 +130,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (!empty($arguments['enddate'])) {
             $urlArguments[$argKey]['enddate'] = $arguments['enddate'];
         }
-        return $this->uriBuilder->reset()->setAddQueryString(TRUE)->setArguments($urlArguments)->uriFor();
+        return $this->uriBuilder->reset()->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
     }
 
     /**
@@ -128,7 +138,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportRecords($query) {
+    public function exportRecords($query)
+    {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['download'])) {
             switch ($arguments['download']) {
@@ -150,11 +161,12 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery() {
+    public function buildQuery()
+    {
         $arguments = $this->request->getArguments();
 
         $filterField = 'tstamp';
-        if (empty($row['exportfilterfield']) !== TRUE) {
+        if (empty($row['exportfilterfield']) !== true) {
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
@@ -186,9 +198,10 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToXML(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = FALSE) {
+    public function exportToXML(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = false)
+    {
         $xmlData = self::exportRecordsToXML($query->getQuery());
-        if ($forceDisplay === FALSE) {
+        if ($forceDisplay === false) {
             $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xml';
             $mimeType = 'application/octet-stream';
             header('Content-Type: ' . $mimeType);
@@ -205,17 +218,18 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToCSV(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = FALSE) {
+    public function exportToCSV(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = false)
+    {
         $rowArr = array();
         $rows = array_merge(array($query->getHeaders()), $query->getRows());
 
         foreach ($rows as $row) {
             // utf8 with BOM for Excel
-            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(\TYPO3\CMS\Core\Utility\GeneralUtility::csvValues($row), TRUE));
+            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(\TYPO3\CMS\Core\Utility\GeneralUtility::csvValues($row), true));
         }
 
         if (count($rowArr)) {
-            if ($forceDisplay === FALSE) {
+            if ($forceDisplay === false) {
                 $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
                 $mimeType = 'application/octet-stream';
                 header('Content-Type: ' . $mimeType);
@@ -233,7 +247,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToEXCEL(\Sng\Recordsmanager\Utility\Query $query) {
+    public function exportToEXCEL(\Sng\Recordsmanager\Utility\Query $query)
+    {
         $rows = array_merge(array($query->getHeaders()), $query->getRows());
 
         $dirName = PATH_site . 'typo3temp/';
@@ -283,7 +298,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * @param array $query
      * @return string
      */
-    public function exportRecordsToXML($query) {
+    public function exportRecordsToXML($query)
+    {
         $xmlObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\\Recordsmanager\\Utility\\Xml', 'typo3_export');
         $xmlObj->setRecFields($query['FROM'], $query['SELECT']);
         $xmlObj->renderHeader();
@@ -300,7 +316,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * @param $string
      * @return string
      */
-    public function cleanString($string, $deleteLr = FALSE) {
+    public function cleanString($string, $deleteLr = false)
+    {
         $quotes = array(
             "\xe2\x82\xac" => "\xc2\x80", /* EURO SIGN */
             "\xe2\x80\x9a" => "\xc2\x82", /* SINGLE LOW-9 QUOTATION MARK */
@@ -332,7 +349,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         );
         $string = strtr($string, $quotes);
         $string = utf8_decode($string);
-        if ($deleteLr === TRUE) {
+        if ($deleteLr === true) {
             $string = str_replace(array("\r\n", "\n\r", "\n", "\r"), " ", $string);
         }
         return $string;
@@ -341,7 +358,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     /**
      * Set the current config record
      */
-    public function setCurrentConfig() {
+    public function setCurrentConfig()
+    {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {
             $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'uid=' . intval($arguments['menuitem']));

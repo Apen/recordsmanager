@@ -25,10 +25,11 @@ namespace Sng\Recordsmanager\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Query {
+class Query
+{
     protected $query;
-    protected $checkPids = TRUE;
-    protected $exportMode = FALSE;
+    protected $checkPids = true;
+    protected $exportMode = false;
     protected $headers;
     protected $rows;
     protected $config;
@@ -38,8 +39,9 @@ class Query {
      *
      * @return array
      */
-    public function getQuery() {
-        if ($this->checkPids === TRUE && TYPO3_MODE == 'BE') {
+    public function getQuery()
+    {
+        if ($this->checkPids === true && TYPO3_MODE == 'BE') {
             $pids = $this->checkPids();
             if (count($pids) > 0) {
                 $this->query['WHERE'] .= ' AND pid IN (' . implode(',', $pids) . ')';
@@ -55,7 +57,8 @@ class Query {
     /**
      * Build the query (fill the query array)
      */
-    public function buildQuery() {
+    public function buildQuery()
+    {
         if (!empty($this->config['sqlfields'])) {
             // we need to have the uid
             if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->config['sqlfields'], 'uid')) {
@@ -73,25 +76,30 @@ class Query {
         $this->query['GROUPBY'] = ($this->config['extragroupby'] != '') ? $this->config['extragroupby'] : '';
         $this->query['ORDERBY'] = ($this->config['extraorderby'] != '') ? $this->config['extraorderby'] : '';
         $this->query['LIMIT'] = ($this->config['extralimit'] != '') ? $this->config['extralimit'] : '';
+
+        if (!isset($GLOBALS['TCA'][$this->config['sqltable']])) {
+            \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
+        }
     }
 
     /**
      * Exec the query (fill headers en rows arrays)
      */
-    public function execQuery() {
+    public function execQuery()
+    {
         $res = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($this->getQuery());
-        $first = TRUE;
+        $first = true;
         $rows = array();
         while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             if ($first) {
-                $first = FALSE;
+                $first = false;
                 $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
                 if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
                     $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
                     $powermailHeaders = \Sng\Recordsmanager\Utility\Powermail::getHeadersFromRow(\Sng\Recordsmanager\Utility\Powermail::getLastRecord($this->query));
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
-                if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
+                if (($this->exportMode === true) && ($this->config['type'] == 3)) {
                     $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats']));
                     $this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
                 }
@@ -101,7 +109,7 @@ class Query {
                 $records = array_merge($records, \Sng\Recordsmanager\Utility\Powermail::getRow($records, $powermailHeaders));
                 $records = array_intersect_key($records, $this->headers);
             }
-            if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
+            if (($this->exportMode === true) && ($this->config['type'] == 3)) {
                 $arrayToEncode = array();
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
                 $arrayToEncode['uidrecord'] = $records['uid'];
@@ -122,12 +130,13 @@ class Query {
      *
      * @return array
      */
-    public function checkPids() {
+    public function checkPids()
+    {
         $pids = array();
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT pid', $this->query['FROM'], $this->query['WHERE'], $this->query['GROUPBY'], $this->query['ORDERBY'], $this->query['LIMIT']);
         while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
-            if ($pageinfo !== FALSE) {
+            if ($pageinfo !== false) {
                 $pids[] = $row['pid'];
             }
         }
@@ -135,87 +144,108 @@ class Query {
         return $pids;
     }
 
-    public function setConfig($config) {
+    public function setConfig($config)
+    {
         $this->config = $config;
     }
 
-    public function getConfig() {
+    public function getConfig()
+    {
         return $this->config;
     }
 
-    public function setCheckPids($checkPids) {
+    public function setCheckPids($checkPids)
+    {
         $this->checkPids = $checkPids;
     }
 
-    public function getCheckPids() {
+    public function getCheckPids()
+    {
         return $this->checkPids;
     }
 
-    public function setQuery($query) {
+    public function setQuery($query)
+    {
         $this->query = $query;
     }
 
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->headers;
     }
 
-    public function getRows() {
+    public function getRows()
+    {
         return $this->rows;
     }
 
-    public function getNbRows() {
+    public function getNbRows()
+    {
         return count($this->rows);
     }
 
-    public function setSelect($value) {
+    public function setSelect($value)
+    {
         $this->query['SELECT'] = $value;
     }
 
-    public function getSelect() {
+    public function getSelect()
+    {
         return $this->query['SELECT'];
     }
 
-    public function setFrom($value) {
+    public function setFrom($value)
+    {
         $this->query['FROM'] = $value;
     }
 
-    public function getFrom() {
+    public function getFrom()
+    {
         return $this->query['FROM'];
     }
 
-    public function setWhere($value) {
+    public function setWhere($value)
+    {
         $this->query['WHERE'] = $value;
     }
 
-    public function getWhere() {
+    public function getWhere()
+    {
         return $this->query['WHERE'];
     }
 
-    public function setGroupBy($value) {
+    public function setGroupBy($value)
+    {
         $this->query['GROUPBY'] = $value;
     }
 
-    public function getGroupBy() {
+    public function getGroupBy()
+    {
         return $this->query['GROUPBY'];
     }
 
-    public function setOrderBy($value) {
+    public function setOrderBy($value)
+    {
         $this->query['ORDERBY'] = $value;
     }
 
-    public function getOrderBy() {
+    public function getOrderBy()
+    {
         return $this->query['ORDERBY'];
     }
 
-    public function setLimit($value) {
+    public function setLimit($value)
+    {
         $this->query['LIMIT'] = $value;
     }
 
-    public function getLimit() {
+    public function getLimit()
+    {
         return $this->query['LIMIT'];
     }
 
-    public function setExportMode($exportMode) {
+    public function setExportMode($exportMode)
+    {
         $this->exportMode = $exportMode;
     }
 

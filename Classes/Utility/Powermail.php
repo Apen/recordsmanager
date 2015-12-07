@@ -25,7 +25,8 @@ namespace Sng\Recordsmanager\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Powermail {
+class Powermail
+{
 
     /**
      * Get header from a powermail record
@@ -33,7 +34,8 @@ class Powermail {
      * @param array $row
      * @return array
      */
-    public function getHeadersFromRow($row) {
+    public function getHeadersFromRow($row)
+    {
         $headers = array();
         $piVars = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($row['piVars'], 'piVars');
         foreach ($piVars as $key => $value) {
@@ -48,7 +50,8 @@ class Powermail {
      * @param $query
      * @return array
      */
-    public function getLastRecord($query) {
+    public function getLastRecord($query)
+    {
         $query['ORDERBY'] = 'crdate DESC';
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', $query['FROM'], $query['WHERE'], $query['GROUPBY'], $query['ORDERBY'], $query['LIMIT']);
     }
@@ -60,7 +63,8 @@ class Powermail {
      * @param $headers
      * @return array
      */
-    public function getRow($row, $headers) {
+    public function getRow($row, $headers)
+    {
         $currentRow = array();
         $piVars = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($row['piVars'], 'piVars');
         foreach ($headers as $header => $label) {
@@ -80,9 +84,10 @@ class Powermail {
      * @param    string $value I have no dam idea about this var
      * @return    string
      */
-    public function getLabelfromBackend($name, $value) {
+    public function getLabelfromBackend($name, $value)
+    {
         // $name like uid55
-        if (strpos($name, 'uid') !== FALSE) {
+        if (strpos($name, 'uid') !== false) {
             $uid = str_replace('uid', '', $name);
 
             $select = 'f.title';
@@ -138,15 +143,17 @@ class Powermail {
                 return $row['title'];
 
                 // If no title was found return
-            } else if ($uid < 100000) {
-                return 'POWERMAIL ERROR: No title to current field found in DB';
+            } else {
+                if ($uid < 100000) {
+                    return 'POWERMAIL ERROR: No title to current field found in DB';
+                }
             }
 
             // No uid55 so return $name
         } else {
             return $name;
         }
-        return NULL;
+        return null;
     }
 
 }

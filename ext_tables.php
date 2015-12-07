@@ -22,7 +22,8 @@ $TCA['tx_recordsmanager_config'] = array(
             'disabled' => 'hidden',
         ),
         'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/Tca/Config.php',
-        'iconfile'          => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
+        //'iconfile'          => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
+        'iconfile'          => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
     ),
 );
 
