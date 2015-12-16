@@ -81,7 +81,7 @@ class Misc
      * @param array $conf
      * @return array
      */
-    public static function loadAndExecTS($conf)
+    public static function loadAndExecTS($conf, $data = array(), $table = '')
     {
         $tsArray = self::loadTS(array(), $conf);
         $datas = array();
@@ -89,7 +89,7 @@ class Misc
         foreach ($tsArray as $tsKey => $tsValue) {
             if (substr($tsKey, -1) == '.') {
                 $field = substr($tsKey, 0, -1);
-                $lCobj->start(null, null);
+                $lCobj->start($data, $table);
                 $datas[$field] = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
             }
         }

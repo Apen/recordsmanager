@@ -135,7 +135,11 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (!empty($arguments['menuitem'])) {
             $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
         }
-        $editLink = 'alt_doc.php?returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
+        if (version_compare(TYPO3_version, '7.0.0', '>=')) {
+            $editLink = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
+        } else {
+            $editLink = 'alt_doc.php?returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
+        }
         // disabledFields
         $this->disableFields = implode(',', \tx_recordsmanager_flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {

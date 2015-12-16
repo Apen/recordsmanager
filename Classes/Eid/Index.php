@@ -96,16 +96,17 @@ class Tx_Recordsmanager_Eid_Index
         $query->execQuery();
         switch ($mode) {
             case 'xml':
-                \Sng\Recordsmanager\Controller\ExportController::exportToXML($query, true);
+                Tx_Recordsmanager_Controller_ExportController::exportToXML($query, TRUE);
                 break;
             case 'csv':
-                \Sng\Recordsmanager\Controller\ExportController::exportToCSV($query, true);
+                Tx_Recordsmanager_Controller_ExportController::exportToCSV($query, TRUE);
                 break;
             case 'excel':
-                \Sng\Recordsmanager\Controller\ExportController::exportToEXCEL($query);
+                Tx_Recordsmanager_Controller_ExportController::exportToEXCEL($query);
                 break;
             case 'json':
                 $this->exportToJson($query);
+                header('Content-Type: application/json');
                 break;
         }
     }
