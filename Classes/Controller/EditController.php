@@ -54,6 +54,7 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->view->assign('menuitems', $allConfigs);
         $this->view->assign('returnurl', rawurlencode($this->getReturnUrl()));
         $this->view->assign('deleteurl', $this->getDeleteUrl());
+        $this->view->assign('baseediturl', $this->getBaseEditUrl());
         $this->view->assign('disableFields', implode(',', \tx_recordsmanager_flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
     }
 
@@ -103,6 +104,21 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         }
         return $deleteUrl;
     }
+
+    /**
+     * Get url to edit a record
+     *
+     * @return string
+     */
+    public function getBaseEditUrl()
+    {
+        if (version_compare(TYPO3_version, '7.0.0', '>=')) {
+            return \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&';
+        } else {
+            return 'alt_doc.php?';
+        }
+    }
+
 
     /**
      * Set the current config record

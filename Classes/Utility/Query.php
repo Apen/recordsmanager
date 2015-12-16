@@ -100,7 +100,7 @@ class Query
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
                 if (($this->exportMode === true) && ($this->config['type'] == 3)) {
-                    $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats']));
+                    $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
                     $this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
                 }
             }
@@ -118,7 +118,7 @@ class Query
                 // add special typoscript value
                 $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);
                 $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
-                $records = array_merge($records, \Sng\Recordsmanager\Utility\Misc::loadAndExecTS($extraTs));
+                $records = array_merge($records, \Sng\Recordsmanager\Utility\Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
             }
             $this->rows[] = $records;
         }
