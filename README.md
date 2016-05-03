@@ -21,13 +21,7 @@ This extension work with TYPO3 6.2.x-7.6.x.
 
 ![](https://raw.githubusercontent.com/Apen/recordsmanager/master/Resources/Public/Images/export.png)
 
-## Installation
 
-Download and install as TYPO3 extension.
-
->TER url : http://typo3.org/extensions/repository/view/recordsmanager
-
->Releases : https://github.com/Apen/recordsmanager/releases
 
 ## Settings
 
