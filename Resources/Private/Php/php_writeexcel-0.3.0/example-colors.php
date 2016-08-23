@@ -3,7 +3,7 @@
 # Demonstrates Spreadsheet::WriteExcel's named colors and the Excel
 # color palette.
 #
-# reverse('©'), March 2002, John McNamara, jmcnamara@cpan.org
+# reverse('ï¿½'), March 2002, John McNamara, jmcnamara@cpan.org
 
 # PHP port by Johann Hanne, 2005-11-01
 
