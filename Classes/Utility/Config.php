@@ -116,7 +116,7 @@ class Config
                 }
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' && !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE'])) {
 
-                    $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\\TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+                    $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
                     $lCobj->start(array(), '');
                     $record[$fieldName] = $lCobj->parseFunc($record[$fieldName], array(), '< lib.parseFunc_RTE');
                 }
