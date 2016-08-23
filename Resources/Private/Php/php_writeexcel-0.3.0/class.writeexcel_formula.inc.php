@@ -1468,7 +1468,7 @@ function _func()
             }
  else {
                 trigger_error("Sintactic error: coma expected in ".
-                                  "function $function, {$num_args}º arg", E_USER_ERROR);
+                                  "function $function, {$num_args}ï¿½ arg", E_USER_ERROR);
             }
             $result2 = $this->_condition();
             if ($this->isError($result2)) {

@@ -34,7 +34,7 @@ class Config
      * @param int $type
      * @return array
      */
-    public function getAllConfigs($type)
+    public static function getAllConfigs($type)
     {
         $items = array();
         $allItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'tx_recordsmanager_config', 'type=' . $type . ' AND deleted=0 AND hidden=0', '', 'sorting');
@@ -58,7 +58,7 @@ class Config
      * @param string $table
      * @return array
      */
-    public function getResultRowTitles($row, $table)
+    public static function getResultRowTitles($row, $table)
     {
         $tableHeader = array();
         $conf = $GLOBALS['TCA'][$table];
@@ -75,7 +75,7 @@ class Config
      * @param string $table
      * @return array
      */
-    public function getResultRow($row, $table, $excludeFields = '', $export = false)
+    public static function getResultRow($row, $table, $excludeFields = '', $export = false)
     {
         $record = array();
         foreach ($row as $fieldName => $fieldValue) {

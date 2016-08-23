@@ -2,7 +2,7 @@
 
 # Example of using the WriteExcel module to create worksheet panes.
 #
-# reverse('©'), May 2001, John McNamara, jmcnamara@cpan.org
+# reverse('ï¿½'), May 2001, John McNamara, jmcnamara@cpan.org
 
 # PHP port by Johann Hanne, 2005-11-01
 
