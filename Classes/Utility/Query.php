@@ -115,6 +115,8 @@ class Query
                 $arrayToEncode['uidrecord'] = $records['uid'];
                 $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
+            }
+            if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
                 // add special typoscript value
                 $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);
                 $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);

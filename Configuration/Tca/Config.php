@@ -197,7 +197,7 @@ $TCA['tx_recordsmanager_config'] = array(
     'types'       => array(
         '0' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfields, sqlfieldsinsert, extrawhere, extragroupby, extraorderby, extralimit, permsgroup'),
         '1' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfieldsinsert, insertdefaultpid, insertchoosepid, permsgroup'),
-        '2' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, exportmode, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, exportfilterfield, dateformat, permsgroup, excludefields'),
+        '2' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, exportmode, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, exportfilterfield, dateformat, permsgroup, excludefields, extrats'),
         '3' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, eidkey, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, dateformat, excludefields, extrats')
     ),
     'palettes'    => array(
