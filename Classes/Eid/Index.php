@@ -96,10 +96,10 @@ class Tx_Recordsmanager_Eid_Index
         $query->execQuery();
         switch ($mode) {
             case 'xml':
-                \Sng\Recordsmanager\Controller\ExportController::exportToXML($query, TRUE);
+                \Sng\Recordsmanager\Controller\ExportController::exportToXML($query, true);
                 break;
             case 'csv':
-                \Sng\Recordsmanager\Controller\ExportController::exportToCSV($query, TRUE);
+                \Sng\Recordsmanager\Controller\ExportController::exportToCSV($query, true);
                 break;
             case 'excel':
                 \Sng\Recordsmanager\Controller\ExportController::exportToEXCEL($query);
@@ -153,6 +153,7 @@ class Tx_Recordsmanager_Eid_Index
     protected function initTSFE()
     {
         $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
+        \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
         \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
         $GLOBALS['TSFE']->initFEuser();
         $GLOBALS['TSFE']->set_no_cache();

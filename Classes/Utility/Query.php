@@ -48,7 +48,7 @@ class Query
             }
         }
 
-        if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+        if ($this->isPowermail1() || $this->isPowermail2()) {
             $this->query['SELECT'] = '*';
         }
         return $this->query;
@@ -90,23 +90,45 @@ class Query
         $res = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($this->getQuery());
         $first = true;
         $rows = array();
+        if ($this->isPowermail2()) {
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
+        }
         while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            if ($this->isPowermail2()) {
+                $mail = $mailRepository->findByUid($row['uid']);
+            }
             if ($first) {
                 $first = false;
                 $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
-                if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+                if ($this->isPowermail1()) {
                     $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
                     $powermailHeaders = \Sng\Recordsmanager\Utility\Powermail::getHeadersFromRow(\Sng\Recordsmanager\Utility\Powermail::getLastRecord($this->query));
+                    $this->headers = array_merge($this->headers, $powermailHeaders);
+                }
+                if ($this->isPowermail2()) {
+                    $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
+                    $powermailHeaders = array();
+                    foreach ($mail->getAnswers() as $answer) {
+                        $powermailHeaders [] = $answer->getField()->getTitle();
+                    }
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
                 if (($this->exportMode === true) && ($this->config['type'] == 3)) {
                     $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
                     $this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
                 }
+
             }
             $records = \Sng\Recordsmanager\Utility\Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
-            if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+            if ($this->isPowermail1()) {
                 $records = array_merge($records, \Sng\Recordsmanager\Utility\Powermail::getRow($records, $powermailHeaders));
+                $records = array_intersect_key($records, $this->headers);
+            }
+            if ($this->isPowermail2()) {
+                foreach ($mail->getAnswers() as $answer) {
+                    $records [] = $answer->getValue();
+                }
                 $records = array_intersect_key($records, $this->headers);
             }
             if (($this->exportMode === true) && ($this->config['type'] == 3)) {
@@ -142,6 +164,27 @@ class Query
         }
         $GLOBALS['TYPO3_DB']->sql_free_result($res);
         return $pids;
+    }
+
+    public function isPowermail1()
+    {
+        if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isPowermail2()
+    {
+        if (
+            ($this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
+            \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function setConfig($config)
