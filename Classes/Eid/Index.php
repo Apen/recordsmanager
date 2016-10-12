@@ -39,7 +39,6 @@ class Tx_Recordsmanager_Eid_Index
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Misc.php');
         require_once('typo3conf/ext/recordsmanager/Classes/Controller/ExportController.php');
         $this->initTSFE();
-        \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
     }
 
     /**
@@ -137,10 +136,11 @@ class Tx_Recordsmanager_Eid_Index
 
     /**
      * Set the current config record
+     *
+     * @param string $eidkey
      */
     public function setCurrentConfig($eidkey)
     {
-        $protect = 'mysqli_real_escape_string';
         $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'type=3 AND deleted=0 AND eidkey="' . mysqli_real_escape_string($GLOBALS['TYPO3_DB']->getDatabaseHandle(), $eidkey) . '"');
         if (empty($this->currentConfig)) {
             die('You need to specify a CORRECT tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
