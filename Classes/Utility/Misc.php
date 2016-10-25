@@ -66,7 +66,7 @@ class Misc
     public static function loadTS($conf, $content)
     {
         /** @var $tsparser t3lib_tsparser */
-        $tsparser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
+        $tsparser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
         // Copy conf into existing setup
         $tsparser->setup = $conf;
         // Parse the new Typoscript
@@ -83,9 +83,11 @@ class Misc
      */
     public static function loadAndExecTS($conf, $data = array(), $table = '')
     {
+        \TYPO3\CMS\Extbase\Utility\FrontendSimulatorUtility::simulateFrontendEnvironment();
+        
         $tsArray = self::loadTS(array(), $conf);
         $datas = array();
-        $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
         foreach ($tsArray as $tsKey => $tsValue) {
             if (substr($tsKey, -1) == '.') {
                 $field = substr($tsKey, 0, -1);
