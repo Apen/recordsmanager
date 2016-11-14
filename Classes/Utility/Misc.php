@@ -89,8 +89,32 @@ class Misc
         foreach ($tsArray as $tsKey => $tsValue) {
             if (substr($tsKey, -1) == '.') {
                 $field = substr($tsKey, 0, -1);
-                $lCobj->start($datas, $table);
-                $datas[$field] = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
+                $lCobj->start($data, $table);
+                if (empty($tsValue['sngfunc'])) {
+                    $datas[$field] = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
+                } else {
+                    $sngfuncs = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $tsValue['sngfunc']);
+                    $value = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
+                    foreach ($sngfuncs as $sngfunc) {
+                        switch ($sngfunc) {
+                            case 'intval':
+                                if (is_array($value)) {
+                                    foreach ($value as $arrayKey => $arrayValue) {
+                                        $value[$arrayKey] = intval($arrayValue);
+                                    }
+                                } else {
+                                    $value = intval($value);
+                                }
+                                break;
+                            case 'trimexplode':
+                                $value = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode($tsValue['sngfunc.']['trimexplode.']['token'], $value);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    $datas[$field] = $value;
+                }
             }
         }
         return $datas;
