@@ -156,9 +156,20 @@ discipline {
 }
 discipline.wrap = [|]
 
-lieu = TEXT
-lieu.data = field:tx_sacparisnews_lieu
-lieu.wrap = [|]
+disciplinejson = TEXT
+disciplinejson {
+    value = ###CATEGORY###
+    sngfunc = trimexplode,intval
+    sngfunc.trimexplode.token = ;
+}
+
+doktypejson= TEXT
+doktypejson{
+    value = {field:doktype}
+    value.insertData = 1
+    sngfunc = trimexplode,intval
+    sngfunc.trimexplode.token = ;
+}
 
 link = TEXT
 link.typolink {
