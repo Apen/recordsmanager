@@ -48,6 +48,23 @@ class Tx_Recordsmanager_Eid_Index
     {
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
+        if (!empty($this->currentConfig['authlogin']) && !empty($this->currentConfig['authpassword'])) {
+            $userAllowed = false;
+            if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+                if (
+                    ($_SERVER['PHP_AUTH_USER'] == $this->currentConfig['authlogin']) &&
+                    ($_SERVER['PHP_AUTH_PW'] == $this->currentConfig['authpassword'])
+                ) {
+                    $userAllowed = true;
+                }
+            }
+            if ($userAllowed === false) {
+                // active HTTP auth
+                header('WWW-Authenticate: Basic realm="My Realm"');
+                header('HTTP/1.0 401 Unauthorized');
+                exit;
+            }
+        }
         $this->exportRecords($query, $this->getFormat());
     }
 
