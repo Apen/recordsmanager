@@ -90,6 +90,10 @@ class Query
         $res = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($this->getQuery());
         $first = true;
         $rows = array();
+        $fieldsToHide = array();
+        if (!empty($this->config['hidefields'])) {
+            $fieldsToHide = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['hidefields']);
+        }
         if ($this->isPowermail2()) {
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
@@ -141,6 +145,12 @@ class Query
                 $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);
                 $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
                 $records = array_merge($records, \Sng\Recordsmanager\Utility\Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
+                // hide fields if necessary
+                if (!empty($fieldsToHide)) {
+                    foreach ($fieldsToHide as $fieldToHide) {
+                        unset($records[$fieldToHide]);
+                    }
+                }
             }
             $this->rows[] = $records;
         }

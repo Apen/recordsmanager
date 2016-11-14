@@ -23,6 +23,7 @@ CREATE TABLE tx_recordsmanager_config (
   excludefields tinytext,
 	exportfilterfield text,
 	extrats text,
+	hidefields tinytext,
 	dateformat tinyint(4) DEFAULT '0' NOT NULL,
 	sqlfieldsinsert text,
 	permsgroup text,

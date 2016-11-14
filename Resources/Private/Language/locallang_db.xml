@@ -35,6 +35,7 @@
             <label index="tx_recordsmanager_config.excludefields">Field list not converted by the TCA</label>
             <label index="tx_recordsmanager_config.authlogin">HTTP Auth login</label>
             <label index="tx_recordsmanager_config.authpassword">HTTP Auth pasword</label>
+            <label index="tx_recordsmanager_config.hidefields">Fields to hide in the export (like uid for example)</label>
         </languageKey>
         <languageKey index="fr" type="array">
             <label index="tx_recordsmanager_config">Configuration de "records manager"</label>
