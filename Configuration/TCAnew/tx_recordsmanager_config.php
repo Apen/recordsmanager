@@ -3,8 +3,26 @@ if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
 
-$TCA['tx_recordsmanager_config'] = array(
-    'ctrl'        => $TCA['tx_recordsmanager_config']['ctrl'],
+require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('recordsmanager') . 'Resources/Private/Php/class.tx_recordsmanager_flexfill.php');
+
+$tx_recordsmanager_config = array(
+    'ctrl'        => array(
+        'title'          => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config',
+        'label'          => 'title',
+        'tstamp'         => 'tstamp',
+        'crdate'         => 'crdate',
+        'cruser_id'      => 'cruser_id',
+        'adminOnly'      => 1,
+        'rootLevel'      => -1,
+        'type'           => 'type',
+        'sortby'         => 'sorting',
+        'default_sortby' => 'ORDER BY crdate',
+        'delete'         => 'deleted',
+        'enablecolumns'  => array(
+            'disabled' => 'hidden',
+        ),
+        'iconfile'       => 'EXT:recordsmanager/Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
+    ),
     'interface'   => array(
         'showRecordFieldList' => 'hidden,title,type,sqltable,sqlfields,sqlfieldsinsert,perms_group'
     ),
@@ -209,7 +227,7 @@ $TCA['tx_recordsmanager_config'] = array(
                 'size' => '30',
             )
         ),
-        'hidefields'     => array(
+        'hidefields'        => array(
             'exclude' => 0,
             'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.hidefields',
             'config'  => array(
@@ -228,4 +246,5 @@ $TCA['tx_recordsmanager_config'] = array(
         '1' => array('showitem' => '')
     )
 );
-?>
+
+return $tx_recordsmanager_config;
