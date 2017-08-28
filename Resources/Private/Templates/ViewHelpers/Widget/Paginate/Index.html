@@ -1,4 +1,4 @@
-{namespace rm=Tx_Recordsmanager_ViewHelpers}
+{namespace rm=Sng\Recordsmanager\ViewHelpers}
 
 <f:if condition="{configuration.insertAbove}">
     <f:render section="paginator" arguments="{pagination: pagination,configuration:configuration}"/>
@@ -105,10 +105,11 @@
                     </f:if>
                 </f:else>
             </f:if>
+            <f:debug>{pagination}</f:debug>
             <li style="display:inline;">
-                <span class="pageIndicator">{f:translate(key:'LLL:EXT:lang/locallang_mod_web_list.xml:rangeIndicator',arguments:{0:'{pagination.firstPageItem}',1:'{pagination.lastPageItem}'})}
-                    /
-                {f:translate(key:'LLL:EXT:lang/locallang_mod_web_list.xml:pageIndicator',arguments:{0:'{pagination.current}',1:'{pagination.numberOfPages}'})}</span>
+                <span class="pageIndicator">{f:translate(key:'LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:rangeIndicator',arguments:{0:'{pagination.firstPageItem}',1:'{pagination.lastPageItem}'})}
+                   /
+                {f:translate(key:'LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:pageIndicator',arguments:{0:'{pagination.current}',1:'{pagination.numberOfPages}'})}</span>
             </li>
             <f:if condition="{pagination.nextPage}">
                 <f:then>

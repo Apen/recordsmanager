@@ -1,5 +1,18 @@
 <?php
 
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 class tx_recordsmanager_flexfill
 {
     // List of exclude fields that are not process in insert/edit view
@@ -69,7 +82,7 @@ class tx_recordsmanager_flexfill
     /**
      * Get an array with all the field to hide in tceform
      */
-    public function getDiffFieldsFromTable($table, $defaultFields)
+    public static function getDiffFieldsFromTable($table, $defaultFields)
     {
         $fields = array();
         $res = $GLOBALS['TYPO3_DB']->sql_query('SHOW COLUMNS FROM ' . $table);

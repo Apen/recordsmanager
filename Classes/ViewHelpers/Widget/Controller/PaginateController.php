@@ -1,4 +1,7 @@
 <?php
+
+namespace Sng\Recordsmanager\ViewHelpers\Widget\Controller;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -29,25 +32,26 @@
  * @package    TYPO3
  * @subpackage recordsmanager
  */
-class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController {
+class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController
+{
 
     /**
      * @var array
      */
     protected $configuration = array(
         'itemsPerPage'           => 10,
-        'insertAbove'            => FALSE,
-        'insertBelow'            => TRUE,
+        'insertAbove'            => false,
+        'insertBelow'            => true,
         'pagesAfter'             => 3,
         'pagesBefore'            => 3,
-        'lessPages'              => TRUE,
+        'lessPages'              => true,
         'forcedNumberOfLinks'    => 5,
-        'forceFirstPrevNextlast' => FALSE,
-        'showFirstLast'          => TRUE
+        'forceFirstPrevNextlast' => false,
+        'showFirstLast'          => true
     );
 
     /**
-     * @var Tx_Extbase_Persistence_QueryResultInterface
+     * @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     protected $objects;
 
@@ -69,7 +73,7 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
     /**
      * @var boolean
      */
-    protected $lessPages = FALSE;
+    protected $lessPages = false;
 
     /**
      * @var integer
@@ -86,13 +90,19 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
      *
      * @return void
      */
-    public function initializeAction() {
+    public function initializeAction()
+    {
         $this->objects = $this->widgetConfiguration['objects'];
         \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
             $this->configuration,
-            (array)$this->widgetConfiguration['configuration'],
-            TRUE
+            $this->widgetConfiguration['configuration'],
+            true
         );
+
+        if (empty($this->configuration['itemsPerPage'])) {
+            $this->configuration['itemsPerPage'] = 20;
+        }
+
         $this->numberOfPages = ceil(count($this->objects) / (integer)$this->configuration['itemsPerPage']);
         $this->pagesBefore = (integer)$this->configuration['pagesBefore'];
         $this->pagesAfter = (integer)$this->configuration['pagesAfter'];
@@ -106,7 +116,8 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
      *
      * @return void
      */
-    protected function adjustForForcedNumberOfLinks() {
+    protected function adjustForForcedNumberOfLinks()
+    {
         $forcedNumberOfLinks = $this->forcedNumberOfLinks;
         if ($forcedNumberOfLinks > $this->numberOfPages) {
             $forcedNumberOfLinks = $this->numberOfPages;
@@ -137,7 +148,8 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
      * @param integer $currentPage
      * @return void
      */
-    public function indexAction($currentPage = 1) {
+    public function indexAction($currentPage = 1)
+    {
         // set current page
         $this->currentPage = (integer)$currentPage;
         if ($this->currentPage < 1) {
@@ -149,7 +161,7 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
         // modify query
         $itemsPerPage = (integer)$this->configuration['itemsPerPage'];
 
-        if (is_a($this->objects, 'Tx_Extbase_Persistence_QueryResultInterface')) {
+        if (is_a($this->objects, '\TYPO3\CMS\Extbase\Persistence\QueryResultInterface')) {
             $query = $this->objects->getQuery();
 
             // limit should only be used if needed and pagination only if results > itemsPerPage
@@ -163,7 +175,7 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
             $modifiedObjects = $query->execute();
         } else {
             if (empty($this->objects)) {
-                return NULL;
+                return null;
             }
 
             $offset = 0;
@@ -184,7 +196,8 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
      *
      * @return array
      */
-    public function buildPagination() {
+    public function buildPagination()
+    {
         $this->adjustForForcedNumberOfLinks();
 
         $pages = array();
@@ -218,12 +231,12 @@ class Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController extends
 
         // less pages (before current)
         if ($start > 0 && $this->lessPages) {
-            $pagination['lessPages'] = TRUE;
+            $pagination['lessPages'] = true;
         }
 
         // next pages (after current)
         if ($end != $this->numberOfPages && $this->lessPages) {
-            $pagination['morePages'] = TRUE;
+            $pagination['morePages'] = true;
         }
 
         return $pagination;

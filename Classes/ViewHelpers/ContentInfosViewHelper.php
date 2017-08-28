@@ -1,26 +1,19 @@
 <?php
-/***************************************************************
- *  Copyright notice
+
+namespace Sng\Recordsmanager\ViewHelpers;
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015 Yohann CERDAN <cerdanyohann@yahoo.fr>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * ViewHelper to check if a variable is in a list
@@ -31,15 +24,16 @@
  * @package    TYPO3
  * @subpackage AdditionalReports
  */
-class Tx_AdditionalReports_ViewHelpers_ContentInfosViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper {
+class ContentInfosViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
+{
 
-    public function initializeArguments() {
-        $this->registerArgument('item', 'array', 'Current item array', FALSE, NULL);
-        $this->registerArgument('as', 'string', 'Name of the items array', FALSE, NULL);
-        $this->registerArgument('plugin', 'boolean', 'Is it a plugin?', FALSE, NULL);
-        $this->registerArgument('ctype', 'boolean', 'Is it a CType?', FALSE, NULL);
+    public function initializeArguments()
+    {
+        $this->registerArgument('item', 'array', 'Current item array', false, null);
+        $this->registerArgument('as', 'string', 'Name of the items array', false, null);
+        $this->registerArgument('plugin', 'boolean', 'Is it a plugin?', false, null);
+        $this->registerArgument('ctype', 'boolean', 'Is it a CType?', false, null);
     }
-
 
     /**
      * Renders else-child or else-argument if variable $item is in $list
@@ -48,14 +42,15 @@ class Tx_AdditionalReports_ViewHelpers_ContentInfosViewHelper extends \TYPO3\CMS
      * @param string $item
      * @return string
      */
-    public function render() {
+    public function render()
+    {
         $item = $this->arguments['item'];
         $as = $this->arguments['as'];
         $plugin = $this->arguments['plugin'];
         $ctype = $this->arguments['ctype'];
 
         // plugin
-        if ($plugin === TRUE) {
+        if ($plugin === true) {
             foreach ($GLOBALS['TCA']['tt_content']['columns']['list_type']['config']['items'] as $itemKey => $itemValue) {
                 if (trim($itemValue[1]) == $item['list_type']) {
                     preg_match('/EXT:(.*?)\//', $itemValue[0], $ext);
@@ -71,7 +66,7 @@ class Tx_AdditionalReports_ViewHelpers_ContentInfosViewHelper extends \TYPO3\CMS
         }
 
         // CType
-        if ($ctype === TRUE) {
+        if ($ctype === true) {
             foreach ($GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'] as $itemValue) {
                 if ($itemValue[1] != '--div--') {
                     if (trim($itemValue[1]) == $item['CType']) {
