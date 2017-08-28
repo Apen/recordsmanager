@@ -1,4 +1,7 @@
 <?php
+
+namespace Sng\Recordsmanager\ViewHelpers\Widget;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -38,21 +41,21 @@
  * @package    TYPO3
  * @subpackage Recordsmanager
  */
-class Tx_Recordsmanager_ViewHelpers_Widget_PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper
+class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper
 {
 
 	/**
-	 * @var Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController
+	 * @var \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController
 	 */
 	protected $controller;
 
 	/**
 	 * Inject controller
 	 *
-	 * @param Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController $controller
+	 * @param \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller
 	 * @return void
 	 */
-	public function injectController(Tx_Recordsmanager_ViewHelpers_Widget_Controller_PaginateController $controller) {
+	public function injectController(\Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller) {
 		$this->controller = $controller;
 	}
 

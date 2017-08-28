@@ -1,5 +1,7 @@
 <?php
 
+namespace Sng\Recordsmanager\ViewHelpers;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,10 +15,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
 
 /**
  * Displays sprite icon identified by iconName key
@@ -24,38 +24,27 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
  * @author Felix Kopp <felix-source@phorax.com>
  * @internal
  */
-class Tx_Recordsmanager_ViewHelpers_SpriteManagerIconViewHelper extends AbstractViewHelper implements CompilableInterface {
+class SpriteManagerIconViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Prints sprite icon html for $iconName key
-	 *
-	 * @param string $iconName
-	 * @param array $options
-	 * @return string
-	 */
-	public function render($iconName, $options = array()) {
-		return static::renderStatic(
-			array(
-				'iconName' => $iconName,
-				'options' => $options
-			),
-			$this->buildRenderChildrenClosure(),
-			$this->renderingContext
-		);
-	}
+    /**
+     * Plain HTML should be returned, no output escaping allowed
+     *
+     * @var bool
+     */
+    protected $escapeOutput = false;
 
-	/**
-	 * Print sprite icon html for $iconName key
-	 *
-	 * @param array $arguments
-	 * @param \Closure $renderChildrenClosure
-	 * @param RenderingContextInterface $renderingContext
-	 * @return string
-	 */
-	static public function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext) {
-		$iconName = $arguments['iconName'];
-		$options = $arguments['options'];
-		return IconUtility::getSpriteIcon($iconName, $options);
-	}
+    /**
+     * Prints sprite icon html for $iconName key
+     *
+     * @param string $iconName
+     * @param string $size
+     * @return string
+     */
+    public function render($iconName, $size = \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)
+    {
+        $iconFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(IconFactory::class);
+        return $iconFactory->getIcon($iconName, $size);
+    }
 
 }

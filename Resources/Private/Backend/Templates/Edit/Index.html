@@ -1,4 +1,4 @@
-{namespace rm=Tx_Recordsmanager_ViewHelpers}
+{namespace rm=Sng\Recordsmanager\ViewHelpers}
 
 <f:layout name="Default"/>
 
@@ -50,18 +50,16 @@
     </f:if>
 
     <script language="javascript" type="text/javascript">
-        <![CDATA[
         function jumpToUrl(URL) {
             document.location = URL;
         }
-
         function deleteRecord(table, id) {
-            var areyousure = "]]>{f:translate(key:'areyousure') -> f:format.raw()}<![CDATA[";
-            var deleteurl = "]]>{deleteurl -> f:format.raw()}<![CDATA[";
+            var areyousure = "{f:translate(key:'areyousure') -> f:format.raw()}";
+            var deleteurl = "{deleteurl -> f:format.raw()}";
             if (confirm(areyousure)) {
                 jumpToUrl(deleteurl);
             }
             return false;
         }
-        ]]></script>
+        </script>
 </f:section>

@@ -5,28 +5,6 @@ if (!defined('TYPO3_MODE')) {
 
 require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Resources/Private/Php/class.tx_recordsmanager_flexfill.php');
 
-$TCA['tx_recordsmanager_config'] = array(
-    'ctrl' => array(
-        'title'             => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config',
-        'label'             => 'title',
-        'tstamp'            => 'tstamp',
-        'crdate'            => 'crdate',
-        'cruser_id'         => 'cruser_id',
-        'adminOnly'         => 1,
-        'rootLevel'         => -1,
-        'type'              => 'type',
-        'sortby'            => 'sorting',
-        'default_sortby'    => 'ORDER BY crdate',
-        'delete'            => 'deleted',
-        'enablecolumns'     => array(
-            'disabled' => 'hidden',
-        ),
-        'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/Tca/Config.php',
-        //'iconfile'          => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
-        'iconfile'          => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
-    ),
-);
-
 if (TYPO3_MODE == 'BE') {
 
     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['recordsmanager']);
@@ -56,11 +34,10 @@ if (TYPO3_MODE == 'BE') {
             array(),
             array(
                 'access' => 'user,group',
-                'icon'   => 'EXT:' . $_EXTKEY . '/ext_icon.gif',
+                'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table.png',
                 'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:recordsmanagertitle',
             )
         );
-
 
         if ($conf['enabledAdd'] == 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
@@ -73,7 +50,7 @@ if (TYPO3_MODE == 'BE') {
                 ),
                 array(
                     'access' => 'user,group',
-                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/insert.gif',
+                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/plus.png',
                     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:inserttitle',
                 )
             );
@@ -90,7 +67,7 @@ if (TYPO3_MODE == 'BE') {
                 ),
                 array(
                     'access' => 'user,group',
-                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/edit.gif',
+                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table-edit.png',
                     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:edittitle',
                 )
             );
@@ -107,7 +84,7 @@ if (TYPO3_MODE == 'BE') {
                 ),
                 array(
                     'access' => 'user,group',
-                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.gif',
+                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.png',
                     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:exporttitle',
                 )
             );

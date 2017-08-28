@@ -2,29 +2,18 @@
 
 namespace Sng\Recordsmanager\Controller;
 
-
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015 CERDAN Yohann <cerdanyohann@yahoo.fr>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -38,6 +27,9 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function indexAction()
     {
         $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(1);
+
+        $formResultCompiler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\FormResultCompiler::class);
+        $formResultCompiler->printNeededJSFunctions();
 
         if (empty($allConfigs)) {
             return null;
@@ -93,6 +85,7 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $this->view->assign('arguments', $arguments);
         $this->view->assign('menuitems', $allConfigs);
         $this->view->assign('returnurl', $this->getReturnUrl());
+        $this->view->assign('browserurl', $this->getBrowserUrl());
 
         // redirect to tce form
         if (!empty($arguments['create'])) {
@@ -124,6 +117,17 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     }
 
     /**
+     * Get url to browser pages
+     *
+     * @return string
+     */
+    public function getBrowserUrl()
+    {
+        $browserUrl = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('wizard_element_browser');
+        return $browserUrl;
+    }
+
+    /**
      * Redirect to the insert form with correct params
      *
      * @param int $id
@@ -147,6 +151,5 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         }
         \TYPO3\CMS\Core\Utility\HttpUtility::redirect($editLink);
     }
-
 
 }
