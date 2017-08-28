@@ -9,7 +9,7 @@ See the screenshots to have an idea of this extension.
 
 Do not hesitate to contact me if you have any good ideas.
 
-This extension work with TYPO3 6.2.x-7.6.x.
+This extension work with the last LTS of TYPO3.
 
 ## Screenshots
 
