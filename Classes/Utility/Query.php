@@ -129,7 +129,9 @@ class Query
                 $arrayToEncode = array();
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
                 $arrayToEncode['uidrecord'] = $records['uid'];
-                $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
+                if (empty($this->config['disabledomaininkey'])) {
+                    $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
+                }
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
                 // add special typoscript value
                 $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);

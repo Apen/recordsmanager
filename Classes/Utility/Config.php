@@ -24,7 +24,7 @@ class Config
     /**
      * Get all config of recordsmanager
      *
-     * @param int $type
+     * @param int    $type
      * @param string $mode
      * @return array
      */
@@ -75,7 +75,9 @@ class Config
         if (!empty($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'])) {
             foreach ($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'] as $configPath) {
                 $config = json_decode(GeneralUtility::getUrl($configPath), true);
-                $config['extrats'] = implode("\r\n",$config['extrats']);
+                if (!empty($config['extrats'])) {
+                    $config['extrats'] = implode("\r\n", $config['extrats']);
+                }
                 if (!empty($config['eidkey'])) {
                     $jsonConfigs[$config['type']][$config['eidkey']] = $config;
                 } else {
