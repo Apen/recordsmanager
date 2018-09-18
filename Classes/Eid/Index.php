@@ -150,12 +150,7 @@ class Tx_Recordsmanager_Eid_Index
      */
     public function setCurrentConfig($eidkey)
     {
-        $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-            '*',
-            'tx_recordsmanager_config',
-            'type=3 AND deleted=0 AND eidkey="' . mysqli_real_escape_string($GLOBALS['TYPO3_DB']->getDatabaseHandle(), $eidkey) . '"'
-        );
-
+        $this->currentConfig = \Sng\Recordsmanager\Utility\Config::getEidConfig($eidkey);
         if (empty($this->currentConfig)) {
             die('You need to specify a CORRECT tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
         }
