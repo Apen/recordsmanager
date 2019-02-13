@@ -1,208 +1,297 @@
 <?php
 
-/***************************************************************
- *  Copyright notice
+namespace Sng\Recordsmanager\Utility;
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2013 CERDAN Yohann <cerdanyohann@yahoo.fr>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-class Tx_Recordsmanager_Utility_Query {
-	protected $query;
-	protected $checkPids = TRUE;
-	protected $exportMode = FALSE;
-	protected $headers;
-	protected $rows;
-	protected $config;
+class Query
+{
+    protected $query;
+    protected $checkPids = true;
+    protected $exportMode = false;
+    protected $headers;
+    protected $rows;
+    protected $config;
 
-	/**
-	 * Return the current query array
-	 *
-	 * @return array
-	 */
-	public function getQuery() {
-		if ($this->checkPids === TRUE && TYPO3_MODE == 'BE') {
-			$pids = $this->checkPids();
-			if (count($pids) > 0) {
-				$this->query['WHERE'] .= ' AND pid IN (' . implode(',', $pids) . ')';
-			}
-		}
+    /**
+     * Return the current query array
+     *
+     * @return array
+     */
+    public function getQuery()
+    {
+        if ($this->checkPids === true && TYPO3_MODE == 'BE') {
+            $pids = $this->checkPids();
+            if (count($pids) > 0) {
+                $this->query['WHERE'] .= ' AND pid IN (' . implode(',', $pids) . ')';
+            }
+        }
 
-		if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
-			$this->query['SELECT'] = '*';
-		}
-		return $this->query;
-	}
+        if ($this->isPowermail1() || $this->isPowermail2()) {
+            $this->query['SELECT'] = '*';
+        }
+        return $this->query;
+    }
 
-	/**
-	 * Build the query (fill the query array)
-	 */
-	public function buildQuery() {
-		// we need to have the uid
-		if (!t3lib_div::inList($this->config['sqlfields'], 'uid')) {
-			$this->query['SELECT'] = 'uid,' . $this->config['sqlfields'];
-		} else {
-			$this->query['SELECT'] = $this->config['sqlfields'];
-		}
+    /**
+     * Build the query (fill the query array)
+     */
+    public function buildQuery()
+    {
+        if (!empty($this->config['sqlfields'])) {
+            // we need to have the uid
+            if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->config['sqlfields'], 'uid')) {
+                $this->query['SELECT'] = 'uid,' . $this->config['sqlfields'];
+            } else {
+                $this->query['SELECT'] = $this->config['sqlfields'];
+            }
+        } else {
+            $this->query['SELECT'] = '*';
+        }
 
-		$this->query['FROM'] = $this->config['sqltable'];
-		$this->query['WHERE'] = '1=1 AND deleted=0';
-		$this->query['WHERE'] .= ($this->config['extrawhere'] != '') ? ' ' . $this->config['extrawhere'] : '';
-		$this->query['GROUPBY'] = ($this->config['extragroupby'] != '') ? $this->config['extragroupby'] : '';
-		$this->query['ORDERBY'] = ($this->config['extraorderby'] != '') ? $this->config['extraorderby'] : '';
-		$this->query['LIMIT'] = ($this->config['extralimit'] != '') ? $this->config['extralimit'] : '';
-	}
+        $this->query['FROM'] = $this->config['sqltable'];
+        $this->query['WHERE'] = '1=1 AND deleted=0';
+        $this->query['WHERE'] .= ($this->config['extrawhere'] != '') ? ' ' . $this->config['extrawhere'] : '';
+        $this->query['GROUPBY'] = ($this->config['extragroupby'] != '') ? $this->config['extragroupby'] : '';
+        $this->query['ORDERBY'] = ($this->config['extraorderby'] != '') ? $this->config['extraorderby'] : '';
+        $this->query['LIMIT'] = ($this->config['extralimit'] != '') ? $this->config['extralimit'] : '';
 
-	/**
-	 * Exec the query (fill headers en rows arrays)
-	 */
-	public function execQuery() {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($this->getQuery());
-		$first = TRUE;
-		$rows = array();
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($first) {
-				$first = FALSE;
-				$this->headers = Tx_Recordsmanager_Utility_Config::getResultRowTitles($row, $this->query['FROM']);
-				if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
-					$this->headers = array_intersect_key($this->headers, array_flip(t3lib_div::trimExplode(',', $this->config['sqlfields'])));
-					$powermailHeaders = Tx_Recordsmanager_Utility_Powermail::getHeadersFromRow(Tx_Recordsmanager_Utility_Powermail::getLastRecord($this->query));
-					$this->headers = array_merge($this->headers, $powermailHeaders);
-				}
-			}
-			$records = Tx_Recordsmanager_Utility_Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
-			if ($this->query['FROM'] == 'tx_powermail_mails' && t3lib_div::inList('2,3', $this->config['type'])) {
-				$records = array_merge($records, Tx_Recordsmanager_Utility_Powermail::getRow($records, $powermailHeaders));
-				$records = array_intersect_key($records, $this->headers);
-			}
-			if (($this->exportMode === TRUE) && ($this->config['type'] == 3)) {
-				$arrayToEncode = array();
-				$arrayToEncode['uidconfig'] = $this->config['uid'];
-				$arrayToEncode['uidrecord'] = $records['uid'];
-				$arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
-				$records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
-				// add special typoscript value
-				$markerValues = Tx_Recordsmanager_Utility_Misc::convertToMarkerArray($records);
-				$extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
-				$records = array_merge($records, Tx_Recordsmanager_Utility_Misc::loadAndExecTS($extraTs));
-			}
-			$this->rows[] = $records;
-		}
-		$GLOBALS['TYPO3_DB']->sql_free_result($res);
-	}
+        if (!isset($GLOBALS['TCA'][$this->config['sqltable']])) {
+            \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
+        }
+    }
 
-	/**
-	 * Return pid that are allow for tu current be_users
-	 *
-	 * @return array
-	 */
-	public function checkPids() {
-		$pids = array();
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT pid', $this->query['FROM'], $this->query['WHERE'], $this->query['GROUPBY'], $this->query['ORDERBY'], $this->query['LIMIT']);
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$pageinfo = t3lib_BEfunc::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
-			if ($pageinfo !== FALSE) {
-				$pids[] = $row['pid'];
-			}
-		}
-		$GLOBALS['TYPO3_DB']->sql_free_result($res);
-		return $pids;
-	}
+    /**
+     * Exec the query (fill headers en rows arrays)
+     */
+    public function execQuery()
+    {
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($this->getQuery());
+        $first = true;
+        $rows = array();
+        $fieldsToHide = array();
+        if (!empty($this->config['hidefields'])) {
+            $fieldsToHide = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['hidefields']);
+        }
+        if ($this->isPowermail2()) {
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
+        }
+        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            if ($this->isPowermail2()) {
+                $mail = $mailRepository->findByUid($row['uid']);
+            }
+            if ($first) {
+                $first = false;
+                $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
+                if ($this->isPowermail1()) {
+                    $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
+                    $powermailHeaders = \Sng\Recordsmanager\Utility\Powermail::getHeadersFromRow(\Sng\Recordsmanager\Utility\Powermail::getLastRecord($this->query));
+                    $this->headers = array_merge($this->headers, $powermailHeaders);
+                }
+                if ($this->isPowermail2()) {
+                    $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
+                    $powermailHeaders = array();
+                    foreach ($mail->getAnswers() as $answer) {
+                        $powermailHeaders [] = $answer->getField()->getTitle();
+                    }
+                    $this->headers = array_merge($this->headers, $powermailHeaders);
+                }
+                if (($this->exportMode === true) && ($this->config['type'] == 3)) {
+                    $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
+                    $this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
+                }
 
-	public function setConfig($config) {
-		$this->config = $config;
-	}
+            }
+            $records = \Sng\Recordsmanager\Utility\Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
+            if ($this->isPowermail1()) {
+                $records = array_merge($records, \Sng\Recordsmanager\Utility\Powermail::getRow($records, $powermailHeaders));
+                $records = array_intersect_key($records, $this->headers);
+            }
+            if ($this->isPowermail2()) {
+                foreach ($mail->getAnswers() as $answer) {
+                    $records [] = $answer->getValue();
+                }
+                $records = array_intersect_key($records, $this->headers);
+            }
+            if (($this->exportMode === true) && ($this->config['type'] == 3)) {
+                $arrayToEncode = array();
+                $arrayToEncode['uidconfig'] = $this->config['uid'];
+                $arrayToEncode['uidrecord'] = $records['uid'];
+                if (empty($this->config['disabledomaininkey'])) {
+                    $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
+                }
+                $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
+                // add special typoscript value
+                $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);
+                $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
+                $records = array_merge($records, \Sng\Recordsmanager\Utility\Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
+                // hide fields if necessary
+                if (!empty($fieldsToHide)) {
+                    foreach ($fieldsToHide as $fieldToHide) {
+                        unset($records[$fieldToHide]);
+                    }
+                }
+            }
+            $this->rows[] = $records;
+        }
+        $GLOBALS['TYPO3_DB']->sql_free_result($res);
+    }
 
-	public function getConfig() {
-		return $this->config;
-	}
+    /**
+     * Return pid that are allow for tu current be_users
+     *
+     * @return array
+     */
+    public function checkPids()
+    {
+        $pids = array();
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT pid', $this->query['FROM'], $this->query['WHERE'], $this->query['GROUPBY'], $this->query['ORDERBY'], $this->query['LIMIT']);
+        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
+            if ($pageinfo !== false) {
+                $pids[] = $row['pid'];
+            }
+        }
+        $GLOBALS['TYPO3_DB']->sql_free_result($res);
+        return $pids;
+    }
 
-	public function setCheckPids($checkPids) {
-		$this->checkPids = $checkPids;
-	}
+    public function isPowermail1()
+    {
+        if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function getCheckPids() {
-		return $this->checkPids;
-	}
+    public function isPowermail2()
+    {
+        if (
+            ($this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
+            \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function setQuery($query) {
-		$this->query = $query;
-	}
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
 
-	public function getHeaders() {
-		return $this->headers;
-	}
+    public function getConfig()
+    {
+        return $this->config;
+    }
 
-	public function getRows() {
-		return $this->rows;
-	}
+    public function setCheckPids($checkPids)
+    {
+        $this->checkPids = $checkPids;
+    }
 
-	public function setSelect($value) {
-		$this->query['SELECT'] = $value;
-	}
+    public function getCheckPids()
+    {
+        return $this->checkPids;
+    }
 
-	public function getSelect() {
-		return $this->query['SELECT'];
-	}
+    public function setQuery($query)
+    {
+        $this->query = $query;
+    }
 
-	public function setFrom($value) {
-		$this->query['FROM'] = $value;
-	}
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
 
-	public function getFrom() {
-		return $this->query['FROM'];
-	}
+    public function getRows()
+    {
+        return $this->rows;
+    }
 
-	public function setWhere($value) {
-		$this->query['WHERE'] = $value;
-	}
+    public function getNbRows()
+    {
+        return count($this->rows);
+    }
 
-	public function getWhere() {
-		return $this->query['WHERE'];
-	}
+    public function setSelect($value)
+    {
+        $this->query['SELECT'] = $value;
+    }
 
-	public function setGroupBy($value) {
-		$this->query['GROUPBY'] = $value;
-	}
+    public function getSelect()
+    {
+        return $this->query['SELECT'];
+    }
 
-	public function getGroupBy() {
-		return $this->query['GROUPBY'];
-	}
+    public function setFrom($value)
+    {
+        $this->query['FROM'] = $value;
+    }
 
-	public function setOrderBy($value) {
-		$this->query['ORDERBY'] = $value;
-	}
+    public function getFrom()
+    {
+        return $this->query['FROM'];
+    }
 
-	public function getOrderBy() {
-		return $this->query['ORDERBY'];
-	}
+    public function setWhere($value)
+    {
+        $this->query['WHERE'] = $value;
+    }
 
-	public function setLimit($value) {
-		$this->query['LIMIT'] = $value;
-	}
+    public function getWhere()
+    {
+        return $this->query['WHERE'];
+    }
 
-	public function getLimit() {
-		return $this->query['LIMIT'];
-	}
+    public function setGroupBy($value)
+    {
+        $this->query['GROUPBY'] = $value;
+    }
 
-	public function setExportMode($exportMode) {
-		$this->exportMode = $exportMode;
-	}
+    public function getGroupBy()
+    {
+        return $this->query['GROUPBY'];
+    }
+
+    public function setOrderBy($value)
+    {
+        $this->query['ORDERBY'] = $value;
+    }
+
+    public function getOrderBy()
+    {
+        return $this->query['ORDERBY'];
+    }
+
+    public function setLimit($value)
+    {
+        $this->query['LIMIT'] = $value;
+    }
+
+    public function getLimit()
+    {
+        return $this->query['LIMIT'];
+    }
+
+    public function setExportMode($exportMode)
+    {
+        $this->exportMode = $exportMode;
+    }
 
 }

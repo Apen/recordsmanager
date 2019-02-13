@@ -1,4 +1,4 @@
-{namespace rm=Tx_Recordsmanager_ViewHelpers}
+{namespace rm=Sng\Recordsmanager\ViewHelpers}
 
 <f:layout name="Default"/>
 
@@ -8,84 +8,96 @@
         <f:translate key="addrecords"/>
     </p>
 
-    <table cellspacing="1" cellpadding="1" border="0" class="typo3-dblist">
-        <tr class="bgColor5 tableheader">
-            <td width="80%">
-                <f:translate key="storage"/>
-            </td>
-            <td>
-                <f:translate key="pid"/>
-            </td>
-            <td>
-                <f:translate key="datas"/>
-            </td>
-        </tr>
-        <f:for each="{pidsfind}" as="pidfind">
-            <tr class="bgColor4">
-                <td>
-                    <img width="16" height="16" alt="" title="" class="absmiddle" src="sysext/t3skin/icons/gfx/i/sysf.gif"/>
-                    <f:link.action arguments="{create: '{pidfind.pid}', menuitem:'{currentconfig.uid}'}">{pidfind.path}</f:link.action>
-                </td>
-                <td>{pidfind.pid}</td>
-                <td>{pidfind.nbrecords}</td>
-            </tr>
-        </f:for>
-    </table>
+    <f:if condition="{pidsfind}">
+        <div class="table-fit">
+            <table class="typo3-dblist table table-hover">
+                <thead>
+                <tr class="t3-row-header">
+                    <th width="80%">
+                        <f:translate key="storage"/>
+                    </th>
+                    <th>
+                        <f:translate key="pid"/>
+                    </th>
+                    <th>
+                        <f:translate key="datas"/>
+                    </th>
+                </tr>
+                </thead>
+                <f:for each="{pidsfind}" as="pidfind">
+                    <tr class="bgColor4">
+                        <td>
+                            <rm:spriteManagerIcon iconName="apps-filetree-folder-default"/>
+                            <f:link.action arguments="{create: '{pidfind.pid}', menuitem:'{currentconfig.uid}'}">{pidfind.path}</f:link.action>
+                        </td>
+                        <td>{pidfind.pid}</td>
+                        <td>{pidfind.nbrecords}</td>
+                    </tr>
+                </f:for>
+            </table>
+        </div>
+    </f:if>
 
     <f:if condition="{currentconfig.insertdefaultpid}">
-        <table cellspacing="1" cellpadding="1" border="0" class="typo3-dblist">
-            <tr class="bgColor5 tableheader">
-                <td width="80%">
-                    <f:translate key="storageadmin"/>
-                </td>
-                <td>
-                    <f:translate key="pid"/>
-                </td>
-                <td>
-                    <f:translate key="datas"/>
-                </td>
-            </tr>
-            <f:for each="{pidsadmin}" as="pidadmin">
-                <tr class="bgColor4">
-                    <td>
-                        <img width="16" height="16" alt="" title="" class="absmiddle" src="sysext/t3skin/icons/gfx/i/sysf.gif"/>
-                        <f:link.action arguments="{create: '{pidadmin.pid}', menuitem:'{currentconfig.uid}'}">{pidadmin.path}</f:link.action>
-                    </td>
-                    <td>{pidadmin.pid}</td>
-                    <td>{pidadmin.nbrecords}</td>
-                </tr>
-            </f:for>
-        </table>
-    </f:if>
-
-    <f:if condition="{currentconfig.insertchoosepid}">
         <br/>
-        <table>
-            <tr>
-                <td>
-                    <input type="hidden" id="recordinsert"/>
-                    <f:translate key="selectpid"/>
-                </td>
-                <td>
-                    <a onclick="setFormValueOpenBrowser('db','recordinsert|||pages|'); return false;" href="#">
-                        <img width="15" height="15" border="0" src="sysext/t3skin/icons/gfx/insert3.gif"/>
-                    </a>
-                </td>
-            </tr>
-        </table>
+
+        <div class="table-fit">
+            <table class="typo3-dblist table table-hover">
+                <thead>
+                <tr class="t3-row-header">
+                    <th width="80%">
+                        <f:translate key="storageadmin"/>
+                    </th>
+                    <th>
+                        <f:translate key="pid"/>
+                    </th>
+                    <th>
+                        <f:translate key="datas"/>
+                    </th>
+                </tr>
+                </thead>
+                <f:for each="{pidsadmin}" as="pidadmin">
+                    <tr class="bgColor4">
+                        <td>
+                            <rm:spriteManagerIcon iconName="apps-filetree-folder-default"/>
+                            <f:link.action arguments="{create: '{pidadmin.pid}', menuitem:'{currentconfig.uid}'}">{pidadmin.path}</f:link.action>
+                        </td>
+                        <td>{pidadmin.pid}</td>
+                        <td>{pidadmin.nbrecords}</td>
+                    </tr>
+                </f:for>
+            </table>
+        </div>
     </f:if>
 
+</f:section>
 
-    <script type="text/javascript"><![CDATA[
+<f:if condition="{currentconfig.insertchoosepid}">
+    <br/>
+    <table>
+        <tr>
+            <td>
+                <input type="hidden" id="recordinsert"/>
+                <f:translate key="selectpid"/>
+            </td>
+            <td>
+                <a onclick="setFormValueOpenBrowser('db','recordinsert|||pages|'); return false;" href="#">
+                    <rm:spriteManagerIcon iconName="apps-filetree-folder-default"/>
+                </a>
+            </td>
+        </tr>
+    </table>
+</f:if>
+
+<script type="text/javascript">
     var browserWin = "";
-    function setFormValueOpenBrowser(mode, params) {	//
-        var url = "browser.php?mode=" + mode + "&bparams=" + params;
+    function setFormValueOpenBrowser(mode, params) {
+        var url = "{browserurl}&mode=" + mode + "&bparams=" + params;
         browserWin = window.open(url, "Typo3WinBrowser", "height=650,width=" + (mode == "db" ? 650 : 600) + ",status=0,menubar=0,resizable=1,scrollbars=1");
         browserWin.focus();
     }
     function setFormValueFromBrowseWin(fName, value, label, exclusiveValues) {
         var idField = value.split("_");
-        jumpToUrl("]]>{returnurl -> rm:raw()}<![CDATA[&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert%5Bcreate%5D=" + idField[1]);
+        jumpToUrl("{returnurl -> f:format.raw()}&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert%5Bcreate%5D=" + idField[1]);
     }
-    ]]></script>
-</f:section>
+</script>

@@ -1,17 +1,10 @@
-{namespace rm=Tx_Recordsmanager_ViewHelpers}
+{namespace rm=Sng\Recordsmanager\ViewHelpers}
 
 <f:be.container>
     <div class="typo3-fullDoc">
         <div id="typo3-docheader">
-            <div id="typo3-docheader-row1">
-                <div class="buttonsleft">
-                </div>
-                <div class="buttonsright">
-                    <f:be.buttons.shortcut/>
-                </div>
-            </div>
-            <div id="typo3-docheader-row2">
-                <div class="docheader-row2-left">
+            <div class="typo3-docheader-functions">
+                <div class="left">
                     <select onchange="jumpToUrl(this.options[this.selectedIndex].value, this);">
                         <f:for each="{menuitems}" as="menuitem">
                             <f:if condition="{arguments.menuitem} == {menuitem.uid}">
@@ -29,22 +22,20 @@
                         </f:for>
                     </select>
                 </div>
-                <f:if condition="{exportmodes}">
-                    <div class="docheader-row2-right">
-                        <form action="{f:uri.action(addQueryString:1,arguments:{filter:'filter'})}" method="post">
-                            <f:form.textfield name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[startdate]" value="{startdate}" id="tceforms-datefield-startdate"/>
-                            <span style="cursor:pointer;" id="picker-tceforms-datefield-startdate" class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-pick-date">&nbsp;</span>
-                            <f:form.textfield name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[enddate]" value="{enddate}" id="tceforms-datefield-enddate"/>
-                            <span style="cursor:pointer;" id="picker-tceforms-datefield-enddate" class="t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-pick-date">&nbsp;</span>
-                            <input type="submit" value="OK">
-                        </form>
-                    </div>
-                </f:if>
+                <div class="right">
+                    <f:be.buttons.shortcut/>
+                </div>
+            </div>
+            <div class="typo3-docheader-buttons">
+                <div class="left">
+                </div>
+                <div class="right">
+                </div>
             </div>
         </div>
         <div id="typo3-docbody">
             <div id="typo3-inner-docbody">
-                <f:flashMessages renderMode="div"/>
+                <f:flashMessages/>
                 <f:render section="content"/>
             </div>
         </div>
