@@ -1,35 +1,65 @@
-{namespace rm=Tx_Recordsmanager_ViewHelpers}
+{namespace rm=Sng\Recordsmanager\ViewHelpers}
 
 <f:layout name="Default"/>
 
 <f:section name="content">
 
-    <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 10, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
-        <table cellspacing="1" cellpadding="2" border="0" class="typo3-dblist">
-            <tbody>
-            <tr class="t3-row-header">
-                <f:for each="{headers}" as="headerlabel" key="headerfield">
-                    <td class="cell">
-                        {headerlabel}
-                        <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
-                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/reddown.gif">
-                        </f:link.action>
-                        <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
-                            <img width="7" height="4" alt="" src="sysext/t3skin/icons/gfx/redup.gif">
-                        </f:link.action>
-                    </td>
-                </f:for>
-            </tr>
-            <f:for each="{paginatedRows}" as="row">
-                <tr class="db_list_normal">
-                    <f:for each="{row}" as="field">
-                        <td class="cell">{field}</td>
+    <form action="{f:uri.action(addQueryString:1,arguments:{filter:'filter'})}" method="post" class="form-inline" id="rmform">
+
+        <div class="form-group" style="width:300px;">
+            <label for="tceforms-datefield-startdate">
+                <f:translate key="LLL:EXT:lang/Resources/Private/Language/locallang_common.xlf:from"/>
+            </label>
+            <div class="input-group">
+                <rm:date name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[startdate]" value="{startdate}" formName="rmform"/>
+            </div>
+        </div>
+
+        <div class="form-group" style="width:300px;">
+            <label for="tceforms-datefield-enddate">
+                <f:translate key="LLL:EXT:lang/Resources/Private/Language/locallang_common.xlf:to"/>
+            </label>
+            <div class="input-group">
+                <rm:date name="tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport[enddate]" value="{enddate}" formName="rmform"/>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-default">OK</button>
+
+    </form>
+
+    <f:if condition="{rows}">
+        <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 20, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
+            <div class="table-fit">
+                <table class="typo3-dblist table table-hover">
+                    <thead>
+                    <tr class="t3-row-header">
+                        <f:for each="{headers}" as="headerlabel" key="headerfield">
+                            <th class="cell">
+                                {headerlabel}
+                                <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
+                                    <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
+                                </f:link.action>
+                                <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
+                                    <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
+                                </f:link.action>
+                            </th>
+                        </f:for>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <f:for each="{paginatedRows}" as="row">
+                        <tr class="db_list_normal">
+                            <f:for each="{row}" as="field">
+                                <td class="cell">{field}</td>
+                            </f:for>
+                        </tr>
                     </f:for>
-                </tr>
-            </f:for>
-            </tbody>
-        </table>
-    </rm:widget.paginate>
+                    </tbody>
+                </table>
+            </div>
+        </rm:widget.paginate>
+    </f:if>
 
     <f:for each="{exportmodes}" as="exportmode">
         <br/>
