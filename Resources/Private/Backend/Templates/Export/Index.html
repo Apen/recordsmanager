@@ -4,7 +4,7 @@
 
 <f:section name="content">
 
-    <form action="{f:uri.action(addQueryString:1,arguments:{filter:'filter'})}" method="post" class="form-inline" id="rmform">
+    <f:form absolute="1" arguments="{filter:'filter'}" method="post" class="form-inline" id="rmform">
 
         <div class="form-group" style="width:300px;">
             <label for="tceforms-datefield-startdate">
@@ -26,7 +26,7 @@
 
         <button type="submit" class="btn btn-default">OK</button>
 
-    </form>
+    </f:form>
 
     <f:if condition="{rows}">
         <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 20, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
