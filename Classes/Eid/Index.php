@@ -102,6 +102,8 @@ class Tx_Recordsmanager_Eid_Index
         }
         $query->execQuery();
         $controller = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\Recordsmanager\Controller\ExportController');
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Pragma: no-cache");
         switch ($mode) {
             case 'xml':
                 $controller->exportToXML($query, true);
