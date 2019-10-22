@@ -1,0 +1,28 @@
+{
+  "name": "apen/recordsmanager",
+  "type": "typo3-cms-extension",
+  "description": "Add modules to easily manage your records (insert, edit & export in be/eId) in one place.",
+  "keywords": [
+    "TYPO3"
+  ],
+  "authors": [
+    {
+      "name": "Yohann Cerdan",
+      "email": "yohann@site-ngo.fr",
+      "role": "Developer",
+      "homepage": "http://www.site-ngo.fr"
+    }
+  ],
+  "license": [
+    "GPL-2.0+"
+  ],
+  "require": {
+    "php": ">=7.0.0 <7.3",
+    "typo3/cms-core": "^8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sng\\Recordsmanager\\": "Classes"
+    }
+  }
+}

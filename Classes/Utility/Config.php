@@ -154,14 +154,38 @@ class Config
                 // fal reference
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] == 'sys_file_reference') {
                     $files = BackendUtility::resolveFileReferences($table, $fieldName, $row);
+
                     $newFiles = array();
+                    $newFilesMetas = array();
                     foreach ($files as $file) {
-                        $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
+                        if (GeneralUtility::inList($excludeFields, $fieldName)) {
+                            $newFiles [] = $file->getUid();
+                        } else {
+                            $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
+                        }
+                        $properties = $file->getProperties();
+                        $newFilesMetas [] = array(
+                            'uid'         => $file->getUid(),
+                            'path'        => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
+                            'title'       => $properties['title'],
+                            'description' => $properties['description'],
+                            'alternative' => $properties['alternative'],
+                            'link'        => $properties['link'],
+                        );
                     }
-                    $record[$fieldName] = implode(', ', $newFiles);
+                    if (!empty($newFiles)) {
+                        $record[$fieldName] = implode(', ', $newFiles);
+                        $record[$fieldName . '_metas'] = $newFilesMetas;
+                    } else {
+                        $record[$fieldName] = '';
+                        $record[$fieldName . '_metas'] = '';
+                    }
                 }
                 // rte
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' && !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE'])) {
+                if (
+                    $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' &&
+                    (!empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE']) || !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['enableRichtext']))
+                ) {
                     $lCobj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
                     $lCobj->start(array(), '');
                     $record[$fieldName] = $lCobj->parseFunc($record[$fieldName], array(), '< lib.parseFunc_RTE');

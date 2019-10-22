@@ -68,7 +68,9 @@ class Query
         $this->query['LIMIT'] = ($this->config['extralimit'] != '') ? $this->config['extralimit'] : '';
 
         if (!isset($GLOBALS['TCA'][$this->config['sqltable']])) {
-            \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
+            if (version_compare(TYPO3_version, '9.5.0', '<')) {
+                \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadExtensionTables();
+            }
         }
     }
 
