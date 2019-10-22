@@ -3,19 +3,14 @@
 namespace Sng\Recordsmanager\Utility;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
 
 class Config
@@ -31,7 +26,15 @@ class Config
     public static function getAllConfigs($type, $mode = 'db')
     {
         $items = array();
-        $allItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'tx_recordsmanager_config', 'type=' . $type . ' AND deleted=0 AND hidden=0', '', 'sorting');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
+        $queryBuilder
+            ->select('*')
+            ->from('tx_recordsmanager_config')
+            ->where(
+                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT))
+            )
+            ->orderBy('sorting', 'ASC');
+        $allItems = $queryBuilder->execute()->fetchAll();
         $usergroups = explode(',', $GLOBALS['BE_USER']->user['usergroup']);
         if (!empty($allItems)) {
             foreach ($allItems as $key => $row) {
@@ -53,7 +56,15 @@ class Config
      */
     public static function getEidConfig($eidkey)
     {
-        $row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'type=3 AND deleted=0 AND eidkey="' . mysqli_real_escape_string($GLOBALS['TYPO3_DB']->getDatabaseHandle(), $eidkey) . '"');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
+        $queryBuilder
+            ->select('*')
+            ->from('tx_recordsmanager_config')
+            ->where(
+                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \PDO::PARAM_STR))
+            );
+        $row = $queryBuilder->execute()->fetch();
         if (!empty($row)) {
             return $row;
         }

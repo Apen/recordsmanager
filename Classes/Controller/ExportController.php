@@ -3,17 +3,16 @@
 namespace Sng\Recordsmanager\Controller;
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+use Sng\Recordsmanager\Utility\Query;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\CsvUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -191,7 +190,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         foreach ($rows as $row) {
             // utf8 with BOM for Excel
-            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(\TYPO3\CMS\Core\Utility\GeneralUtility::csvValues($row), true));
+            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(CsvUtility::csvValues($row), true));
         }
 
         if (count($rowArr)) {
@@ -267,10 +266,11 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $xmlObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\\Recordsmanager\\Utility\\Xml', 'typo3_export');
         $xmlObj->setRecFields($query['FROM'], $query['SELECT']);
         $xmlObj->renderHeader();
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($query['SELECT'], $query['FROM'], $query['WHERE'], $query['GROUPBY'], $query['ORDERBY'], $query['LIMIT']);
-        $xmlObj->renderRecords($query['FROM'], $res);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($query['FROM']);
+        $statement = $connection->prepare(Query::getSqlFromQueryArray($query));
+        $statement->execute();
+        $xmlObj->renderRecords($query['FROM'], $statement);
         $xmlObj->renderFooter();
-        $GLOBALS['TYPO3_DB']->sql_free_result($res);
         return $xmlObj->getResult();
     }
 
@@ -326,11 +326,14 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {
-            $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                '*',
-                'tx_recordsmanager_config',
-                'uid=' . intval($arguments['menuitem'])
-            );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
+            $queryBuilder
+                ->select('*')
+                ->from('tx_recordsmanager_config')
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
+                );
+            $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }
 }

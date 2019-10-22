@@ -4,7 +4,7 @@ $EM_CONF[$_EXTKEY] = array(
     'title'            => 'Records management in a BE module',
     'description'      => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
     'category'         => 'module',
-    'version'          => '1.4.3-dev', 
+    'version'          => '1.4.4-dev',
     'state'            => 'stable',
     'uploadfolder'     => true,
     'createDirs'       => '',
@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = array(
         array(
             'depends'   =>
                 array(
-                    'typo3' => '8.7.0-8.7.99',
+                    'typo3' => '9.5.0-9.5.99',
                 ),
             'conflicts' =>
                 array(),

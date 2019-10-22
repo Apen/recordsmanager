@@ -1,19 +1,18 @@
 <?php
 
+namespace Sng\Recordsmanager\Utility;
+
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
 
-class tx_recordsmanager_flexfill
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+class Flexfill
 {
     // List of exclude fields that are not process in insert/edit view
     const excludeFields = 'uid,pid,deleted,t3ver_oid,t3ver_id,t3ver_wsid,t3ver_label,t3ver_state,t3ver_stage,t3ver_count,t3ver_tstamp,t3ver_move_id,t3_origuid,l18n_parent,l18n_diffsource';
@@ -30,32 +29,27 @@ class tx_recordsmanager_flexfill
 
     public function getFields(&$params, &$fObj)
     {
-        //\TYPO3\CMS\Core\Utility\DebugUtility::debug($params);
         if (!empty($params['row']['sqltable'])) {
-            if (is_array($params['row']['sqltable'])) {
-                $res = $GLOBALS['TYPO3_DB']->sql_query('SHOW COLUMNS FROM ' . $params['row']['sqltable'][0]);
-            } else {
-                $res = $GLOBALS['TYPO3_DB']->sql_query('SHOW COLUMNS FROM ' . $params['row']['sqltable']);
-            }
-            while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_row($res)) {
-                $label = $row[0];
-                $value = $row[0];
-//				if ($row[0] == 'pid') {
-//					$value = 'pid as "pageUID"';
-//				}
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($params['row']['sqltable'][0]);
+            $statement = $connection->prepare('SHOW COLUMNS FROM ' . $params['row']['sqltable'][0] . ' ;');
+            $statement->execute();
+            while ($row = $statement->fetch()) {
+                $label = $row['Field'];
+                $value = $row['Field'];
                 $params['items'][] = array($label, $value);
             }
-            $GLOBALS['TYPO3_DB']->sql_free_result($res);
         }
     }
 
     /**
      * Get TCA description of a table
+     *
+     * @param $table
+     * @return array
      */
     public function getTableTCA($table)
     {
         global $TCA;
-        //\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA($table);
         return $TCA[$table];
     }
 
@@ -65,11 +59,7 @@ class tx_recordsmanager_flexfill
     public function getEditFields(&$params, &$fObj)
     {
         if (!empty($params['row']['sqltable'])) {
-            if (is_array($params['row']['sqltable'])) {
-                $tableTCA = self::getTableTCA($params['row']['sqltable'][0]);
-            } else {
-                $tableTCA = self::getTableTCA($params['row']['sqltable']);
-            }
+            $tableTCA = self::getTableTCA(is_array($params['row']['sqltable']) ? $params['row']['sqltable'][0] : $params['row']['sqltable']);
             $params['items'] = array();
             foreach ($tableTCA['columns'] as $field => $fieldValue) {
                 if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->excludeFields, $field)) {
@@ -85,8 +75,10 @@ class tx_recordsmanager_flexfill
     public static function getDiffFieldsFromTable($table, $defaultFields)
     {
         $fields = array();
-        $res = $GLOBALS['TYPO3_DB']->sql_query('SHOW COLUMNS FROM ' . $table);
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_row($res)) {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($table);
+        $statement = $connection->prepare('SHOW COLUMNS FROM ' . $table . ' ;');
+        $statement->execute();
+        while ($row = $statement->fetch()) {
             if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList(self::excludeFields, $row[0])) {
                 $label = $row[0];
                 $value = $row[0];

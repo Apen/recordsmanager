@@ -3,17 +3,14 @@
 namespace Sng\Recordsmanager\Utility;
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Query
 {
@@ -38,7 +35,7 @@ class Query
             }
         }
 
-        if ($this->isPowermail1() || $this->isPowermail2()) {
+        if ($this->isPowermail2()) {
             $this->query['SELECT'] = '*';
         }
         return $this->query;
@@ -66,12 +63,19 @@ class Query
         $this->query['GROUPBY'] = ($this->config['extragroupby'] != '') ? $this->config['extragroupby'] : '';
         $this->query['ORDERBY'] = ($this->config['extraorderby'] != '') ? $this->config['extraorderby'] : '';
         $this->query['LIMIT'] = ($this->config['extralimit'] != '') ? $this->config['extralimit'] : '';
+    }
 
-        if (!isset($GLOBALS['TCA'][$this->config['sqltable']])) {
-            if (version_compare(TYPO3_version, '9.5.0', '<')) {
-                \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadExtensionTables();
-            }
-        }
+    /**
+     * @param array $queryArray
+     * @return string
+     */
+    public static function getSqlFromQueryArray(array $queryArray)
+    {
+        $sql = 'SELECT ' . $queryArray['SELECT'] . ' FROM ' . $queryArray['FROM'] . ' WHERE ' . $queryArray['WHERE'];
+        $sql .= !empty($queryArray['GROUPBY']) ? ' GROUP BY ' . $queryArray['GROUPBY'] : '';
+        $sql .= !empty($queryArray['ORDERBY']) ? ' ORDER BY ' . $queryArray['ORDERBY'] : '';
+        $sql .= !empty($queryArray['LIMIT']) ? ' LIMIT ' . $queryArray['LIMIT'] : '';
+        return $sql;
     }
 
     /**
@@ -79,7 +83,10 @@ class Query
      */
     public function execQuery()
     {
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECT_queryArray($this->getQuery());
+        $queryArray = $this->getQuery();
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
+        $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
+        $statement->execute();
         $first = true;
         $rows = array();
         $fieldsToHide = array();
@@ -90,18 +97,13 @@ class Query
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
         }
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        while ($row = $statement->fetch()) {
             if ($this->isPowermail2()) {
                 $mail = $mailRepository->findByUid($row['uid']);
             }
             if ($first) {
                 $first = false;
                 $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
-                if ($this->isPowermail1()) {
-                    $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
-                    $powermailHeaders = \Sng\Recordsmanager\Utility\Powermail::getHeadersFromRow(\Sng\Recordsmanager\Utility\Powermail::getLastRecord($this->query));
-                    $this->headers = array_merge($this->headers, $powermailHeaders);
-                }
                 if ($this->isPowermail2()) {
                     $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
                     $powermailHeaders = array();
@@ -117,10 +119,6 @@ class Query
 
             }
             $records = \Sng\Recordsmanager\Utility\Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
-            if ($this->isPowermail1()) {
-                $records = array_merge($records, \Sng\Recordsmanager\Utility\Powermail::getRow($records, $powermailHeaders));
-                $records = array_intersect_key($records, $this->headers);
-            }
             if ($this->isPowermail2()) {
                 foreach ($mail->getAnswers() as $answer) {
                     $records [] = $answer->getValue();
@@ -148,7 +146,6 @@ class Query
             }
             $this->rows[] = $records;
         }
-        $GLOBALS['TYPO3_DB']->sql_free_result($res);
     }
 
     /**
@@ -159,24 +156,18 @@ class Query
     public function checkPids()
     {
         $pids = array();
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT pid', $this->query['FROM'], $this->query['WHERE'], $this->query['GROUPBY'], $this->query['ORDERBY'], $this->query['LIMIT']);
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $currentQuery = $this->query;
+        $currentQuery['SELECT'] = 'DISTINCT pid';
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
+        $statement = $connection->prepare(Query::getSqlFromQueryArray($currentQuery));
+        $statement->execute();
+        while ($row = $statement->fetch()) {
             $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
             if ($pageinfo !== false) {
                 $pids[] = $row['pid'];
             }
         }
-        $GLOBALS['TYPO3_DB']->sql_free_result($res);
         return $pids;
-    }
-
-    public function isPowermail1()
-    {
-        if ($this->query['FROM'] == 'tx_powermail_mails' && \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public function isPowermail2()
