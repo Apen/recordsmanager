@@ -3,8 +3,6 @@ if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
 
-require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('recordsmanager') . 'Resources/Private/Php/class.tx_recordsmanager_flexfill.php');
-
 $tx_recordsmanager_config = array(
     'ctrl'        => array(
         'title'          => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config',
@@ -66,7 +64,7 @@ $tx_recordsmanager_config = array(
             'config'  => Array(
                 'type'          => 'select',
                 'renderType'    => 'selectSingle',
-                'itemsProcFunc' => 'tx_recordsmanager_flexfill->getTables',
+                'itemsProcFunc' => 'Sng\\Recordsmanager\\Utility\\Flexfill->getTables',
             )
         ),
         'sqlfields'         => array(
@@ -75,7 +73,7 @@ $tx_recordsmanager_config = array(
             'config'  => Array(
                 'type'          => 'select',
                 'renderType'    => 'selectMultipleSideBySide',
-                'itemsProcFunc' => 'tx_recordsmanager_flexfill->getFields',
+                'itemsProcFunc' => 'Sng\\Recordsmanager\\Utility\\Flexfill->getFields',
                 'minitems'      => 0,
                 'maxitems'      => 500,
                 'size'          => 10,
@@ -152,7 +150,7 @@ $tx_recordsmanager_config = array(
             'config'  => Array(
                 'type'          => 'select',
                 'renderType'    => 'selectMultipleSideBySide',
-                'itemsProcFunc' => 'tx_recordsmanager_flexfill->getEditFields',
+                'itemsProcFunc' => 'Sng\\Recordsmanager\\Utility\\Flexfill->getEditFields',
                 'minitems'      => 0,
                 'maxitems'      => 500,
                 'size'          => 10,

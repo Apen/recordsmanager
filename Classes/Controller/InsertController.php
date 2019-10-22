@@ -3,17 +3,14 @@
 namespace Sng\Recordsmanager\Controller;
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -42,11 +39,17 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $temp_sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $addWhere = ' AND ' . $GLOBALS['BE_USER']->getPagePermsClause(1) . ' ';
 
-        $pids = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'count(' . $this->currentConfig['sqltable'] . '.pid) as "nbrecords",' . $this->currentConfig['sqltable'] . '.pid,pages.title',
-            $this->currentConfig['sqltable'] . ',pages',
-            'pages.uid=' . $this->currentConfig['sqltable'] . '.pid AND ' . $this->currentConfig['sqltable'] . '.deleted=0 ' . $addWhere . 'GROUP BY ' . $this->currentConfig['sqltable'] . '.pid '
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
+        $queryBuilder
+            ->select($this->currentConfig['sqltable'] . '.pid', 'pages.title')
+            ->addSelectLiteral('count(' . $this->currentConfig['sqltable'] . '.pid) as "nbrecords"')
+            ->from($this->currentConfig['sqltable'])
+            ->from('pages')
+            ->where(
+                'pages.uid=' . $this->currentConfig['sqltable'] . '.pid AND ' . $this->currentConfig['sqltable'] . '.deleted=0 ' . $addWhere
+            )
+            ->groupBy($this->currentConfig['sqltable'] . '.pid');
+        $pids = $queryBuilder->execute()->fetchAll();
 
         $content = '';
 
@@ -57,7 +60,7 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (count($pids) > 0) {
             foreach ($pids as $pid) {
                 $rootline = $temp_sys_page->getRootLine($pid['pid']);
-                $path = $temp_sys_page->getPathFromRootline($rootline, 30);
+                $path = $this->getPathFromRootline($rootline, 30);
                 $pidsFind[] = array('pid' => $pid['pid'], 'path' => $path, 'nbrecords' => $pid['nbrecords']);
             }
         }
@@ -71,9 +74,9 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             );
             if (count($pids) > 0) {
                 foreach ($pids as $pid) {
-                    $nb = count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $this->currentConfig['sqltable'] . '', 'pid=' . $pid['uid'] . ' AND deleted=0 '));
+                    $nb = count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $this->currentConfig['sqltable'] . '', 'pid=' . $pid['uid'] . ' AND deleted=0'));
                     $rootline = $temp_sys_page->getRootLine($pid['uid']);
-                    $path = $temp_sys_page->getPathFromRootline($rootline, 30);
+                    $path = $this::getPathFromRootline($rootline, 30);
                     $pidsAdmin[] = array('pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb);
                 }
             }
@@ -106,13 +109,44 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     }
 
     /**
+     * Creates a "path" string for the input root line array titles.
+     * Used for writing statistics.
+     *
+     * @param array $rl A rootline array!
+     * @param int $len The max length of each title from the rootline.
+     * @return string The path in the form "/page title/This is another pageti.../Another page
+     * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::getConfigArray()
+     */
+    public function getPathFromRootline($rl, $len = 20)
+    {
+        $path = '';
+        if (is_array($rl)) {
+            $c = count($rl);
+            for ($a = 0; $a < $c; $a++) {
+                if ($rl[$a]['uid']) {
+                    $path .= '/' . GeneralUtility::fixed_lgd_cs(strip_tags($rl[$a]['title']), $len);
+                }
+            }
+        }
+        return $path;
+    }
+
+
+    /**
      * Set the current config record
      */
     public function setCurrentConfig()
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {
-            $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'uid=' . intval($arguments['menuitem']));
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
+            $queryBuilder
+                ->select('*')
+                ->from('tx_recordsmanager_config')
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
+                );
+            $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }
 
@@ -139,13 +173,9 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (!empty($arguments['menuitem'])) {
             $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
         }
-        if (version_compare(TYPO3_version, '7.0.0', '>=')) {
-            $editLink = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
-        } else {
-            $editLink = 'alt_doc.php?returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
-        }
+        $editLink = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
         // disabledFields
-        $this->disableFields = implode(',', \tx_recordsmanager_flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
+        $this->disableFields = implode(',', \Sng\Recordsmanager\Utility\Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
             $editLink .= '&recordsHide=' . $this->disableFields;
         }

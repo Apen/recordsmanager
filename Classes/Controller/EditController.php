@@ -3,17 +3,14 @@
 namespace Sng\Recordsmanager\Controller;
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -46,7 +43,7 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->view->assign('returnurl', rawurlencode($this->getReturnUrl()));
         $this->view->assign('deleteurl', $this->getDeleteUrl());
         $this->view->assign('baseediturl', $this->getBaseEditUrl());
-        $this->view->assign('disableFields', implode(',', \tx_recordsmanager_flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
+        $this->view->assign('disableFields', implode(',', \Sng\Recordsmanager\Utility\Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
     }
 
     /**
@@ -90,7 +87,7 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $arguments = $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
         $deleteUrl = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tce_db');
-        $deleteUrl .= '&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&vC=' . $GLOBALS['BE_USER']->veriCode() . '&prErr=1&uPT=1';
+        $deleteUrl .= '&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1';
         return $deleteUrl;
     }
 
@@ -101,11 +98,7 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function getBaseEditUrl()
     {
-        if (version_compare(TYPO3_version, '7.0.0', '>=')) {
-            return \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&';
-        } else {
-            return 'alt_doc.php?';
-        }
+        return \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&';
     }
 
     /**
@@ -115,7 +108,14 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {
-            $this->currentConfig = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_recordsmanager_config', 'uid=' . intval($arguments['menuitem']));
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
+            $queryBuilder
+                ->select('*')
+                ->from('tx_recordsmanager_config')
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
+                );
+            $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }
 

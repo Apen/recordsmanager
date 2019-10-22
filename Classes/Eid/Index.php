@@ -1,19 +1,21 @@
 <?php
 
+namespace Sng\Recordsmanager\Eid;
+
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
 
-class Tx_Recordsmanager_Eid_Index
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Lang\LanguageService;
+
+class Index
 {
     /**
      * Current configuration record
@@ -26,16 +28,16 @@ class Tx_Recordsmanager_Eid_Index
     {
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Query.php');
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Config.php');
-        require_once('typo3conf/ext/recordsmanager/Classes/Utility/Powermail.php');
         require_once('typo3conf/ext/recordsmanager/Classes/Utility/Misc.php');
         require_once('typo3conf/ext/recordsmanager/Classes/Controller/ExportController.php');
         $this->initTSFE();
     }
 
     /**
-     * Exec the eid
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function main()
+    public function processRequest(ServerRequestInterface $request): ResponseInterface
     {
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
@@ -164,25 +166,22 @@ class Tx_Recordsmanager_Eid_Index
     protected function initTSFE()
     {
         $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
-        \TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
-        \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
-        $GLOBALS['TSFE']->connectToDB();
-        $GLOBALS['TSFE']->initFEuser();
         $GLOBALS['TSFE']->set_no_cache();
-        $GLOBALS['TSFE']->checkAlternativeIdMethods();
+        $GLOBALS['TSFE']->fe_user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication::class);
+        $GLOBALS['TSFE']->fe_user->checkPid_value = 0;
+        $GLOBALS['TSFE']->fe_user->start();
+        $GLOBALS['TSFE']->fe_user->unpack_uc();
         $GLOBALS['TSFE']->determineId();
-        $GLOBALS['TSFE']->initTemplate();
         $GLOBALS['TSFE']->getConfigArray();
-        //\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
         $GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
         $GLOBALS['TSFE']->settingLanguage();
         $GLOBALS['TSFE']->settingLocale();
-        $GLOBALS['TYPO3_DB']->connectDB();
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
+        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
+        $GLOBALS['LANG'] = $languageService;
     }
 
 }
 
-$index = new Tx_Recordsmanager_Eid_Index();
-$index->main();
 
 
