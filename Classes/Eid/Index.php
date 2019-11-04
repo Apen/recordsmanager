@@ -1,7 +1,5 @@
 <?php
 
-namespace Sng\Recordsmanager\Eid;
-
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -9,13 +7,11 @@ namespace Sng\Recordsmanager\Eid;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
-class Index
+class Tx_Recordsmanager_Eid_Index
 {
     /**
      * Current configuration record
@@ -34,10 +30,9 @@ class Index
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @return \Psr\Http\Message\ResponseInterface
+     * Exec the eid
      */
-    public function processRequest(ServerRequestInterface $request): ResponseInterface
+    public function main()
     {
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
@@ -165,7 +160,7 @@ class Index
      */
     protected function initTSFE()
     {
-        $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
+        $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 1, 0);
         $GLOBALS['TSFE']->set_no_cache();
         $GLOBALS['TSFE']->fe_user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication::class);
         $GLOBALS['TSFE']->fe_user->checkPid_value = 0;
@@ -176,6 +171,7 @@ class Index
         $GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
         $GLOBALS['TSFE']->settingLanguage();
         $GLOBALS['TSFE']->settingLocale();
+
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG'] = $languageService;
@@ -183,5 +179,7 @@ class Index
 
 }
 
+$index = new Tx_Recordsmanager_Eid_Index();
+$index->main();
 
 
