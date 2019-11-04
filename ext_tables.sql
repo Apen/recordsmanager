@@ -28,7 +28,6 @@ CREATE TABLE tx_recordsmanager_config (
 	sqlfieldsinsert text,
 	permsgroup text,
 	insertdefaultpid tinytext,
-	insertchoosepid tinytext,
 	authlogin tinytext,
 	authpassword tinytext,
   PRIMARY KEY (uid),

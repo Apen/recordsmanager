@@ -1,92 +1,89 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <T3locallang>
-    <meta type="array">
-        <type>database</type>
-        <description>Language labels for database tables/fields belonging to extension 'recordsmanager'</description>
-    </meta>
-    <data type="array">
-        <languageKey index="default" type="array">
-            <label index="tx_recordsmanager_config">Configuration of records manager</label>
-            <label index="tx_recordsmanager_config.title">Title of the configuration</label>
-            <label index="tx_recordsmanager_config.type">Type of the configuration</label>
-            <label index="tx_recordsmanager_config.type.I.0">Edit</label>
-            <label index="tx_recordsmanager_config.type.I.1">Add</label>
-            <label index="tx_recordsmanager_config.type.I.2">Export</label>
-            <label index="tx_recordsmanager_config.type.I.3">Export eID</label>
-            <label index="tx_recordsmanager_config.sqltable">Table to list (save to refresh the fields list)</label>
-            <label index="tx_recordsmanager_config.sqlfields">Fields of the table to display in list mode</label>
-            <label index="tx_recordsmanager_config.sqlfieldsinsert">Fields of the table to display in edit/insert mode</label>
-            <label index="tx_recordsmanager_config.extrawhere">Extra WHERE (AND xxx)</label>
-            <label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
-            <label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
-            <label index="tx_recordsmanager_config.extrats">Extra typoscript code</label>
-            <label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
-            <label index="tx_recordsmanager_config.exportfilterfield">Filter field (default tstamp)</label>
-            <label index="tx_recordsmanager_config.exportmode">Export mode</label>
-            <label index="tx_recordsmanager_config.exportmode.I.0">Normal</label>
-            <label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
-            <label index="tx_recordsmanager_config.exportmode.I.2">CSV</label>
-            <label index="tx_recordsmanager_config.exportmode.I.3">EXCEL</label>
-            <label index="tx_recordsmanager_config.dateformat">Display date fields in short format</label>
-            <label index="tx_recordsmanager_config.permsgroup">Display only for this be_groups</label>
-            <label index="tx_recordsmanager_config.insertdefaultpid">Extends possible PIDs</label>
-            <label index="tx_recordsmanager_config.insertchoosepid">Allow to choose a PID</label>
-            <label index="tx_recordsmanager_config.eidkey">eID key to identify and secure your export (index.php?eID=recordsmanager&amp;eidkey=xxxxxxxxxxxx)</label>
-            <label index="tx_recordsmanager_config.excludefields">Field list not converted by the TCA</label>
-            <label index="tx_recordsmanager_config.authlogin">HTTP Auth login</label>
-            <label index="tx_recordsmanager_config.authpassword">HTTP Auth pasword</label>
-            <label index="tx_recordsmanager_config.hidefields">Fields to hide in the export (like uid for example)</label>
-        </languageKey>
-        <languageKey index="fr" type="array">
-            <label index="tx_recordsmanager_config">Configuration de "records manager"</label>
-            <label index="tx_recordsmanager_config.title">Titre de la configuration</label>
-            <label index="tx_recordsmanager_config.type">Type de la configuration</label>
-            <label index="tx_recordsmanager_config.type.I.0">Modifier</label>
-            <label index="tx_recordsmanager_config.type.I.1">Ajouter</label>
-            <label index="tx_recordsmanager_config.type.I.2">Exporter</label>
-            <label index="tx_recordsmanager_config.type.I.3">Export eID</label>
-            <label index="tx_recordsmanager_config.sqltable">Table à lister (sauvegarder pour rafraichir la liste des champs)</label>
-            <label index="tx_recordsmanager_config.sqlfields">Liste des champs à afficher en mode liste</label>
-            <label index="tx_recordsmanager_config.sqlfieldsinsert">Liste des champs à afficher en mode édition/insertion</label>
-            <label index="tx_recordsmanager_config.extrawhere">Extra WHERE (AND xxx)</label>
-            <label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
-            <label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
-            <label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
-            <label index="tx_recordsmanager_config.exportfilterfield">Champ de filtrage (par défaut tstamp)</label>
-            <label index="tx_recordsmanager_config.exportmode">Mode d'exportation</label>
-            <label index="tx_recordsmanager_config.exportmode.I.0">Normal</label>
-            <label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
-            <label index="tx_recordsmanager_config.exportmode.I.2">CSV</label>
-            <label index="tx_recordsmanager_config.exportmode.I.3">EXCEL</label>
-            <label index="tx_recordsmanager_config.dateformat">Afficher les champs de date au format court</label>
-            <label index="tx_recordsmanager_config.permsgroup">Afficher que pour les be_groups suivants</label>
-            <label index="tx_recordsmanager_config.insertdefaultpid">Surcharger les PID possibles</label>
-            <label index="tx_recordsmanager_config.insertchoosepid">Autoriser le choix de pid</label>
-            <label index="tx_recordsmanager_config.eidkey">Clef eID pour identifier et sécuriser votre export (index.php?eID=recordsmanager&amp;eidkey=xxxxxxxxxxxx)</label>
-            <label index="tx_recordsmanager_config.excludefields">Liste des champs non convertis avec le TCA</label>
-        </languageKey>
-        <languageKey index="pl" type="array">
-            <label index="tx_recordsmanager_config">Konfiguracja menedżera rekordów</label>
-            <label index="tx_recordsmanager_config.title">Tytuł konfiguracji</label>
-            <label index="tx_recordsmanager_config.type">Rodzaj konfiguracji</label>
-            <label index="tx_recordsmanager_config.type.I.0">Edytuj</label>
-            <label index="tx_recordsmanager_config.type.I.1">Dodaj</label>
-            <label index="tx_recordsmanager_config.type.I.2">Eksportuj</label>
-            <label index="tx_recordsmanager_config.sqltable">Tabela do utworzenia listy (zapisz aby odświeżyć listę pól)</label>
-            <label index="tx_recordsmanager_config.sqlfields">Pola tabeli do wyświetlenia w trybie listy</label>
-            <label index="tx_recordsmanager_config.sqlfieldsinsert">Pola tabeli do wyświetlenia w trybie edycji/dodawania</label>
-            <label index="tx_recordsmanager_config.extrawhere">Dodatkowy warunek WHERE (AND xxx)</label>
-            <label index="tx_recordsmanager_config.extragroupby">Dodatkowa klauzula GROUP BY</label>
-            <label index="tx_recordsmanager_config.extraorderby">Dodatkowa klauzula ORDER BY</label>
-            <label index="tx_recordsmanager_config.extralimit">Dodatkowa klauzula LIMIT</label>
-            <label index="tx_recordsmanager_config.exportmode">Rodzaj eksportu</label>
-            <label index="tx_recordsmanager_config.exportmode.I.0">Normalny</label>
-            <label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
-            <label index="tx_recordsmanager_config.exportmode.I.2">CSV</label>
-            <label index="tx_recordsmanager_config.exportmode.I.3">EXCEL</label>
-            <label index="tx_recordsmanager_config.permsgroup">Wyświetlaj tylko dla tych grup (be_group)</label>
-            <label index="tx_recordsmanager_config.insertdefaultpid">Rozszerz listę dostępnych wartości PID</label>
-            <label index="tx_recordsmanager_config.insertchoosepid">Pozwól na wybór wartości PID</label>
-        </languageKey>
-    </data>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'recordsmanager'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_recordsmanager_config">Configuration of records manager</label>
+			<label index="tx_recordsmanager_config.title">Title of the configuration</label>
+			<label index="tx_recordsmanager_config.type">Type of the configuration</label>
+			<label index="tx_recordsmanager_config.type.I.0">Edit</label>
+			<label index="tx_recordsmanager_config.type.I.1">Add</label>
+			<label index="tx_recordsmanager_config.type.I.2">Export</label>
+			<label index="tx_recordsmanager_config.type.I.3">Export eID</label>
+			<label index="tx_recordsmanager_config.sqltable">Table to list (save to refresh the fields list)</label>
+			<label index="tx_recordsmanager_config.sqlfields">Fields of the table to display in list mode</label>
+			<label index="tx_recordsmanager_config.sqlfieldsinsert">Fields of the table to display in edit/insert mode</label>
+			<label index="tx_recordsmanager_config.extrawhere">Extra WHERE (AND xxx)</label>
+			<label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
+			<label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
+			<label index="tx_recordsmanager_config.extrats">Extra typoscript code</label>
+			<label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
+			<label index="tx_recordsmanager_config.exportfilterfield">Filter field (default tstamp)</label>
+			<label index="tx_recordsmanager_config.exportmode">Export mode</label>
+			<label index="tx_recordsmanager_config.exportmode.I.0">Normal</label>
+			<label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
+			<label index="tx_recordsmanager_config.exportmode.I.2">CSV</label>
+			<label index="tx_recordsmanager_config.exportmode.I.3">EXCEL</label>
+			<label index="tx_recordsmanager_config.dateformat">Display date fields in short format</label>
+			<label index="tx_recordsmanager_config.permsgroup">Display only for this be_groups</label>
+			<label index="tx_recordsmanager_config.insertdefaultpid">Extends possible PIDs</label>
+			<label index="tx_recordsmanager_config.eidkey">eID key to identify and secure your export (index.php?eID=recordsmanager&amp;eidkey=xxxxxxxxxxxx)</label>
+			<label index="tx_recordsmanager_config.excludefields">Field list not converted by the TCA</label>
+			<label index="tx_recordsmanager_config.authlogin">HTTP Auth login</label>
+			<label index="tx_recordsmanager_config.authpassword">HTTP Auth pasword</label>
+			<label index="tx_recordsmanager_config.hidefields">Fields to hide in the export (like uid for example)</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="tx_recordsmanager_config">Configuration de "records manager"</label>
+			<label index="tx_recordsmanager_config.title">Titre de la configuration</label>
+			<label index="tx_recordsmanager_config.type">Type de la configuration</label>
+			<label index="tx_recordsmanager_config.type.I.0">Modifier</label>
+			<label index="tx_recordsmanager_config.type.I.1">Ajouter</label>
+			<label index="tx_recordsmanager_config.type.I.2">Exporter</label>
+			<label index="tx_recordsmanager_config.type.I.3">Export eID</label>
+			<label index="tx_recordsmanager_config.sqltable">Table à lister (sauvegarder pour rafraichir la liste des champs)</label>
+			<label index="tx_recordsmanager_config.sqlfields">Liste des champs à afficher en mode liste</label>
+			<label index="tx_recordsmanager_config.sqlfieldsinsert">Liste des champs à afficher en mode édition/insertion</label>
+			<label index="tx_recordsmanager_config.extrawhere">Extra WHERE (AND xxx)</label>
+			<label index="tx_recordsmanager_config.extragroupby">Extra GROUP BY</label>
+			<label index="tx_recordsmanager_config.extraorderby">Extra ORDER BY</label>
+			<label index="tx_recordsmanager_config.extralimit">Extra LIMIT</label>
+			<label index="tx_recordsmanager_config.exportfilterfield">Champ de filtrage (par défaut tstamp)</label>
+			<label index="tx_recordsmanager_config.exportmode">Mode d'exportation</label>
+			<label index="tx_recordsmanager_config.exportmode.I.0">Normal</label>
+			<label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
+			<label index="tx_recordsmanager_config.exportmode.I.2">CSV</label>
+			<label index="tx_recordsmanager_config.exportmode.I.3">EXCEL</label>
+			<label index="tx_recordsmanager_config.dateformat">Afficher les champs de date au format court</label>
+			<label index="tx_recordsmanager_config.permsgroup">Afficher que pour les be_groups suivants</label>
+			<label index="tx_recordsmanager_config.insertdefaultpid">Surcharger les PID possibles</label>
+			<label index="tx_recordsmanager_config.eidkey">Clef eID pour identifier et sécuriser votre export (index.php?eID=recordsmanager&amp;eidkey=xxxxxxxxxxxx)</label>
+			<label index="tx_recordsmanager_config.excludefields">Liste des champs non convertis avec le TCA</label>
+		</languageKey>
+		<languageKey index="pl" type="array">
+			<label index="tx_recordsmanager_config">Konfiguracja menedżera rekordów</label>
+			<label index="tx_recordsmanager_config.title">Tytuł konfiguracji</label>
+			<label index="tx_recordsmanager_config.type">Rodzaj konfiguracji</label>
+			<label index="tx_recordsmanager_config.type.I.0">Edytuj</label>
+			<label index="tx_recordsmanager_config.type.I.1">Dodaj</label>
+			<label index="tx_recordsmanager_config.type.I.2">Eksportuj</label>
+			<label index="tx_recordsmanager_config.sqltable">Tabela do utworzenia listy (zapisz aby odświeżyć listę pól)</label>
+			<label index="tx_recordsmanager_config.sqlfields">Pola tabeli do wyświetlenia w trybie listy</label>
+			<label index="tx_recordsmanager_config.sqlfieldsinsert">Pola tabeli do wyświetlenia w trybie edycji/dodawania</label>
+			<label index="tx_recordsmanager_config.extrawhere">Dodatkowy warunek WHERE (AND xxx)</label>
+			<label index="tx_recordsmanager_config.extragroupby">Dodatkowa klauzula GROUP BY</label>
+			<label index="tx_recordsmanager_config.extraorderby">Dodatkowa klauzula ORDER BY</label>
+			<label index="tx_recordsmanager_config.extralimit">Dodatkowa klauzula LIMIT</label>
+			<label index="tx_recordsmanager_config.exportmode">Rodzaj eksportu</label>
+			<label index="tx_recordsmanager_config.exportmode.I.0">Normalny</label>
+			<label index="tx_recordsmanager_config.exportmode.I.1">XML</label>
+			<label index="tx_recordsmanager_config.exportmode.I.2">CSV</label>
+			<label index="tx_recordsmanager_config.exportmode.I.3">EXCEL</label>
+			<label index="tx_recordsmanager_config.permsgroup">Wyświetlaj tylko dla tych grup (be_group)</label>
+			<label index="tx_recordsmanager_config.insertdefaultpid">Rozszerz listę dostępnych wartości PID</label>
+		</languageKey>
+	</data>
 </T3locallang>
