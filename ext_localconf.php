@@ -10,5 +10,5 @@ if (!defined('TYPO3_MODE')) {
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getMainFieldsClass'][] = \Sng\Recordsmanager\Hooks\TceForms::class;
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_befunc.php']['postProcessValue'][] = \Sng\Recordsmanager\Hooks\BeFunc::class.'->BE_postProcessValue';
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include'][$_EXTKEY] = 'EXT:' . $_EXTKEY . '/Classes/Eid/Index.php';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_befunc.php']['postProcessValue'][] = \Sng\Recordsmanager\Hooks\BeFunc::class . '->BE_postProcessValue';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['recordsmanager'] = \Sng\Recordsmanager\Eid\Index::class . '::processRequest';
