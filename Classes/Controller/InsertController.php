@@ -67,14 +67,28 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         // Admin specified PIDs
         if ($this->currentConfig['insertdefaultpid'] != '') {
-            $pids = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                'pages.uid,pages.title',
-                'pages',
-                'pages.deleted=0 AND pages.uid IN (' . $this->currentConfig['insertdefaultpid'] . ')' . $addWhere
-            );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+            $queryBuilder
+                ->select('uid', 'title')
+                ->from('pages')
+                ->where(
+                    $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($this->currentConfig['insertdefaultpid']))
+                )
+                ->andWhere(
+                    '1=1 ' . $addWhere
+                )
+                ->orderBy('title', 'ASC');
+            $pids = $queryBuilder->execute()->fetchAll();
             if (count($pids) > 0) {
                 foreach ($pids as $pid) {
-                    $nb = count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', $this->currentConfig['sqltable'] . '', 'pid=' . $pid['uid'] . ' AND deleted=0'));
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
+                    $queryBuilder
+                        ->select('uid')
+                        ->from($this->currentConfig['sqltable'])
+                        ->where(
+                            $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
+                        );
+                    $nb = $queryBuilder->execute()->rowCount();
                     $rootline = $temp_sys_page->getRootLine($pid['uid']);
                     $path = $this::getPathFromRootline($rootline, 30);
                     $pidsAdmin[] = array('pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb);
@@ -112,8 +126,8 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Creates a "path" string for the input root line array titles.
      * Used for writing statistics.
      *
-     * @param array $rl A rootline array!
-     * @param int $len The max length of each title from the rootline.
+     * @param array $rl  A rootline array!
+     * @param int   $len The max length of each title from the rootline.
      * @return string The path in the form "/page title/This is another pageti.../Another page
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::getConfigArray()
      */
@@ -130,7 +144,6 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         }
         return $path;
     }
-
 
     /**
      * Set the current config record
