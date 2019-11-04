@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="fr" datatype="plaintext" original="messages" date="2019-11-04T14:54:19Z">
+		<header>
+			<type>database</type>
+			<description>Language labels for database tables/fields belonging to extension 'recordsmanager'</description>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="tx_recordsmanager_config" approved="yes">
+				<source><![CDATA[Configuration of records manager]]></source>
+				<target><![CDATA[Configuration de "records manager"]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.dateformat" approved="yes">
+				<source><![CDATA[Display date fields in short format]]></source>
+				<target><![CDATA[Afficher les champs de date au format court]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.eidkey" approved="yes">
+				<source><![CDATA[eID key to identify and secure your export (index.php?eID=recordsmanager&eidkey=xxxxxxxxxxxx)]]></source>
+				<target><![CDATA[Clef eID pour identifier et sécuriser votre export (index.php?eID=recordsmanager&eidkey=xxxxxxxxxxxx)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.excludefields" approved="yes">
+				<source><![CDATA[Field list not converted by the TCA]]></source>
+				<target><![CDATA[Liste des champs non convertis avec le TCA]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportfilterfield" approved="yes">
+				<source><![CDATA[Filter field (default tstamp)]]></source>
+				<target><![CDATA[Champ de filtrage (par défaut tstamp)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode" approved="yes">
+				<source><![CDATA[Export mode]]></source>
+				<target><![CDATA[Mode d'exportation]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.0" approved="yes">
+				<source><![CDATA[Normal]]></source>
+				<target><![CDATA[Normal]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.1" approved="yes">
+				<source><![CDATA[XML]]></source>
+				<target><![CDATA[XML]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.2" approved="yes">
+				<source><![CDATA[CSV]]></source>
+				<target><![CDATA[CSV]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.3" approved="yes">
+				<source><![CDATA[EXCEL]]></source>
+				<target><![CDATA[EXCEL]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extragroupby" approved="yes">
+				<source><![CDATA[Extra GROUP BY]]></source>
+				<target><![CDATA[Extra GROUP BY]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extralimit" approved="yes">
+				<source><![CDATA[Extra LIMIT]]></source>
+				<target><![CDATA[Extra LIMIT]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extraorderby" approved="yes">
+				<source><![CDATA[Extra ORDER BY]]></source>
+				<target><![CDATA[Extra ORDER BY]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extrawhere" approved="yes">
+				<source><![CDATA[Extra WHERE (AND xxx)]]></source>
+				<target><![CDATA[Extra WHERE (AND xxx)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.insertdefaultpid" approved="yes">
+				<source><![CDATA[Extends possible PIDs]]></source>
+				<target><![CDATA[Surcharger les PID possibles]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.permsgroup" approved="yes">
+				<source><![CDATA[Display only for this be_groups]]></source>
+				<target><![CDATA[Afficher que pour les be_groups suivants]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqlfields" approved="yes">
+				<source><![CDATA[Fields of the table to display in list mode]]></source>
+				<target><![CDATA[Liste des champs à afficher en mode liste]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqlfieldsinsert" approved="yes">
+				<source><![CDATA[Fields of the table to display in edit/insert mode]]></source>
+				<target><![CDATA[Liste des champs à afficher en mode édition/insertion]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqltable" approved="yes">
+				<source><![CDATA[Table to list (save to refresh the fields list)]]></source>
+				<target><![CDATA[Table à lister (sauvegarder pour rafraichir la liste des champs)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.title" approved="yes">
+				<source><![CDATA[Title of the configuration]]></source>
+				<target><![CDATA[Titre de la configuration]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type" approved="yes">
+				<source><![CDATA[Type of the configuration]]></source>
+				<target><![CDATA[Type de la configuration]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.0" approved="yes">
+				<source><![CDATA[Edit]]></source>
+				<target><![CDATA[Modifier]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.1" approved="yes">
+				<source><![CDATA[Add]]></source>
+				<target><![CDATA[Ajouter]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.2" approved="yes">
+				<source><![CDATA[Export]]></source>
+				<target><![CDATA[Exporter]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.3" approved="yes">
+				<source><![CDATA[Export eID]]></source>
+				<target><![CDATA[Export eID]]></target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

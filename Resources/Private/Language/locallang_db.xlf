@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2019-11-04T14:54:19Z">
+		<header>
+			<type>database</type>
+			<description>Language labels for database tables/fields belonging to extension 'recordsmanager'</description>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="tx_recordsmanager_config">
+				<source><![CDATA[Configuration of records manager]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.authlogin">
+				<source><![CDATA[HTTP Auth login]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.authpassword">
+				<source><![CDATA[HTTP Auth pasword]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.dateformat">
+				<source><![CDATA[Display date fields in short format]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.eidkey">
+				<source><![CDATA[eID key to identify and secure your export (index.php?eID=recordsmanager&eidkey=xxxxxxxxxxxx)]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.excludefields">
+				<source><![CDATA[Field list not converted by the TCA]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportfilterfield">
+				<source><![CDATA[Filter field (default tstamp)]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode">
+				<source><![CDATA[Export mode]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.0">
+				<source><![CDATA[Normal]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.1">
+				<source><![CDATA[XML]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.2">
+				<source><![CDATA[CSV]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.3">
+				<source><![CDATA[EXCEL]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extragroupby">
+				<source><![CDATA[Extra GROUP BY]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extralimit">
+				<source><![CDATA[Extra LIMIT]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extraorderby">
+				<source><![CDATA[Extra ORDER BY]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extrats">
+				<source><![CDATA[Extra typoscript code]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extrawhere">
+				<source><![CDATA[Extra WHERE (AND xxx)]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.hidefields">
+				<source><![CDATA[Fields to hide in the export (like uid for example)]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.insertdefaultpid">
+				<source><![CDATA[Extends possible PIDs]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.permsgroup">
+				<source><![CDATA[Display only for this be_groups]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqlfields">
+				<source><![CDATA[Fields of the table to display in list mode]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqlfieldsinsert">
+				<source><![CDATA[Fields of the table to display in edit/insert mode]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqltable">
+				<source><![CDATA[Table to list (save to refresh the fields list)]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.title">
+				<source><![CDATA[Title of the configuration]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type">
+				<source><![CDATA[Type of the configuration]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.0">
+				<source><![CDATA[Edit]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.1">
+				<source><![CDATA[Add]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.2">
+				<source><![CDATA[Export]]></source>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.3">
+				<source><![CDATA[Export eID]]></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

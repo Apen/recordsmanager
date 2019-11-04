@@ -33,7 +33,7 @@ if (TYPO3_MODE == 'BE') {
             array(
                 'access' => 'user,group',
                 'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table.png',
-                'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:recordsmanagertitle',
+                'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:recordsmanagertitle',
             )
         );
 
@@ -49,7 +49,7 @@ if (TYPO3_MODE == 'BE') {
                 array(
                     'access' => 'user,group',
                     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/plus.png',
-                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:inserttitle',
+                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:inserttitle',
                 )
             );
         }
@@ -66,7 +66,7 @@ if (TYPO3_MODE == 'BE') {
                 array(
                     'access' => 'user,group',
                     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table-edit.png',
-                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:edittitle',
+                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:edittitle',
                 )
             );
         }
@@ -83,7 +83,7 @@ if (TYPO3_MODE == 'BE') {
                 array(
                     'access' => 'user,group',
                     'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.png',
-                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:exporttitle',
+                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:exporttitle',
                 )
             );
         }
