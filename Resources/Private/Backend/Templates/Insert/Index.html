@@ -69,35 +69,4 @@
             </table>
         </div>
     </f:if>
-
 </f:section>
-
-<f:if condition="{currentconfig.insertchoosepid}">
-    <br/>
-    <table>
-        <tr>
-            <td>
-                <input type="hidden" id="recordinsert"/>
-                <f:translate key="selectpid"/>
-            </td>
-            <td>
-                <a onclick="setFormValueOpenBrowser('db','recordinsert|||pages|'); return false;" href="#">
-                    <rm:spriteManagerIcon iconName="apps-filetree-folder-default"/>
-                </a>
-            </td>
-        </tr>
-    </table>
-</f:if>
-
-<script type="text/javascript">
-    var browserWin = "";
-    function setFormValueOpenBrowser(mode, params) {
-        var url = "{browserurl}&mode=" + mode + "&bparams=" + params;
-        browserWin = window.open(url, "Typo3WinBrowser", "height=650,width=" + (mode == "db" ? 650 : 600) + ",status=0,menubar=0,resizable=1,scrollbars=1");
-        browserWin.focus();
-    }
-    function setFormValueFromBrowseWin(fName, value, label, exclusiveValues) {
-        var idField = value.split("_");
-        jumpToUrl("{returnurl -> f:format.raw()}&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert%5Bcreate%5D=" + idField[1]);
-    }
-</script>
