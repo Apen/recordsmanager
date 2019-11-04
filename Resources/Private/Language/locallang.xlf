@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2019-11-04T14:52:25Z">
+		<header>
+			<type>module</type>
+			<description>Language labels for module &quot;txrecordsmanagerM1&quot;</description>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="addrecords">
+				<source><![CDATA[The following pages in the root line contain some records :]]></source>
+			</trans-unit>
+			<trans-unit id="areyousure">
+				<source><![CDATA[Are you sure that you want to delete this record ?]]></source>
+			</trans-unit>
+			<trans-unit id="choose">
+				<source><![CDATA[Choose an action :]]></source>
+			</trans-unit>
+			<trans-unit id="datas">
+				<source><![CDATA[Number]]></source>
+			</trans-unit>
+			<trans-unit id="download">
+				<source><![CDATA[Click to download file in %s format]]></source>
+			</trans-unit>
+			<trans-unit id="edittitle">
+				<source><![CDATA[Edit]]></source>
+			</trans-unit>
+			<trans-unit id="exporttitle">
+				<source><![CDATA[Export]]></source>
+			</trans-unit>
+			<trans-unit id="inserttitle">
+				<source><![CDATA[Add]]></source>
+			</trans-unit>
+			<trans-unit id="norecords">
+				<source><![CDATA[No available data]]></source>
+			</trans-unit>
+			<trans-unit id="pid">
+				<source><![CDATA[PID]]></source>
+			</trans-unit>
+			<trans-unit id="recordsmanagertitle">
+				<source><![CDATA[Records manager]]></source>
+			</trans-unit>
+			<trans-unit id="selectpid">
+				<source><![CDATA[Select a page folder where you want to add a record :]]></source>
+			</trans-unit>
+			<trans-unit id="storage">
+				<source><![CDATA[Storage Folders]]></source>
+			</trans-unit>
+			<trans-unit id="storageadmin">
+				<source><![CDATA[Storage Folders defined by the admin]]></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

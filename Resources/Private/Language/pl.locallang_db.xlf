@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="pl" datatype="plaintext" original="messages" date="2019-11-04T14:54:19Z">
+		<header>
+			<type>database</type>
+			<description>Language labels for database tables/fields belonging to extension 'recordsmanager'</description>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="tx_recordsmanager_config" approved="yes">
+				<source><![CDATA[Configuration of records manager]]></source>
+				<target><![CDATA[Konfiguracja menedżera rekordów]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode" approved="yes">
+				<source><![CDATA[Export mode]]></source>
+				<target><![CDATA[Rodzaj eksportu]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.0" approved="yes">
+				<source><![CDATA[Normal]]></source>
+				<target><![CDATA[Normalny]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.1" approved="yes">
+				<source><![CDATA[XML]]></source>
+				<target><![CDATA[XML]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.2" approved="yes">
+				<source><![CDATA[CSV]]></source>
+				<target><![CDATA[CSV]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.exportmode.I.3" approved="yes">
+				<source><![CDATA[EXCEL]]></source>
+				<target><![CDATA[EXCEL]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extragroupby" approved="yes">
+				<source><![CDATA[Extra GROUP BY]]></source>
+				<target><![CDATA[Dodatkowa klauzula GROUP BY]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extralimit" approved="yes">
+				<source><![CDATA[Extra LIMIT]]></source>
+				<target><![CDATA[Dodatkowa klauzula LIMIT]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extraorderby" approved="yes">
+				<source><![CDATA[Extra ORDER BY]]></source>
+				<target><![CDATA[Dodatkowa klauzula ORDER BY]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.extrawhere" approved="yes">
+				<source><![CDATA[Extra WHERE (AND xxx)]]></source>
+				<target><![CDATA[Dodatkowy warunek WHERE (AND xxx)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.insertdefaultpid" approved="yes">
+				<source><![CDATA[Extends possible PIDs]]></source>
+				<target><![CDATA[Rozszerz listę dostępnych wartości PID]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.permsgroup" approved="yes">
+				<source><![CDATA[Display only for this be_groups]]></source>
+				<target><![CDATA[Wyświetlaj tylko dla tych grup (be_group)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqlfields" approved="yes">
+				<source><![CDATA[Fields of the table to display in list mode]]></source>
+				<target><![CDATA[Pola tabeli do wyświetlenia w trybie listy]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqlfieldsinsert" approved="yes">
+				<source><![CDATA[Fields of the table to display in edit/insert mode]]></source>
+				<target><![CDATA[Pola tabeli do wyświetlenia w trybie edycji/dodawania]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.sqltable" approved="yes">
+				<source><![CDATA[Table to list (save to refresh the fields list)]]></source>
+				<target><![CDATA[Tabela do utworzenia listy (zapisz aby odświeżyć listę pól)]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.title" approved="yes">
+				<source><![CDATA[Title of the configuration]]></source>
+				<target><![CDATA[Tytuł konfiguracji]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type" approved="yes">
+				<source><![CDATA[Type of the configuration]]></source>
+				<target><![CDATA[Rodzaj konfiguracji]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.0" approved="yes">
+				<source><![CDATA[Edit]]></source>
+				<target><![CDATA[Edytuj]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.1" approved="yes">
+				<source><![CDATA[Add]]></source>
+				<target><![CDATA[Dodaj]]></target>
+			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.type.I.2" approved="yes">
+				<source><![CDATA[Export]]></source>
+				<target><![CDATA[Eksportuj]]></target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -5,7 +5,7 @@ if (!defined('TYPO3_MODE')) {
 
 $tx_recordsmanager_config = array(
     'ctrl'        => array(
-        'title'          => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config',
+        'title'          => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config',
         'label'          => 'title',
         'tstamp'         => 'tstamp',
         'crdate'         => 'crdate',
@@ -36,7 +36,7 @@ $tx_recordsmanager_config = array(
         ),
         'title'             => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.title',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.title',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -44,23 +44,23 @@ $tx_recordsmanager_config = array(
         ),
         'type'              => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.type',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type',
             'config'  => array(
                 'type'       => 'select',
                 'renderType' => 'selectSingle',
                 'size'       => '1',
                 'items'      => Array(
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.type.I.0', 0),
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.type.I.1', 1),
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.type.I.2', 2),
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.type.I.3', 3)
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.0', 0),
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.1', 1),
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.2', 2),
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.3', 3)
                 ),
                 'default'    => 0
             )
         ),
         'sqltable'          => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.sqltable',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.sqltable',
             'config'  => Array(
                 'type'          => 'select',
                 'renderType'    => 'selectSingle',
@@ -69,7 +69,7 @@ $tx_recordsmanager_config = array(
         ),
         'sqlfields'         => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.sqlfields',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.sqlfields',
             'config'  => Array(
                 'type'          => 'select',
                 'renderType'    => 'selectMultipleSideBySide',
@@ -81,7 +81,7 @@ $tx_recordsmanager_config = array(
         ),
         'extrawhere'        => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extrawhere',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.extrawhere',
             'config'  => array(
                 'type' => 'text',
                 'size' => '50',
@@ -89,7 +89,7 @@ $tx_recordsmanager_config = array(
         ),
         'extragroupby'      => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extragroupby',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.extragroupby',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -97,7 +97,7 @@ $tx_recordsmanager_config = array(
         ),
         'extrats'           => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extrats',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.extrats',
             'config'  => array(
                 'type' => 'text',
                 'size' => '100',
@@ -105,7 +105,7 @@ $tx_recordsmanager_config = array(
         ),
         'extraorderby'      => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extraorderby',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.extraorderby',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -113,7 +113,7 @@ $tx_recordsmanager_config = array(
         ),
         'extralimit'        => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.extralimit',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.extralimit',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -121,7 +121,7 @@ $tx_recordsmanager_config = array(
         ),
         'exportfilterfield' => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.exportfilterfield',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportfilterfield',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -129,14 +129,14 @@ $tx_recordsmanager_config = array(
         ),
         'exportmode'        => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.exportmode',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode',
             'config'  => array(
                 'type'       => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items'      => Array(
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.exportmode.I.1', 'xml'),
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.exportmode.I.2', 'csv'),
-                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.exportmode.I.3', 'excel'),
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.1', 'xml'),
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.2', 'csv'),
+                    Array('LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.3', 'excel'),
                 ),
                 'default'    => 0,
                 'minitems'   => 1,
@@ -146,7 +146,7 @@ $tx_recordsmanager_config = array(
         ),
         'sqlfieldsinsert'   => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.sqlfieldsinsert',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.sqlfieldsinsert',
             'config'  => Array(
                 'type'          => 'select',
                 'renderType'    => 'selectMultipleSideBySide',
@@ -158,7 +158,7 @@ $tx_recordsmanager_config = array(
         ),
         'dateformat'        => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.dateformat',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.dateformat',
             'config'  => array(
                 'type'    => 'check',
                 'default' => '0',
@@ -166,7 +166,7 @@ $tx_recordsmanager_config = array(
         ),
         'permsgroup'        => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.permsgroup',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.permsgroup',
             'config'  => array(
                 'type'                => 'select',
                 'renderType'          => 'selectMultipleSideBySide',
@@ -179,7 +179,7 @@ $tx_recordsmanager_config = array(
         ),
         'insertdefaultpid'  => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.insertdefaultpid',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.insertdefaultpid',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -187,7 +187,7 @@ $tx_recordsmanager_config = array(
         ),
         'eidkey'            => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.eidkey',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.eidkey',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -195,7 +195,7 @@ $tx_recordsmanager_config = array(
         ),
         'excludefields'     => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.excludefields',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.excludefields',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -203,7 +203,7 @@ $tx_recordsmanager_config = array(
         ),
         'authlogin'         => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.authlogin',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.authlogin',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -211,7 +211,7 @@ $tx_recordsmanager_config = array(
         ),
         'authpassword'      => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.authpassword',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.authpassword',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',
@@ -219,7 +219,7 @@ $tx_recordsmanager_config = array(
         ),
         'hidefields'        => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xml:tx_recordsmanager_config.hidefields',
+            'label'   => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.hidefields',
             'config'  => array(
                 'type' => 'input',
                 'size' => '30',

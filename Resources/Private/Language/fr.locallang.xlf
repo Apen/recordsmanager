@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="fr" datatype="plaintext" original="messages" date="2019-11-04T14:52:25Z">
+		<header>
+			<type>module</type>
+			<description>Language labels for module &quot;txrecordsmanagerM1&quot;</description>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="addrecords" approved="yes">
+				<source><![CDATA[The following pages in the root line contain some records :]]></source>
+				<target><![CDATA[Les pages suivantes de l'arborescence contiennent des enregistrements :]]></target>
+			</trans-unit>
+			<trans-unit id="areyousure" approved="yes">
+				<source><![CDATA[Are you sure that you want to delete this record ?]]></source>
+				<target><![CDATA[Etes-vous sur de vouloir supprimer cet enregistrement ?]]></target>
+			</trans-unit>
+			<trans-unit id="choose" approved="yes">
+				<source><![CDATA[Choose an action :]]></source>
+				<target><![CDATA[Choisir une action :]]></target>
+			</trans-unit>
+			<trans-unit id="datas" approved="yes">
+				<source><![CDATA[Number]]></source>
+				<target><![CDATA[Nombre]]></target>
+			</trans-unit>
+			<trans-unit id="download" approved="yes">
+				<source><![CDATA[Click to download file in %s format]]></source>
+				<target><![CDATA[Cliquer pour télécharger le fichier au format %s]]></target>
+			</trans-unit>
+			<trans-unit id="edittitle" approved="yes">
+				<source><![CDATA[Edit]]></source>
+				<target><![CDATA[Modifier]]></target>
+			</trans-unit>
+			<trans-unit id="exporttitle" approved="yes">
+				<source><![CDATA[Export]]></source>
+				<target><![CDATA[Exporter]]></target>
+			</trans-unit>
+			<trans-unit id="inserttitle" approved="yes">
+				<source><![CDATA[Add]]></source>
+				<target><![CDATA[Ajouter]]></target>
+			</trans-unit>
+			<trans-unit id="norecords" approved="yes">
+				<source><![CDATA[No available data]]></source>
+				<target><![CDATA[Aucune donnée disponible]]></target>
+			</trans-unit>
+			<trans-unit id="pid" approved="yes">
+				<source><![CDATA[PID]]></source>
+				<target><![CDATA[PID]]></target>
+			</trans-unit>
+			<trans-unit id="recordsmanagertitle" approved="yes">
+				<source><![CDATA[Records manager]]></source>
+				<target><![CDATA[Gestion des enregistrements]]></target>
+			</trans-unit>
+			<trans-unit id="selectpid" approved="yes">
+				<source><![CDATA[Select a page folder where you want to add a record :]]></source>
+				<target><![CDATA[Selectionner une page où insérer un enregistrement :]]></target>
+			</trans-unit>
+			<trans-unit id="storage" approved="yes">
+				<source><![CDATA[Storage Folders]]></source>
+				<target><![CDATA[Dossier de stockage]]></target>
+			</trans-unit>
+			<trans-unit id="storageadmin" approved="yes">
+				<source><![CDATA[Storage Folders defined by the admin]]></source>
+				<target><![CDATA[Dossier de stockage définit par l'administrateur]]></target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
