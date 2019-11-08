@@ -59,6 +59,7 @@ class Index
             }
         }
         $this->exportRecords($query, $this->getFormat());
+        exit; 
     }
 
     /**
