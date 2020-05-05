@@ -11,8 +11,6 @@ namespace Sng\Recordsmanager\Hooks;
 
 /**
  * Class TceForms
- *
- * @package Sng\Recordsmanager\Hooks
  */
 class TceForms
 {

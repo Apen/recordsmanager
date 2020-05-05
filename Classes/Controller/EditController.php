@@ -18,8 +18,6 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     /**
      * action index
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -118,6 +116,4 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }
-
 }
-

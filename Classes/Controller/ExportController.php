@@ -20,8 +20,6 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
     /**
      * action index
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -72,10 +70,10 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function getExportUrls()
     {
-        $urlsExport = array();
+        $urlsExport = [];
         $modes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->currentConfig['exportmode']);
         foreach ($modes as $mode) {
-            $urlsExport[] = array($mode, $this->getExportUrl($mode));
+            $urlsExport[] = [$mode, $this->getExportUrl($mode)];
         }
         return $urlsExport;
     }
@@ -89,7 +87,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
         $arguments = $this->request->getArguments();
-        $urlArguments = array();
+        $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
         if (!empty($arguments['startdate'])) {
             $urlArguments[$argKey]['startdate'] = $arguments['startdate'];
@@ -173,9 +171,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             header('Content-Disposition: attachment; filename=' . $filename);
             echo utf8_decode($xmlData);
             exit;
-        } else {
-            echo utf8_decode($xmlData);
         }
+        echo utf8_decode($xmlData);
     }
 
     /**
@@ -185,8 +182,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function exportToCSV(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = false)
     {
-        $rowArr = array();
-        $rows = array_merge(array($query->getHeaders()), $query->getRows());
+        $rowArr = [];
+        $rows = array_merge([$query->getHeaders()], $query->getRows());
 
         foreach ($rows as $row) {
             // utf8 with BOM for Excel
@@ -199,11 +196,10 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $mimeType = 'application/octet-stream';
                 header('Content-Type: ' . $mimeType);
                 header('Content-Disposition: attachment; filename=' . $filename);
-                echo(implode(CRLF, $rowArr));
+                echo implode(CRLF, $rowArr);
                 exit;
-            } else {
-                echo(implode(CRLF, $rowArr));
             }
+            echo implode(CRLF, $rowArr);
         }
     }
 
@@ -214,21 +210,21 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function exportToEXCEL(\Sng\Recordsmanager\Utility\Query $query)
     {
-        $rows = array_merge(array($query->getHeaders()), $query->getRows());
+        $rows = array_merge([$query->getHeaders()], $query->getRows());
 
         $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xls';
 
-        require_once(PATH_site . "typo3conf/ext/recordsmanager/Resources/Private/Php/PHPExcel-1.8.1/Classes/PHPExcel.php");
+        require_once(PATH_site . 'typo3conf/ext/recordsmanager/Resources/Private/Php/PHPExcel-1.8.1/Classes/PHPExcel.php');
 
         $objPHPExcel = new \PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
 
-        $headerStyleArray = array(
-            'font' => array(
+        $headerStyleArray = [
+            'font' => [
                 'bold' => true,
                 'size' => 12,
-            )
-        );
+            ]
+        ];
         $line = 1;
         foreach ($rows as $row) {
             $col = 0;
@@ -238,7 +234,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col, $line)->applyFromArray($headerStyleArray);
                 } else {
                     if (is_numeric($value)) {
-                        $value = $value . " ";
+                        $value = $value . ' ';
                     }
                     $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $line, $value);
                 }
@@ -282,7 +278,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function cleanString($string, $deleteLr = false)
     {
-        $quotes = array(
+        $quotes = [
             "\xe2\x82\xac" => "\xc2\x80", /* EURO SIGN */
             "\xe2\x80\x9a" => "\xc2\x82", /* SINGLE LOW-9 QUOTATION MARK */
             "\xc6\x92"     => "\xc2\x83", /* LATIN SMALL LETTER F WITH HOOK */
@@ -310,11 +306,11 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             "\xc5\x93"     => "\xc2\x9c", /* LATIN SMALL LIGATURE OE */
             "\xc5\xbe"     => "\xc2\x9e", /* LATIN SMALL LETTER Z WITH CARON */
             "\xc5\xb8"     => "\xc2\x9f" /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
-        );
+        ];
         $string = strtr($string, $quotes);
         $string = utf8_decode($string);
         if ($deleteLr === true) {
-            $string = str_replace(array("\r\n", "\n\r", "\n", "\r"), " ", $string);
+            $string = str_replace(["\r\n", "\n\r", "\n", "\r"], ' ', $string);
         }
         return $string;
     }

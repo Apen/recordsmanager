@@ -14,12 +14,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
+    /**
+     * @var array
+     */
     protected $currentConfig;
 
     /**
+     * @var string
+     */
+    private $disableFields;
+
+    /**
      * action index
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -53,15 +59,15 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         $content = '';
 
-        $pidsFind = array();
-        $pidsAdmin = array();
+        $pidsFind = [];
+        $pidsAdmin = [];
 
         // All find PIDs
         if (count($pids) > 0) {
             foreach ($pids as $pid) {
                 $rootline = $temp_sys_page->getRootLine($pid['pid']);
                 $path = $this->getPathFromRootline($rootline, 30);
-                $pidsFind[] = array('pid' => $pid['pid'], 'path' => $path, 'nbrecords' => $pid['nbrecords']);
+                $pidsFind[] = ['pid' => $pid['pid'], 'path' => $path, 'nbrecords' => $pid['nbrecords']];
             }
         }
 
@@ -91,7 +97,7 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                     $nb = $queryBuilder->execute()->rowCount();
                     $rootline = $temp_sys_page->getRootLine($pid['uid']);
                     $path = $this::getPathFromRootline($rootline, 30);
-                    $pidsAdmin[] = array('pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb);
+                    $pidsAdmin[] = ['pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb];
                 }
             }
         }
@@ -108,7 +114,6 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (!empty($arguments['create'])) {
             $this->redirectToForm($arguments['create']);
         }
-
     }
 
     /**
@@ -194,5 +199,4 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         }
         \TYPO3\CMS\Core\Utility\HttpUtility::redirect($editLink);
     }
-
 }

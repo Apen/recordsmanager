@@ -25,7 +25,7 @@ class Config
      */
     public static function getAllConfigs($type, $mode = 'db')
     {
-        $items = array();
+        $items = [];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
         $queryBuilder
             ->select('*')
@@ -82,7 +82,7 @@ class Config
      */
     public static function loadJsonConfigs()
     {
-        $jsonConfigs = array();
+        $jsonConfigs = [];
         if (!empty($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'])) {
             foreach ($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'] as $configPath) {
                 $config = json_decode(GeneralUtility::getUrl($configPath), true);
@@ -108,7 +108,7 @@ class Config
      */
     public static function getResultRowTitles($row, $table)
     {
-        $tableHeader = array();
+        $tableHeader = [];
         $conf = $GLOBALS['TCA'][$table];
         foreach ($row as $fieldName => $fieldValue) {
             $tableHeader[$fieldName] = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
@@ -125,7 +125,7 @@ class Config
      */
     public static function getResultRow($row, $table, $excludeFields = '', $export = false)
     {
-        $record = array();
+        $record = [];
         foreach ($row as $fieldName => $fieldValue) {
             if (!GeneralUtility::inList($excludeFields, $fieldName)) {
                 $record[$fieldName] = BackendUtility::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
@@ -155,7 +155,7 @@ class Config
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] == 'file') {
                     if (!empty($record[$fieldName])) {
                         $files = GeneralUtility::trimExplode(',', $record[$fieldName]);
-                        $newFiles = array();
+                        $newFiles = [];
                         foreach ($files as $file) {
                             $newFiles[] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
                         }
@@ -166,8 +166,8 @@ class Config
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] == 'sys_file_reference') {
                     $files = BackendUtility::resolveFileReferences($table, $fieldName, $row);
 
-                    $newFiles = array();
-                    $newFilesMetas = array();
+                    $newFiles = [];
+                    $newFilesMetas = [];
                     foreach ($files as $file) {
                         if (GeneralUtility::inList($excludeFields, $fieldName)) {
                             $newFiles [] = $file->getUid();
@@ -175,14 +175,14 @@ class Config
                             $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
                         }
                         $properties = $file->getProperties();
-                        $newFilesMetas [] = array(
+                        $newFilesMetas [] = [
                             'uid'         => $file->getUid(),
                             'path'        => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
                             'title'       => $properties['title'],
                             'description' => $properties['description'],
                             'alternative' => $properties['alternative'],
                             'link'        => $properties['link'],
-                        );
+                        ];
                     }
                     if (!empty($newFiles)) {
                         $record[$fieldName] = implode(', ', $newFiles);
@@ -198,12 +198,11 @@ class Config
                     (!empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE']) || !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['enableRichtext']))
                 ) {
                     $lCobj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-                    $lCobj->start(array(), '');
-                    $record[$fieldName] = $lCobj->parseFunc($record[$fieldName], array(), '< lib.parseFunc_RTE');
+                    $lCobj->start([], '');
+                    $record[$fieldName] = $lCobj->parseFunc($record[$fieldName], [], '< lib.parseFunc_RTE');
                 }
             }
         }
         return $record;
     }
-
 }

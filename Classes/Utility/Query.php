@@ -88,8 +88,8 @@ class Query
         $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
         $statement->execute();
         $first = true;
-        $rows = array();
-        $fieldsToHide = array();
+        $rows = [];
+        $fieldsToHide = [];
         if (!empty($this->config['hidefields'])) {
             $fieldsToHide = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['hidefields']);
         }
@@ -106,7 +106,7 @@ class Query
                 $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
                 if ($this->isPowermail2()) {
                     $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
-                    $powermailHeaders = array();
+                    $powermailHeaders = [];
                     foreach ($mail->getAnswers() as $answer) {
                         $powermailHeaders [] = $answer->getField()->getTitle();
                     }
@@ -114,9 +114,8 @@ class Query
                 }
                 if (($this->exportMode === true) && ($this->config['type'] == 3)) {
                     $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
-                    $this->headers = array_merge($this->headers, array('recordsmanagerkey'), $extraTsHeaders);
+                    $this->headers = array_merge($this->headers, ['recordsmanagerkey'], $extraTsHeaders);
                 }
-
             }
             $records = \Sng\Recordsmanager\Utility\Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
             if ($this->isPowermail2()) {
@@ -126,7 +125,7 @@ class Query
                 $records = array_intersect_key($records, $this->headers);
             }
             if (($this->exportMode === true) && ($this->config['type'] == 3)) {
-                $arrayToEncode = array();
+                $arrayToEncode = [];
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
                 $arrayToEncode['uidrecord'] = $records['uid'];
                 if (empty($this->config['disabledomaininkey'])) {
@@ -155,7 +154,7 @@ class Query
      */
     public function checkPids()
     {
-        $pids = array();
+        $pids = [];
         $currentQuery = $this->query;
         $currentQuery['SELECT'] = 'DISTINCT pid';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
@@ -177,9 +176,8 @@ class Query
             \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])
         ) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function setConfig($config)
@@ -286,5 +284,4 @@ class Query
     {
         $this->exportMode = $exportMode;
     }
-
 }

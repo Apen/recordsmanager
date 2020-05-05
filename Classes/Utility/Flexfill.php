@@ -21,9 +21,9 @@ class Flexfill
     {
         $tables = array_keys($GLOBALS['TCA']);
         sort($tables);
-        $params['items'] = array();
+        $params['items'] = [];
         foreach ($tables as $table) {
-            $params['items'][] = array($table, $table);
+            $params['items'][] = [$table, $table];
         }
     }
 
@@ -36,7 +36,7 @@ class Flexfill
             while ($row = $statement->fetch()) {
                 $label = $row['Field'];
                 $value = $row['Field'];
-                $params['items'][] = array($label, $value);
+                $params['items'][] = [$label, $value];
             }
         }
     }
@@ -60,10 +60,10 @@ class Flexfill
     {
         if (!empty($params['row']['sqltable'])) {
             $tableTCA = self::getTableTCA(is_array($params['row']['sqltable']) ? $params['row']['sqltable'][0] : $params['row']['sqltable']);
-            $params['items'] = array();
+            $params['items'] = [];
             foreach ($tableTCA['columns'] as $field => $fieldValue) {
-                if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->excludeFields, $field)) {
-                    $params['items'][] = array($field, $field);
+                if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList(self::excludeFields, $field)) {
+                    $params['items'][] = [$field, $field];
                 }
             }
         }
@@ -74,7 +74,7 @@ class Flexfill
      */
     public static function getDiffFieldsFromTable($table, $defaultFields)
     {
-        $fields = array();
+        $fields = [];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($table);
         $statement = $connection->prepare('SHOW COLUMNS FROM ' . $table . ' ;');
         $statement->execute();
@@ -87,5 +87,4 @@ class Flexfill
         }
         return array_diff($fields, explode(',', $defaultFields));
     }
-
 }

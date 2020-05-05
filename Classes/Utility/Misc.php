@@ -21,7 +21,7 @@ class Misc
      */
     public static function convertToMarkerArray($array, $markerPrefix = '')
     {
-        $temp = array();
+        $temp = [];
         foreach ($array as $key => $val) {
             $temp[self::convertToMarker($key, $markerPrefix)] = $val;
         }
@@ -65,10 +65,10 @@ class Misc
      * @param array $conf
      * @return array
      */
-    public static function loadAndExecTS($conf, $data = array(), $table = '')
+    public static function loadAndExecTS($conf, $data = [], $table = '')
     {
-        $tsArray = self::loadTS(array(), $conf);
-        $datas = array();
+        $tsArray = self::loadTS([], $conf);
+        $datas = [];
         $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         foreach ($tsArray as $tsKey => $tsValue) {
             if (substr($tsKey, -1) == '.') {
@@ -84,10 +84,10 @@ class Misc
                             case 'intval':
                                 if (is_array($value)) {
                                     foreach ($value as $arrayKey => $arrayValue) {
-                                        $value[$arrayKey] = intval($arrayValue);
+                                        $value[$arrayKey] = (int)$arrayValue;
                                     }
                                 } else {
-                                    $value = intval($value);
+                                    $value = (int)$value;
                                 }
                                 break;
                             case 'trimexplode':
@@ -108,12 +108,11 @@ class Misc
      * Returns an integer from a three part version number, eg '4.12.3' -> 4012003
      *
      * @param    string $verNumberStr number on format x.x.x
-     * @return   integer   Integer version of version number (where each part can count to 999)
+     * @return   int   Integer version of version number (where each part can count to 999)
      */
     public static function intFromVer($verNumberStr)
     {
         $verParts = explode('.', $verNumberStr);
-        return intval((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
+        return (int)((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
     }
-
 }
