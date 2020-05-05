@@ -18,7 +18,7 @@ class Query
     protected $checkPids = true;
     protected $exportMode = false;
     protected $headers;
-    protected $rows;
+    protected $rows = [];
     protected $config;
 
     /**
