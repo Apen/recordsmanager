@@ -59,7 +59,7 @@ class Index
             }
         }
         $this->exportRecords($query, $this->getFormat());
-        exit; 
+        exit;
     }
 
     /**
@@ -71,10 +71,9 @@ class Index
     {
         $format = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('format');
         if (!empty($format)) {
-            return strval($format);
-        } else {
-            return 'excel';
+            return (string)$format;
         }
+        return 'excel';
     }
 
     /**
@@ -86,10 +85,9 @@ class Index
     {
         $config = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eidkey');
         if (!empty($config)) {
-            return strval($config);
-        } else {
-            die('You need to specify a tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
+            return (string)$config;
         }
+        die('You need to specify a tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
     }
 
     /**
@@ -101,12 +99,12 @@ class Index
     {
         $pid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pid');
         if (!empty($pid)) {
-            $query->setWhere($query->getWhere() . ' AND pid=' . intval($pid));
+            $query->setWhere($query->getWhere() . ' AND pid=' . (int)$pid);
         }
         $query->execQuery();
         $controller = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\Recordsmanager\Controller\ExportController');
-        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-        header("Pragma: no-cache");
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
         switch ($mode) {
             case 'xml':
                 $controller->exportToXML($query, true);
@@ -181,8 +179,4 @@ class Index
         $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG'] = $languageService;
     }
-
 }
-
-
-

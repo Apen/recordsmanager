@@ -32,7 +32,6 @@ class DateViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormField
     /**
      * Initialize the arguments.
      *
-     * @return void
      * @author Sebastian Kurfürst <sebastian@typo3.org>
      * @author Christopher Hlubek <hlubek@networkteam.com>
      * @api
@@ -84,5 +83,3 @@ class DateViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormField
         return $inputDateTimeResult['html'];
     }
 }
-
-?>

@@ -14,13 +14,9 @@ namespace Sng\Recordsmanager\ViewHelpers;
  *
  * Example
  * <AdditionalReports:inList list="{AdditionalReports:session(index:'agenda', identifier:'dates')}" item="{eventDate.filtre}">...</AdditionalReports:inList>
- *
- * @package    TYPO3
- * @subpackage AdditionalReports
  */
 class ContentInfosViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
 {
-
     public function initializeArguments()
     {
         $this->registerArgument('item', 'array', 'Current item array', false, null);
@@ -82,7 +78,4 @@ class ContentInfosViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractCo
         }
         $this->templateVariableContainer->add($as, $item);
     }
-
 }
-
-?>

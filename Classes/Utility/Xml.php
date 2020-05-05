@@ -11,22 +11,21 @@ namespace Sng\Recordsmanager\Utility;
 
 class Xml
 {
-    var $topLevelName = 'typo3_test'; // Top element name
-    var $XML_recFields = array(); // Contains a list of fields for each table which should be presented in the XML output
+    public $topLevelName = 'typo3_test'; // Top element name
+    public $XML_recFields = []; // Contains a list of fields for each table which should be presented in the XML output
 
-    var $XMLIndent = 0;
-    var $Icode = '';
-    var $XMLdebug = 0;
-    var $includeNonEmptyValues = 0; // if set, all fields from records are rendered no matter their content. If not set, only 'true' (that is '' or zero) fields make it to the document.
-    var $lines = array();
+    public $XMLIndent = 0;
+    public $Icode = '';
+    public $XMLdebug = 0;
+    public $includeNonEmptyValues = 0; // if set, all fields from records are rendered no matter their content. If not set, only 'true' (that is '' or zero) fields make it to the document.
+    public $lines = [];
 
     /**
      * Constructor, setting topLevelName to the input var
      *
      * @param string        Top Level Name
-     * @return    void
      */
-    function t3lib_xml($topLevelName)
+    public function t3lib_xml($topLevelName)
     {
         $this->topLevelName = $topLevelName;
     }
@@ -36,9 +35,8 @@ class Xml
      *
      * @param string        Table name
      * @param string        Commalist of fields names from the table, $table, which is supposed to be rendered in the XML output. If a field is not in this list, it is not rendered.
-     * @return    void
      */
-    function setRecFields($table, $list)
+    public function setRecFields($table, $list)
     {
         $this->XML_recFields[$table] = $list;
     }
@@ -48,7 +46,7 @@ class Xml
      *
      * @return    string
      */
-    function getResult()
+    public function getResult()
     {
         $content = implode(LF, $this->lines);
         return $this->output($content);
@@ -56,10 +54,8 @@ class Xml
 
     /**
      * Initialize WML (WAP) document with <?xml + <!DOCTYPE header tags and setting ->topLevelName as the first level.
-     *
-     * @return    void
      */
-    function WAPHeader()
+    public function WAPHeader()
     {
         $this->lines[] = '<?xml version="1.0"?>';
         $this->lines[] = '<!DOCTYPE ' . $this->topLevelName . ' PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">';
@@ -69,10 +65,8 @@ class Xml
     /**
      * Initialize "anonymous" XML document with <?xml + <!DOCTYPE header tags and setting ->topLevelName as the first level.
      * Encoding is set to UTF-8!
-     *
-     * @return    void
      */
-    function renderHeader()
+    public function renderHeader()
     {
         $this->lines[] = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
         $this->lines[] = '<!DOCTYPE ' . $this->topLevelName . '>';
@@ -81,10 +75,8 @@ class Xml
 
     /**
      * Sets the footer (of ->topLevelName)
-     *
-     * @return    void
      */
-    function renderFooter()
+    public function renderFooter()
     {
         $this->newLevel($this->topLevelName, 0);
     }
@@ -93,16 +85,15 @@ class Xml
      * Indents/Outdents a new level named, $name
      *
      * @param string         The name of the new element for this level
-     * @param boolean        If false, then this function call will *end* the level, otherwise create it.
+     * @param bool        If false, then this function call will *end* the level, otherwise create it.
      * @param array          Array of attributes in key/value pairs which will be added to the element (tag), $name
-     * @return    void
      */
-    function newLevel($name, $beginEndFlag = 0, $params = array())
+    public function newLevel($name, $beginEndFlag = 0, $params = [])
     {
         if ($beginEndFlag) {
             $pList = '';
             if (count($params)) {
-                $par = array();
+                $par = [];
                 foreach ($params as $key => $val) {
                     $par[] = $key . '="' . htmlspecialchars($val) . '"';
                 }
@@ -122,24 +113,23 @@ class Xml
      * @param string        The XML content to output
      * @return    string        Output
      */
-    function output($content)
+    public function output($content)
     {
         if ($this->XMLdebug) {
             return '<pre>' . htmlspecialchars($content) . '</pre>
 			<hr /><font color="red">Size: ' . strlen($content) . '</font>';
-        } else {
-            return $content;
         }
+        return $content;
     }
 
     /**
      * Increments/Decrements Indentation counter, ->XMLIndent
      * Sets and returns ->Icode variable which is a line prefix consisting of a number of tab-chars corresponding to the indent-levels of the current posision (->XMLindent)
      *
-     * @param boolean        If true the XMLIndent var is increased, otherwise decreased
+     * @param bool        If true the XMLIndent var is increased, otherwise decreased
      * @return    string        ->Icode - the prefix string with TAB-chars.
      */
-    function indent($b)
+    public function indent($b)
     {
         if ($b) {
             $this->XMLIndent++;
@@ -158,9 +148,8 @@ class Xml
      *
      * @param string         Tablename
      * @param pointer        SQL resource pointer, should be reset
-     * @return    void
      */
-    function renderRecords($table, $res)
+    public function renderRecords($table, $res)
     {
         while ($row = $res->fetch()) {
             $this->addRecord($table, $row);
@@ -172,11 +161,10 @@ class Xml
      *
      * @param string        Table name
      * @param array         The row to add to XML structure from the table name
-     * @return    void
      */
-    function addRecord($table, $row)
+    public function addRecord($table, $row)
     {
-        $this->lines[] = $this->Icode . '<' . $table . ' uid="' . $row["uid"] . '">';
+        $this->lines[] = $this->Icode . '<' . $table . ' uid="' . $row['uid'] . '">';
         $this->indent(1);
         $this->getRowInXML($table, $row);
         $this->indent(0);
@@ -190,10 +178,8 @@ class Xml
      *
      * @param string        Table name
      * @param array         Row from table to add.
-     * @return    void
-     * @access private
      */
-    function getRowInXML($table, $row)
+    public function getRowInXML($table, $row)
     {
         $fields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->XML_recFields[$table], 1);
         foreach ($fields as $field) {
@@ -209,7 +195,7 @@ class Xml
      * @param string        String content to UTF-8 encode
      * @return    string        Encoded content.
      */
-    function utf8($content)
+    public function utf8($content)
     {
         return utf8_encode($content);
     }
@@ -220,7 +206,7 @@ class Xml
      * @param string        Input value
      * @return    string        Processed input value
      */
-    function substNewline($string)
+    public function substNewline($string)
     {
         return str_replace(LF, '<newline/>', $string);
     }
@@ -232,20 +218,18 @@ class Xml
      * @param string        Value from the field - will be wrapped in the elements.
      * @return    string        The wrapped string.
      */
-    function fieldWrap($field, $value)
+    public function fieldWrap($field, $value)
     {
         return '<' . $field . '>' . $value . '</' . $field . '>';
     }
 
     /**
      * Creates the BACK button for WAP documents
-     *
-     * @return    void
      */
-    function WAPback()
+    public function WAPback()
     {
         $this->newLevel('template', 1);
-        $this->newLevel('do', 1, array('type' => 'accept', 'label' => 'Back'));
+        $this->newLevel('do', 1, ['type' => 'accept', 'label' => 'Back']);
         $this->addLine('<prev/>');
         $this->newLevel('do');
         $this->newLevel('template');
@@ -255,12 +239,9 @@ class Xml
      * Add a line to the internal XML structure (automatically prefixed with ->Icode.
      *
      * @param string        Line to add to the $this->lines array
-     * @return    void
      */
-    function addLine($str)
+    public function addLine($str)
     {
         $this->lines[] = $this->Icode . $str;
     }
 }
-
-?>

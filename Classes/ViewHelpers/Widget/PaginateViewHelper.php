@@ -21,17 +21,14 @@ namespace Sng\Recordsmanager\ViewHelpers\Widget;
  *   // a <f:for> loop.
  * </f:widget.paginate>
  * </code>
- *
- * @package    TYPO3
- * @subpackage Recordsmanager
  */
 class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper
 {
 
-	/**
-	 * @var \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController
-	 */
-	protected $controller;
+    /**
+     * @var \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController
+     */
+    protected $controller;
 
     /**
      * Initialize arguments.
@@ -44,22 +41,23 @@ class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetView
         $this->registerArgument('configuration', 'array', 'configuration', false, ['itemsPerPage' => 10, 'insertAbove' => false, 'insertBelow' => true, 'maximumNumberOfLinks' => 99]);
     }
 
-	/**
-	 * Inject controller
-	 *
-	 * @param \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller
-	 * @return void
-	 */
-	public function injectController(\Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller) {
-		$this->controller = $controller;
-	}
+    /**
+     * Inject controller
+     *
+     * @param \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller
+     */
+    public function injectController(\Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller)
+    {
+        $this->controller = $controller;
+    }
 
-	/**
-	 * Render everything
-	 *
-	 * @return string
-	 */
-	public function render() {
-		return $this->initiateSubRequest();
-	}
+    /**
+     * Render everything
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return $this->initiateSubRequest();
+    }
 }

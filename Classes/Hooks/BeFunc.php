@@ -14,8 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class BeFunc
- *
- * @package Sng\Recordsmanager\Hooks
  */
 class BeFunc
 {

@@ -14,9 +14,6 @@ namespace Sng\Recordsmanager\ViewHelpers;
  *
  * Example
  * <AdditionalReports:inList list="{AdditionalReports:session(index:'agenda', identifier:'dates')}" item="{eventDate.filtre}">...</AdditionalReports:inList>
- *
- * @package    TYPO3
- * @subpackage AdditionalReports
  */
 class InListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper
 {
@@ -35,7 +32,4 @@ class InListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditio
         }
         return $this->renderElseChild();
     }
-
 }
-
-?>

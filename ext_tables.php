@@ -1,17 +1,16 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 if (TYPO3_MODE == 'BE') {
-
     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['recordsmanager']);
 
     if (($conf['enabledAdd'] == 1) || ($conf['enabledEdit'] == 1) || ($conf['enabledExport'] == 1)) {
 
         // add module after 'Web'
         if (!isset($TBE_MODULES['txrecordsmanagerM1'])) {
-            $temp_TBE_MODULES = array();
+            $temp_TBE_MODULES = [];
             foreach ($TBE_MODULES as $key => $val) {
                 if ($key === 'web') {
                     $temp_TBE_MODULES[$key] = $val;
@@ -29,12 +28,12 @@ if (TYPO3_MODE == 'BE') {
             'txrecordsmanagerM1',
             '',
             '',
-            array(),
-            array(
+            [],
+            [
                 'access' => 'user,group',
-                'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table.png',
+                'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table.png',
                 'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:recordsmanagertitle',
-            )
+            ]
         );
 
         if ($conf['enabledAdd'] == 1) {
@@ -43,14 +42,14 @@ if (TYPO3_MODE == 'BE') {
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
                 'insert', // Submodule key
                 '', // Position
-                array(
+                [
                     'Insert' => 'index',
-                ),
-                array(
+                ],
+                [
                     'access' => 'user,group',
-                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/plus.png',
+                    'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/plus.png',
                     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:inserttitle',
-                )
+                ]
             );
         }
 
@@ -60,14 +59,14 @@ if (TYPO3_MODE == 'BE') {
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
                 'edit', // Submodule key
                 '', // Position
-                array(
+                [
                     'Edit' => 'index',
-                ),
-                array(
+                ],
+                [
                     'access' => 'user,group',
-                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table-edit.png',
+                    'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/table-edit.png',
                     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:edittitle',
-                )
+                ]
             );
         }
 
@@ -77,21 +76,18 @@ if (TYPO3_MODE == 'BE') {
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
                 'export', // Submodule key
                 '', // Position
-                array(
+                [
                     'Export' => 'index',
-                ),
-                array(
+                ],
+                [
                     'access' => 'user,group',
-                    'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.png',
+                    'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/export.png',
                     'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:exporttitle',
-                )
+                ]
             );
         }
-
     }
 
     //\TYPO3\CMS\Extbase\Utility\ExtensionUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'recordsmanager');
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:recordsmanager/Configuration/TypoScript/setup.txt">');
 }
-
-?>
