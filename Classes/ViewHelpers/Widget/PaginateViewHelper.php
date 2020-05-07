@@ -2,13 +2,15 @@
 
 namespace Sng\Recordsmanager\ViewHelpers\Widget;
 
+use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController;
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
 /**
  * This ViewHelper renders a Pagination of objects.
  * Inspired by class of "news" extension
@@ -22,7 +24,7 @@ namespace Sng\Recordsmanager\ViewHelpers\Widget;
  * </f:widget.paginate>
  * </code>
  */
-class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper
+class PaginateViewHelper extends AbstractWidgetViewHelper
 {
 
     /**
@@ -36,7 +38,7 @@ class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetView
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('objects', \TYPO3\CMS\Extbase\Persistence\QueryResultInterface::class, 'The QueryResult containing all objects.', true);
+        $this->registerArgument('objects', QueryResultInterface::class, 'The QueryResult containing all objects.', true);
         $this->registerArgument('as', 'string', 'as', true);
         $this->registerArgument('configuration', 'array', 'configuration', false, ['itemsPerPage' => 10, 'insertAbove' => false, 'insertBelow' => true, 'maximumNumberOfLinks' => 99]);
     }
@@ -46,7 +48,7 @@ class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetView
      *
      * @param \Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller
      */
-    public function injectController(\Sng\Recordsmanager\ViewHelpers\Widget\Controller\PaginateController $controller)
+    public function injectController(PaginateController $controller)
     {
         $this->controller = $controller;
     }

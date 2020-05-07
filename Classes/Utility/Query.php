@@ -9,8 +9,10 @@ namespace Sng\Recordsmanager\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class Query
 {
@@ -48,7 +50,7 @@ class Query
     {
         if (!empty($this->config['sqlfields'])) {
             // we need to have the uid
-            if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->config['sqlfields'], 'uid')) {
+            if (!GeneralUtility::inList($this->config['sqlfields'], 'uid')) {
                 $this->query['SELECT'] = 'uid,' . $this->config['sqlfields'];
             } else {
                 $this->query['SELECT'] = $this->config['sqlfields'];
@@ -83,18 +85,21 @@ class Query
      */
     public function execQuery()
     {
+        $mailRepository = null;
+        $mail = null;
         $queryArray = $this->getQuery();
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
         $statement->execute();
+
         $first = true;
         $rows = [];
         $fieldsToHide = [];
         if (!empty($this->config['hidefields'])) {
-            $fieldsToHide = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['hidefields']);
+            $fieldsToHide = GeneralUtility::trimExplode(',', $this->config['hidefields']);
         }
         if ($this->isPowermail2()) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
         }
         while ($row = $statement->fetch()) {
@@ -103,9 +108,9 @@ class Query
             }
             if ($first) {
                 $first = false;
-                $this->headers = \Sng\Recordsmanager\Utility\Config::getResultRowTitles($row, $this->query['FROM']);
+                $this->headers = Config::getResultRowTitles($row, $this->query['FROM']);
                 if ($this->isPowermail2()) {
-                    $this->headers = array_intersect_key($this->headers, array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
+                    $this->headers = array_intersect_key($this->headers, array_flip(GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
                     $powermailHeaders = [];
                     foreach ($mail->getAnswers() as $answer) {
                         $powermailHeaders [] = $answer->getField()->getTitle();
@@ -113,11 +118,11 @@ class Query
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
                 if (($this->exportMode === true) && ($this->config['type'] == 3)) {
-                    $extraTsHeaders = array_keys(\Sng\Recordsmanager\Utility\Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
+                    $extraTsHeaders = array_keys(Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
                     $this->headers = array_merge($this->headers, ['recordsmanagerkey'], $extraTsHeaders);
                 }
             }
-            $records = \Sng\Recordsmanager\Utility\Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
+            $records = Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
             if ($this->isPowermail2()) {
                 foreach ($mail->getAnswers() as $answer) {
                     $records [] = $answer->getValue();
@@ -133,9 +138,9 @@ class Query
                 }
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
                 // add special typoscript value
-                $markerValues = \Sng\Recordsmanager\Utility\Misc::convertToMarkerArray($records);
+                $markerValues = Misc::convertToMarkerArray($records);
                 $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
-                $records = array_merge($records, \Sng\Recordsmanager\Utility\Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
+                $records = array_merge($records, Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
                 // hide fields if necessary
                 if (!empty($fieldsToHide)) {
                     foreach ($fieldsToHide as $fieldToHide) {
@@ -161,7 +166,7 @@ class Query
         $statement = $connection->prepare(Query::getSqlFromQueryArray($currentQuery));
         $statement->execute();
         while ($row = $statement->fetch()) {
-            $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
+            $pageinfo = BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
             if ($pageinfo !== false) {
                 $pids[] = $row['pid'];
             }
@@ -171,13 +176,8 @@ class Query
 
     public function isPowermail2()
     {
-        if (
-            ($this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
-            \TYPO3\CMS\Core\Utility\GeneralUtility::inList('2,3', $this->config['type'])
-        ) {
-            return true;
-        }
-        return false;
+        return ($this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
+            GeneralUtility::inList('2,3', $this->config['type']);
     }
 
     public function setConfig($config)

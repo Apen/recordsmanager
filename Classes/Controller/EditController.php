@@ -9,10 +9,15 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Sng\Recordsmanager\Utility\Config;
+use Sng\Recordsmanager\Utility\Flexfill;
+use Sng\Recordsmanager\Utility\Query;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class EditController extends ActionController
 {
     protected $currentConfig;
 
@@ -21,7 +26,7 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function indexAction()
     {
-        $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(0);
+        $allConfigs = Config::getAllConfigs(0);
 
         if (empty($allConfigs)) {
             return null;
@@ -41,19 +46,19 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->view->assign('returnurl', rawurlencode($this->getReturnUrl()));
         $this->view->assign('deleteurl', $this->getDeleteUrl());
         $this->view->assign('baseediturl', $this->getBaseEditUrl());
-        $this->view->assign('disableFields', implode(',', \Sng\Recordsmanager\Utility\Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
+        $this->view->assign('disableFields', implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
     }
 
     /**
      * Build the query array
      *
-     * @return Tx_Recordsmanager_Utility_Query
+     * @return \Sng\Recordsmanager\Utility\Query
      */
     public function buildQuery()
     {
         $arguments = $this->request->getArguments();
 
-        $queryObject = new  \Sng\Recordsmanager\Utility\Query();
+        $queryObject = new  Query();
         $queryObject->setConfig($this->currentConfig);
         $queryObject->buildQuery();
 
@@ -84,9 +89,8 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     {
         $arguments = $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
-        $deleteUrl = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tce_db');
-        $deleteUrl .= '&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1';
-        return $deleteUrl;
+        $deleteUrl = BackendUtility::getModuleUrl('tce_db');
+        return $deleteUrl . ('&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1');
     }
 
     /**
@@ -96,7 +100,7 @@ class EditController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     public function getBaseEditUrl()
     {
-        return \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&';
+        return BackendUtility::getModuleUrl('record_edit') . '&';
     }
 
     /**

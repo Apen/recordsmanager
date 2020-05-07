@@ -32,7 +32,7 @@ class BeFunc
                     )
                     ->orderBy('sorting', 'ASC');
                 $items = $queryBuilder->execute()->fetchAll();
-                if (count($items)) {
+                if (count($items) > 0) {
                     $config = $items[0];
                     self::$dateformat = $config['dateformat'];
                 } else {
@@ -41,7 +41,7 @@ class BeFunc
             }
             if (self::$dateformat != null) {
                 // remove the parenthesis at the end of the default date format
-                $params['value'] = preg_replace('/\s*\(.+\)/', '', $params['value']);
+                $params['value'] = preg_replace('#\s*\(.+\)#', '', $params['value']);
             }
         }
         return $params['value'];

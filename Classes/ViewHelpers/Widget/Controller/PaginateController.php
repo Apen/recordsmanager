@@ -2,18 +2,20 @@
 
 namespace Sng\Recordsmanager\ViewHelpers\Widget\Controller;
 
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
 /**
  * Paginate controller to create the pagination.
  * Extended version from fluid core
  */
-class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController
+class PaginateController extends AbstractWidgetController
 {
 
     /**
@@ -69,10 +71,10 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
     /**
      * Initialize the action and get correct configuration
      */
-    public function initializeAction()
+    protected function initializeAction()
     {
         $this->objects = $this->widgetConfiguration['objects'];
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+        ArrayUtility::mergeRecursiveWithOverrule(
             $this->configuration,
             $this->widgetConfiguration['configuration'],
             true
@@ -103,7 +105,7 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
             min($this->pagesAfter, $this->numberOfPages - $this->currentPage) + 1;
         if ($totalNumberOfLinks <= $forcedNumberOfLinks) {
             $delta = (int)(ceil(($forcedNumberOfLinks - $totalNumberOfLinks) / 2));
-            $incr = ($forcedNumberOfLinks & 1) == 0 ? 1 : 0;
+            $incr = ($forcedNumberOfLinks & 1) === 0 ? 1 : 0;
             if ($this->currentPage - ($this->pagesBefore + $delta) < 1) {
                 // Too little from the right to adjust
                 $this->pagesAfter = $forcedNumberOfLinks - $this->currentPage - 1;
@@ -136,7 +138,7 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
         // modify query
         $itemsPerPage = (integer)$this->configuration['itemsPerPage'];
 
-        if (is_a($this->objects, '\TYPO3\CMS\Extbase\Persistence\QueryResultInterface')) {
+        if (is_a($this->objects, QueryResultInterface::class)) {
             $query = $this->objects->getQuery();
 
             // limit should only be used if needed and pagination only if results > itemsPerPage
@@ -210,7 +212,7 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
         }
 
         // next pages (after current)
-        if ($end != $this->numberOfPages && $this->lessPages) {
+        if ($end !== $this->numberOfPages && $this->lessPages) {
             $pagination['morePages'] = true;
         }
 

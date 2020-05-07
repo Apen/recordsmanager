@@ -9,6 +9,10 @@ namespace Sng\Recordsmanager\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 class Misc
 {
 
@@ -49,35 +53,33 @@ class Misc
      */
     public static function loadTS($conf, $content)
     {
-        /** @var $tsparser t3lib_tsparser */
-        $tsparser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
-        // Copy conf into existing setup
+        $tsparser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $tsparser->setup = $conf;
-        // Parse the new Typoscript
         $tsparser->parse($content);
-        // Copy the resulting setup back into conf
         return $tsparser->setup;
     }
 
     /**
      * Load a TS string and return array of fields
      *
-     * @param array $conf
+     * @param array  $conf
+     * @param array  $data
+     * @param string $table
      * @return array
      */
     public static function loadAndExecTS($conf, $data = [], $table = '')
     {
         $tsArray = self::loadTS([], $conf);
         $datas = [];
-        $lCobj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $lCobj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         foreach ($tsArray as $tsKey => $tsValue) {
-            if (substr($tsKey, -1) == '.') {
+            if (substr($tsKey, -1) === '.') {
                 $field = substr($tsKey, 0, -1);
                 $lCobj->start($data, $table);
                 if (empty($tsValue['sngfunc'])) {
                     $datas[$field] = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
                 } else {
-                    $sngfuncs = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $tsValue['sngfunc']);
+                    $sngfuncs = GeneralUtility::trimExplode(',', $tsValue['sngfunc']);
                     $value = $lCobj->cObjGetSingle($tsArray[$field], $tsValue);
                     foreach ($sngfuncs as $sngfunc) {
                         switch ($sngfunc) {
@@ -91,7 +93,7 @@ class Misc
                                 }
                                 break;
                             case 'trimexplode':
-                                $value = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode($tsValue['sngfunc.']['trimexplode.']['token'], $value);
+                                $value = GeneralUtility::trimExplode($tsValue['sngfunc.']['trimexplode.']['token'], $value);
                                 break;
                             default:
                                 break;
@@ -107,8 +109,8 @@ class Misc
     /**
      * Returns an integer from a three part version number, eg '4.12.3' -> 4012003
      *
-     * @param    string $verNumberStr number on format x.x.x
-     * @return   int   Integer version of version number (where each part can count to 999)
+     * @param string $verNumberStr number on format x.x.x
+     * @return int
      */
     public static function intFromVer($verNumberStr)
     {
