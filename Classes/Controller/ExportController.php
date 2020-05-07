@@ -9,12 +9,14 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CsvUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class ExportController extends ActionController
 {
     protected $currentConfig;
 
@@ -23,7 +25,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function indexAction()
     {
-        $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(2);
+        $allConfigs = Config::getAllConfigs(2);
 
         if (empty($allConfigs)) {
             return null;
@@ -71,7 +73,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function getExportUrls()
     {
         $urlsExport = [];
-        $modes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->currentConfig['exportmode']);
+        $modes = GeneralUtility::trimExplode(',', $this->currentConfig['exportmode']);
         foreach ($modes as $mode) {
             $urlsExport[] = [$mode, $this->getExportUrl($mode)];
         }
@@ -81,6 +83,7 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     /**
      * Get export url
      *
+     * @param string $mode
      * @return string
      */
     public function getExportUrl($mode)
@@ -128,14 +131,15 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function buildQuery()
     {
+        $row = null;
         $arguments = $this->request->getArguments();
 
         $filterField = 'tstamp';
-        if (empty($row['exportfilterfield']) !== true) {
+        if (!empty($row['exportfilterfield'])) {
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
-        $queryObject = new \Sng\Recordsmanager\Utility\Query();
+        $queryObject = new Query();
         $queryObject->setConfig($this->currentConfig);
         $queryObject->buildQuery();
 
@@ -160,11 +164,20 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Export to XML
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
+     * @param bool                              $forceDisplay
      */
-    public function exportToXML(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = false)
+    public function exportToXML(Query $query, $forceDisplay = false)
     {
-        $xmlData = self::exportRecordsToXML($query->getQuery());
-        if ($forceDisplay === false) {
+        $rows = $query->getRows();
+        $xmlData = GeneralUtility::array2xml(
+            $rows,
+            '',
+            0,
+            'records',
+            0,
+            ['useIndexTagForNum' => $query->getFrom()]
+        );
+        if (!$forceDisplay) {
             $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xml';
             $mimeType = 'application/octet-stream';
             header('Content-Type: ' . $mimeType);
@@ -179,8 +192,9 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Export to CSV
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
+     * @param bool                              $forceDisplay
      */
-    public function exportToCSV(\Sng\Recordsmanager\Utility\Query $query, $forceDisplay = false)
+    public function exportToCSV(Query $query, $forceDisplay = false)
     {
         $rowArr = [];
         $rows = array_merge([$query->getHeaders()], $query->getRows());
@@ -190,8 +204,8 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(CsvUtility::csvValues($row), true));
         }
 
-        if (count($rowArr)) {
-            if ($forceDisplay === false) {
+        if (count($rowArr) > 0) {
+            if (!$forceDisplay) {
                 $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
                 $mimeType = 'application/octet-stream';
                 header('Content-Type: ' . $mimeType);
@@ -208,72 +222,25 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToEXCEL(\Sng\Recordsmanager\Utility\Query $query)
+    public function exportToEXCEL(Query $query)
     {
         $rows = array_merge([$query->getHeaders()], $query->getRows());
-
-        $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xls';
-
-        require_once(PATH_site . 'typo3conf/ext/recordsmanager/Resources/Private/Php/PHPExcel-1.8.1/Classes/PHPExcel.php');
-
-        $objPHPExcel = new \PHPExcel();
-        $objPHPExcel->setActiveSheetIndex(0);
-
-        $headerStyleArray = [
-            'font' => [
-                'bold' => true,
-                'size' => 12,
-            ]
-        ];
-        $line = 1;
-        foreach ($rows as $row) {
-            $col = 0;
-            foreach ($row as $field => $value) {
-                if ($line == 1) {
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $line, $value);
-                    $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col, $line)->applyFromArray($headerStyleArray);
-                } else {
-                    if (is_numeric($value)) {
-                        $value = $value . ' ';
-                    }
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col, $line, $value);
-                }
-                $col++;
-            }
-            $line++;
-        }
-        // return file
+        $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xlsx';
+        require_once(PATH_site . 'typo3conf/ext/recordsmanager/Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php');
+        $writer = new \XLSXWriter();
+        $writer->writeSheet($rows);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $filename);
         header('Cache-Control: max-age=0');
-        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $objWriter->save('php://output');
+        $writer->writeToStdOut();
         exit;
-    }
-
-    /**
-     * Export a query array to xml
-     *
-     * @param array $query
-     * @return string
-     */
-    public function exportRecordsToXML($query)
-    {
-        $xmlObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\\Recordsmanager\\Utility\\Xml', 'typo3_export');
-        $xmlObj->setRecFields($query['FROM'], $query['SELECT']);
-        $xmlObj->renderHeader();
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($query['FROM']);
-        $statement = $connection->prepare(Query::getSqlFromQueryArray($query));
-        $statement->execute();
-        $xmlObj->renderRecords($query['FROM'], $statement);
-        $xmlObj->renderFooter();
-        return $xmlObj->getResult();
     }
 
     /**
      * Clean a string
      *
-     * @param $string
+     * @param string $string
+     * @param bool   $deleteLr
      * @return string
      */
     public function cleanString($string, $deleteLr = false)
@@ -281,17 +248,17 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $quotes = [
             "\xe2\x82\xac" => "\xc2\x80", /* EURO SIGN */
             "\xe2\x80\x9a" => "\xc2\x82", /* SINGLE LOW-9 QUOTATION MARK */
-            "\xc6\x92"     => "\xc2\x83", /* LATIN SMALL LETTER F WITH HOOK */
+            "\xc6\x92" => "\xc2\x83", /* LATIN SMALL LETTER F WITH HOOK */
             "\xe2\x80\x9e" => "\xc2\x84", /* DOUBLE LOW-9 QUOTATION MARK */
             "\xe2\x80\xa6" => "\xc2\x85", /* HORIZONTAL ELLIPSIS */
             "\xe2\x80\xa0" => "\xc2\x86", /* DAGGER */
             "\xe2\x80\xa1" => "\xc2\x87", /* DOUBLE DAGGER */
-            "\xcb\x86"     => "\xc2\x88", /* MODIFIER LETTER CIRCUMFLEX ACCENT */
+            "\xcb\x86" => "\xc2\x88", /* MODIFIER LETTER CIRCUMFLEX ACCENT */
             "\xe2\x80\xb0" => "\xc2\x89", /* PER MILLE SIGN */
-            "\xc5\xa0"     => "\xc2\x8a", /* LATIN CAPITAL LETTER S WITH CARON */
+            "\xc5\xa0" => "\xc2\x8a", /* LATIN CAPITAL LETTER S WITH CARON */
             "\xe2\x80\xb9" => "\xc2\x8b", /* SINGLE LEFT-POINTING ANGLE QUOTATION */
-            "\xc5\x92"     => "\xc2\x8c", /* LATIN CAPITAL LIGATURE OE */
-            "\xc5\xbd"     => "\xc2\x8e", /* LATIN CAPITAL LETTER Z WITH CARON */
+            "\xc5\x92" => "\xc2\x8c", /* LATIN CAPITAL LIGATURE OE */
+            "\xc5\xbd" => "\xc2\x8e", /* LATIN CAPITAL LETTER Z WITH CARON */
             "\xe2\x80\x98" => "\xc2\x91", /* LEFT SINGLE QUOTATION MARK */
             "\xe2\x80\x99" => "\xc2\x92", /* RIGHT SINGLE QUOTATION MARK */
             "\xe2\x80\x9c" => "\xc2\x93", /* LEFT DOUBLE QUOTATION MARK */
@@ -299,17 +266,17 @@ class ExportController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             "\xe2\x80\xa2" => "\xc2\x95", /* BULLET */
             "\xe2\x80\x93" => "\xc2\x96", /* EN DASH */
             "\xe2\x80\x94" => "\xc2\x97", /* EM DASH */
-            "\xcb\x9c"     => "\xc2\x98", /* SMALL TILDE */
+            "\xcb\x9c" => "\xc2\x98", /* SMALL TILDE */
             "\xe2\x84\xa2" => "\xc2\x99", /* TRADE MARK SIGN */
-            "\xc5\xa1"     => "\xc2\x9a", /* LATIN SMALL LETTER S WITH CARON */
+            "\xc5\xa1" => "\xc2\x9a", /* LATIN SMALL LETTER S WITH CARON */
             "\xe2\x80\xba" => "\xc2\x9b", /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
-            "\xc5\x93"     => "\xc2\x9c", /* LATIN SMALL LIGATURE OE */
-            "\xc5\xbe"     => "\xc2\x9e", /* LATIN SMALL LETTER Z WITH CARON */
-            "\xc5\xb8"     => "\xc2\x9f" /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
+            "\xc5\x93" => "\xc2\x9c", /* LATIN SMALL LIGATURE OE */
+            "\xc5\xbe" => "\xc2\x9e", /* LATIN SMALL LETTER Z WITH CARON */
+            "\xc5\xb8" => "\xc2\x9f" /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
         ];
         $string = strtr($string, $quotes);
         $string = utf8_decode($string);
-        if ($deleteLr === true) {
+        if ($deleteLr) {
             $string = str_replace(["\r\n", "\n\r", "\n", "\r"], ' ', $string);
         }
         return $string;
