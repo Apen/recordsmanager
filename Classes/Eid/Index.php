@@ -11,9 +11,15 @@ namespace Sng\Recordsmanager\Eid;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Sng\Recordsmanager\Controller\ExportController;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Lang\LanguageService;
+use Sng\Recordsmanager\Utility\Query;
+use Sng\Recordsmanager\Utility\Config;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class Index
 {
@@ -22,14 +28,14 @@ class Index
      *
      * @var array
      */
-    protected $currentConfig;
+    protected $currentConfig = [];
 
     public function __construct()
     {
-        require_once('typo3conf/ext/recordsmanager/Classes/Utility/Query.php');
-        require_once('typo3conf/ext/recordsmanager/Classes/Utility/Config.php');
-        require_once('typo3conf/ext/recordsmanager/Classes/Utility/Misc.php');
-        require_once('typo3conf/ext/recordsmanager/Classes/Controller/ExportController.php');
+//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Utility/Query.php');
+//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Utility/Config.php');
+//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Utility/Misc.php');
+//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Controller/ExportController.php');
         $this->initTSFE();
     }
 
@@ -37,21 +43,17 @@ class Index
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function processRequest(ServerRequestInterface $request): ResponseInterface
+    public function processRequest(ServerRequestInterface $request)
     {
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
         if (!empty($this->currentConfig['authlogin']) && !empty($this->currentConfig['authpassword'])) {
             $userAllowed = false;
-            if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
-                if (
-                    ($_SERVER['PHP_AUTH_USER'] == $this->currentConfig['authlogin']) &&
-                    ($_SERVER['PHP_AUTH_PW'] == $this->currentConfig['authpassword'])
-                ) {
-                    $userAllowed = true;
-                }
+            if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && (($_SERVER['PHP_AUTH_USER'] == $this->currentConfig['authlogin']) &&
+                    ($_SERVER['PHP_AUTH_PW'] == $this->currentConfig['authpassword']))) {
+                $userAllowed = true;
             }
-            if ($userAllowed === false) {
+            if (!$userAllowed) {
                 // active HTTP auth
                 header('WWW-Authenticate: Basic realm="My Realm"');
                 header('HTTP/1.0 401 Unauthorized');
@@ -69,7 +71,7 @@ class Index
      */
     public function getFormat()
     {
-        $format = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('format');
+        $format = GeneralUtility::_GP('format');
         if (!empty($format)) {
             return (string)$format;
         }
@@ -83,7 +85,7 @@ class Index
      */
     public function getConfig()
     {
-        $config = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eidkey');
+        $config = GeneralUtility::_GP('eidkey');
         if (!empty($config)) {
             return (string)$config;
         }
@@ -94,15 +96,16 @@ class Index
      * Export records if needed
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
+     * @param string                            $mode
      */
     public function exportRecords($query, $mode)
     {
-        $pid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pid');
+        $pid = GeneralUtility::_GP('pid');
         if (!empty($pid)) {
             $query->setWhere($query->getWhere() . ' AND pid=' . (int)$pid);
         }
         $query->execQuery();
-        $controller = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sng\Recordsmanager\Controller\ExportController');
+        $controller = GeneralUtility::makeInstance(ExportController::class);
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         switch ($mode) {
@@ -127,7 +130,7 @@ class Index
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToJson(\Sng\Recordsmanager\Utility\Query $query)
+    public function exportToJson(Query $query)
     {
         echo json_encode($query->getRows());
     }
@@ -139,7 +142,7 @@ class Index
      */
     public function buildQuery()
     {
-        $queryObject = new \Sng\Recordsmanager\Utility\Query();
+        $queryObject = new Query();
         $queryObject->setConfig($this->currentConfig);
         $queryObject->setExportMode(true);
         $queryObject->buildQuery();
@@ -153,7 +156,7 @@ class Index
      */
     public function setCurrentConfig($eidkey)
     {
-        $this->currentConfig = \Sng\Recordsmanager\Utility\Config::getEidConfig($eidkey);
+        $this->currentConfig = Config::getEidConfig($eidkey);
         if (empty($this->currentConfig)) {
             die('You need to specify a CORRECT tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
         }
@@ -164,15 +167,15 @@ class Index
      */
     protected function initTSFE()
     {
-        $GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
+        $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
         $GLOBALS['TSFE']->set_no_cache();
-        $GLOBALS['TSFE']->fe_user = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication::class);
+        $GLOBALS['TSFE']->fe_user = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $GLOBALS['TSFE']->fe_user->checkPid_value = 0;
         $GLOBALS['TSFE']->fe_user->start();
         $GLOBALS['TSFE']->fe_user->unpack_uc();
         $GLOBALS['TSFE']->determineId();
         $GLOBALS['TSFE']->getConfigArray();
-        $GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+        $GLOBALS['TSFE']->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE']->settingLanguage();
         $GLOBALS['TSFE']->settingLocale();
         $languageService = GeneralUtility::makeInstance(LanguageService::class);

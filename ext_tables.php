@@ -9,9 +9,9 @@ if (TYPO3_MODE == 'BE') {
     if (($conf['enabledAdd'] == 1) || ($conf['enabledEdit'] == 1) || ($conf['enabledExport'] == 1)) {
 
         // add module after 'Web'
-        if (!isset($TBE_MODULES['txrecordsmanagerM1'])) {
+        if (!isset($GLOBALS['TBE_MODULES']['txrecordsmanagerM1'])) {
             $temp_TBE_MODULES = [];
-            foreach ($TBE_MODULES as $key => $val) {
+            foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
                 if ($key === 'web') {
                     $temp_TBE_MODULES[$key] = $val;
                     $temp_TBE_MODULES['txrecordsmanagerM1'] = $val;
@@ -19,7 +19,7 @@ if (TYPO3_MODE == 'BE') {
                     $temp_TBE_MODULES[$key] = $val;
                 }
             }
-            $TBE_MODULES = $temp_TBE_MODULES;
+            $GLOBALS['TBE_MODULES'] = $temp_TBE_MODULES;
             unset($temp_TBE_MODULES);
         }
 

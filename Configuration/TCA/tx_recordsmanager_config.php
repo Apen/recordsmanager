@@ -24,7 +24,6 @@ $tx_recordsmanager_config = [
     'interface' => [
         'showRecordFieldList' => 'hidden,title,type,sqltable,sqlfields,sqlfieldsinsert,perms_group'
     ],
-    'feInterface' => $TCA['tx_recordsmanager_config']['feInterface'],
     'columns' => [
         'hidden' => [
             'exclude' => 1,

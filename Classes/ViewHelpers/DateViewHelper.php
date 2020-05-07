@@ -9,6 +9,11 @@ namespace Sng\Recordsmanager\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormFieldViewHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Form\FormResultCompiler;
+
 /**
  * This view helper generates a <input> with calendar selector and date format control
  *
@@ -17,11 +22,8 @@ namespace Sng\Recordsmanager\ViewHelpers;
  * <code title="Basic usage">
  * <rm:form.date name="xxxx" />
  * </code>
- *
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
- * @api
  */
-class DateViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormFieldViewHelper
+class DateViewHelper extends AbstractFormFieldViewHelper
 {
 
     /**
@@ -55,29 +57,29 @@ class DateViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormField
         $this->tag->addAttribute('value', $this->arguments['value']);
 
         $parameterArray = [
-            'itemFormElName'  => $this->arguments['name'],
+            'itemFormElName' => $this->arguments['name'],
             'itemFormElValue' => $this->arguments['value'],
-            'fieldConf'       => [
+            'fieldConf' => [
                 'config' => [
-                    'type'       => 'input',
+                    'type' => 'input',
                     'renderType' => 'inputDateTime',
-                    'eval'       => 'date',
-                    'default'    => 0
+                    'eval' => 'date',
+                    'default' => 0
                 ]
             ],
         ];
 
         $options = [
-            'renderType'     => 'inputDateTime',
+            'renderType' => 'inputDateTime',
             //            'table'          => 'inputDateTime',
-            'fieldName'      => $this->arguments['name'],
+            'fieldName' => $this->arguments['name'],
             //            'databaseRow'    => [],
             'parameterArray' => $parameterArray
         ];
 
-        $nodeFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+        $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $inputDateTimeResult = $nodeFactory->create($options)->render();
-        $formResultCompiler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\FormResultCompiler::class);
+        $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->mergeResult($inputDateTimeResult);
         $formResultCompiler->printNeededJSFunctions();
         return $inputDateTimeResult['html'];

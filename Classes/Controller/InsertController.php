@@ -2,6 +2,8 @@
 
 namespace Sng\Recordsmanager\Controller;
 
+use Sng\Recordsmanager\Utility\Flexfill;
+use TYPO3\CMS\Core\Utility\HttpUtility;
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -9,15 +11,20 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Sng\Recordsmanager\Utility\Config;
+use TYPO3\CMS\Backend\Form\FormResultCompiler;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
-class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class InsertController extends ActionController
 {
     /**
      * @var array
      */
-    protected $currentConfig;
+    protected $currentConfig = [];
 
     /**
      * @var string
@@ -29,9 +36,9 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function indexAction()
     {
-        $allConfigs = \Sng\Recordsmanager\Utility\Config::getAllConfigs(1);
+        $allConfigs = Config::getAllConfigs(1);
 
-        $formResultCompiler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\FormResultCompiler::class);
+        $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->printNeededJSFunctions();
 
         if (empty($allConfigs)) {
@@ -42,7 +49,7 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $this->setCurrentConfig();
         $arguments = $this->request->getArguments();
 
-        $temp_sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $temp_sys_page = GeneralUtility::makeInstance(PageRepository::class);
         $addWhere = ' AND ' . $GLOBALS['BE_USER']->getPagePermsClause(1) . ' ';
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
@@ -175,8 +182,7 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function getBrowserUrl()
     {
-        $browserUrl = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('wizard_element_browser');
-        return $browserUrl;
+        return BackendUtility::getModuleUrl('wizard_element_browser');
     }
 
     /**
@@ -187,16 +193,16 @@ class InsertController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function redirectToForm($id)
     {
         $arguments = $this->request->getArguments();
-        $returnUrl = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
+        $returnUrl = BackendUtility::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
         if (!empty($arguments['menuitem'])) {
             $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
         }
-        $editLink = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
+        $editLink = BackendUtility::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
         // disabledFields
-        $this->disableFields = implode(',', \Sng\Recordsmanager\Utility\Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
+        $this->disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
             $editLink .= '&recordsHide=' . $this->disableFields;
         }
-        \TYPO3\CMS\Core\Utility\HttpUtility::redirect($editLink);
+        HttpUtility::redirect($editLink);
     }
 }

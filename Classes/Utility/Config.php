@@ -2,16 +2,17 @@
 
 namespace Sng\Recordsmanager\Utility;
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class Config
 {
@@ -37,7 +38,7 @@ class Config
         $allItems = $queryBuilder->execute()->fetchAll();
         $usergroups = explode(',', $GLOBALS['BE_USER']->user['usergroup']);
         if (!empty($allItems)) {
-            foreach ($allItems as $key => $row) {
+            foreach ($allItems as $row) {
                 $configgroups = explode(',', $row['permsgroup']);
                 $checkRights = array_intersect($usergroups, $configgroups);
                 if (($GLOBALS['BE_USER']->isAdmin()) || (count($checkRights) > 0)) {
@@ -111,7 +112,7 @@ class Config
         $tableHeader = [];
         $conf = $GLOBALS['TCA'][$table];
         foreach ($row as $fieldName => $fieldValue) {
-            $tableHeader[$fieldName] = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ? $conf['columns'][$fieldName]['label'] : $fieldName, 1);
+            $tableHeader[$fieldName] = $GLOBALS['LANG']->sL($conf['columns'][$fieldName]['label'] ?: $fieldName);
         }
         return $tableHeader;
     }
@@ -121,6 +122,8 @@ class Config
      *
      * @param array  $row
      * @param string $table
+     * @param string $excludeFields
+     * @param bool   $export
      * @return array
      */
     public static function getResultRow($row, $table, $excludeFields = '', $export = false)
@@ -129,7 +132,7 @@ class Config
         foreach ($row as $fieldName => $fieldValue) {
             if (!GeneralUtility::inList($excludeFields, $fieldName)) {
                 $record[$fieldName] = BackendUtility::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
-                if (trim($record[$fieldName]) == 'N/A') {
+                if (trim($record[$fieldName]) === 'N/A') {
                     $record[$fieldName] = '';
                 }
             } else {
@@ -138,29 +141,25 @@ class Config
                 } else {
                     $record[$fieldName] = $fieldValue;
                 }
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'input') {
-                    if (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'datetime') || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'date')) {
-                        $record[$fieldName] = $fieldValue;
-                    }
+                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'input' && (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'datetime') || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'date'))) {
+                    $record[$fieldName] = $fieldValue;
                 }
                 if (empty($record[$fieldName])) {
                     $record[$fieldName] = $fieldValue;
                 }
-                if (trim($record[$fieldName]) == 'N/A') {
+                if (trim($record[$fieldName]) === 'N/A') {
                     $record[$fieldName] = '';
                 }
             }
-            if ($export === true) {
+            if ($export) {
                 // add path to files
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] == 'file') {
-                    if (!empty($record[$fieldName])) {
-                        $files = GeneralUtility::trimExplode(',', $record[$fieldName]);
-                        $newFiles = [];
-                        foreach ($files as $file) {
-                            $newFiles[] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
-                        }
-                        $record[$fieldName] = implode(', ', $newFiles);
+                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] == 'file' && !empty($record[$fieldName])) {
+                    $files = GeneralUtility::trimExplode(',', $record[$fieldName]);
+                    $newFiles = [];
+                    foreach ($files as $file) {
+                        $newFiles[] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
                     }
+                    $record[$fieldName] = implode(', ', $newFiles);
                 }
                 // fal reference
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] == 'sys_file_reference') {
@@ -176,12 +175,12 @@ class Config
                         }
                         $properties = $file->getProperties();
                         $newFilesMetas [] = [
-                            'uid'         => $file->getUid(),
-                            'path'        => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
-                            'title'       => $properties['title'],
+                            'uid' => $file->getUid(),
+                            'path' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
+                            'title' => $properties['title'],
                             'description' => $properties['description'],
                             'alternative' => $properties['alternative'],
-                            'link'        => $properties['link'],
+                            'link' => $properties['link'],
                         ];
                     }
                     if (!empty($newFiles)) {
@@ -197,7 +196,7 @@ class Config
                     $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' &&
                     (!empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE']) || !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['enableRichtext']))
                 ) {
-                    $lCobj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+                    $lCobj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                     $lCobj->start([], '');
                     $record[$fieldName] = $lCobj->parseFunc($record[$fieldName], [], '< lib.parseFunc_RTE');
                 }
