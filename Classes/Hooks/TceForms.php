@@ -9,16 +9,26 @@ namespace Sng\Recordsmanager\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/**
- * Class TceForms
- */
-class TceForms
+use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+class TceForms implements FormDataProviderInterface
 {
-    public function getMainFields_preProcess($table, $row, $parent)
+
+    /**
+     * Add form data to result array
+     *
+     * @param array $result Initialized result array
+     * @return array Result filled with more data
+     */
+    public function addData(array $result)
     {
-        $recordsHide = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('recordsHide'));
+        $recordsHide = explode(',', GeneralUtility::_GP('recordsHide'));
         if (count($recordsHide) > 0) {
-            $parent->hiddenFieldListArr = array_merge($parent->hiddenFieldListArr, $recordsHide);
+            foreach ($recordsHide as $col) {
+                unset($result['processedTca']['columns'][$col]);
+            }
         }
+        return $result;
     }
 }
