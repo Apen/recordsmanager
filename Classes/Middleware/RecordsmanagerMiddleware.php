@@ -1,6 +1,6 @@
 <?php
 
-namespace Sng\Recordsmanager\Eid;
+namespace Sng\Recordsmanager\Middleware;
 
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
@@ -11,40 +11,40 @@ namespace Sng\Recordsmanager\Eid;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Sng\Recordsmanager\Controller\ExportController;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Lang\LanguageService;
-use Sng\Recordsmanager\Utility\Query;
 use Sng\Recordsmanager\Utility\Config;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use Sng\Recordsmanager\Utility\Query;
+use TYPO3\CMS\Core\Http\NullResponse;
+use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Index
+class RecordsmanagerMiddleware implements MiddlewareInterface
 {
+
     /**
-     * Current configuration record
+     * Process an incoming server request and return a response, optionally delegating
+     * response creation to a handler.
      *
-     * @var array
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
      */
-    protected $currentConfig = [];
-
-    public function __construct()
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Utility/Query.php');
-//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Utility/Config.php');
-//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Utility/Misc.php');
-//        require_once(__DIR__ . '/typo3conf/ext/recordsmanager/Classes/Controller/ExportController.php');
-        $this->initTSFE();
-    }
+        $recordsmanagerkey = $request->getParsedBody()['recordsmanagerkey'] ?? $request->getQueryParams()['recordsmanagerkey'] ?? null;
 
-    /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function processRequest(ServerRequestInterface $request)
-    {
+        if ($recordsmanagerkey === null) {
+            return $handler->handle($request);
+        }
+
+        // Remove any output produced until now
+        ob_clean();
+
+        /** @var Response $response */
+        $this->response = GeneralUtility::makeInstance(Response::class);
+
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
         if (!empty($this->currentConfig['authlogin']) && !empty($this->currentConfig['authpassword'])) {
@@ -60,8 +60,11 @@ class Index
                 exit;
             }
         }
+
         $this->exportRecords($query, $this->getFormat());
         exit;
+
+        return new NullResponse();
     }
 
     /**
@@ -85,7 +88,7 @@ class Index
      */
     public function getConfig()
     {
-        $config = GeneralUtility::_GP('eidkey');
+        $config = GeneralUtility::_GP('recordsmanagerkey');
         if (!empty($config)) {
             return (string)$config;
         }
@@ -106,10 +109,13 @@ class Index
         }
         $query->execQuery();
         $controller = GeneralUtility::makeInstance(ExportController::class);
+
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
+
         switch ($mode) {
             case 'xml':
+                header('Content-Type: application/xml');
                 $controller->exportToXML($query, true);
                 break;
             case 'csv':
@@ -119,8 +125,8 @@ class Index
                 $controller->exportToEXCEL($query);
                 break;
             case 'json':
-                $this->exportToJson($query);
                 header('Content-Type: application/json');
+                $this->exportToJson($query);
                 break;
         }
     }
@@ -160,26 +166,5 @@ class Index
         if (empty($this->currentConfig)) {
             die('You need to specify a CORRECT tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
         }
-    }
-
-    /**
-     * Init the TSFE array
-     */
-    protected function initTSFE()
-    {
-        $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], 0, 0);
-        $GLOBALS['TSFE']->set_no_cache();
-        $GLOBALS['TSFE']->fe_user = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        $GLOBALS['TSFE']->fe_user->checkPid_value = 0;
-        $GLOBALS['TSFE']->fe_user->start();
-        $GLOBALS['TSFE']->fe_user->unpack_uc();
-        $GLOBALS['TSFE']->determineId();
-        $GLOBALS['TSFE']->getConfigArray();
-        $GLOBALS['TSFE']->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        $GLOBALS['TSFE']->settingLanguage();
-        $GLOBALS['TSFE']->settingLocale();
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
-        $GLOBALS['LANG'] = $languageService;
     }
 }

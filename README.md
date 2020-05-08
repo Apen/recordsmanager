@@ -181,13 +181,17 @@ link.typolink {
 }
 ```
 
-Now you can acces to your JSON at this URL:
-http://www.example.com/index.php?eID=recordsmanager&eidkey=xxx&format=json
+Now, you can acces to your JSON at this URL :
+https://www.example.com/index.php?recordsmanagerkey=xxx&format=json
+
+In all version <1.5, you can acces to your JSON at this URL :
+https://www.example.com/index.php?eID=recordsmanager&eidkey=xxx&format=json
+
 
 There is also some extra GET parameter that are interesting:
 * format : json OR excel (default)
-* pid : allow to specify a PID in the url (it add a SQL query “AND pid=xxx”)
+* pid : allow to specify a PID in the url (it adds an SQL query “AND pid=xxx”)
 
-> "Export" and "Export eID" feature support "powermail" 1.x formated results (XML).
+> "Export" and "Export eID" feature support "powermail" formated results (XML).
 
 
