@@ -89,7 +89,7 @@ class EditController extends ActionController
     {
         $arguments = $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
-        $deleteUrl = BackendUtility::getModuleUrl('tce_db');
+        $deleteUrl = \Sng\Recordsmanager\Utility\Misc::getModuleUrl('tce_db');
         return $deleteUrl . ('&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1');
     }
 
@@ -100,7 +100,7 @@ class EditController extends ActionController
      */
     public function getBaseEditUrl()
     {
-        return BackendUtility::getModuleUrl('record_edit') . '&';
+        return \Sng\Recordsmanager\Utility\Misc::getModuleUrl('record_edit') . '&';
     }
 
     /**
