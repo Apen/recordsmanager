@@ -2,9 +2,10 @@
 
 namespace Sng\Recordsmanager\ViewHelpers\Widget\Controller;
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
+
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *

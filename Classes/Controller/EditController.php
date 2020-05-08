@@ -9,13 +9,13 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Flexfill;
 use Sng\Recordsmanager\Utility\Query;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class EditController extends ActionController
 {
@@ -89,7 +89,7 @@ class EditController extends ActionController
     {
         $arguments = $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
-        $deleteUrl = \Sng\Recordsmanager\Utility\Misc::getModuleUrl('tce_db');
+        $deleteUrl = Misc::getModuleUrl('tce_db');
         return $deleteUrl . ('&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1');
     }
 
@@ -100,7 +100,7 @@ class EditController extends ActionController
      */
     public function getBaseEditUrl()
     {
-        return \Sng\Recordsmanager\Utility\Misc::getModuleUrl('record_edit') . '&';
+        return Misc::getModuleUrl('record_edit') . '&';
     }
 
     /**

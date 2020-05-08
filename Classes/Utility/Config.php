@@ -112,7 +112,7 @@ class Config
         $tableHeader = [];
         $conf = $GLOBALS['TCA'][$table];
         foreach ($row as $fieldName => $fieldValue) {
-            $tableHeader[$fieldName] = \Sng\Recordsmanager\Utility\Misc::getLanguageService()->sL($conf['columns'][$fieldName]['label'] ?: $fieldName);
+            $tableHeader[$fieldName] = Misc::getLanguageService()->sL($conf['columns'][$fieldName]['label'] ?: $fieldName);
         }
         return $tableHeader;
     }

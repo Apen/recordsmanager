@@ -149,5 +149,4 @@ class Misc
         $LANG->init($GLOBALS['BE_USER']->uc['lang']);
         return $LANG;
     }
-
 }
