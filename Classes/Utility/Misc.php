@@ -9,6 +9,8 @@ namespace Sng\Recordsmanager\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -117,4 +119,35 @@ class Misc
         $verParts = explode('.', $verNumberStr);
         return (int)((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
     }
+
+    /**
+     * @param string $moduleName
+     * @param array  $urlParameters
+     * @return string
+     */
+    public static function getModuleUrl($moduleName, $urlParameters = [])
+    {
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uri = $uriBuilder->buildUriFromRoute($moduleName, $urlParameters);
+        return (string)$uri;
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
+     */
+    public static function getLanguageService()
+    {
+        // fe
+        if (!empty($GLOBALS['TSFE'])) {
+            return $GLOBALS['TSFE'];
+        }
+        // be
+        if (!empty($GLOBALS['LANG'])) {
+            return $GLOBALS['LANG'];
+        }
+        $LANG = GeneralUtility::makeInstance(LanguageService::class);
+        $LANG->init($GLOBALS['BE_USER']->uc['lang']);
+        return $LANG;
+    }
+
 }

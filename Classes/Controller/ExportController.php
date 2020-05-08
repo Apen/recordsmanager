@@ -11,6 +11,7 @@ namespace Sng\Recordsmanager\Controller;
 
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Query;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CsvUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -226,7 +227,7 @@ class ExportController extends ActionController
     {
         $rows = array_merge([$query->getHeaders()], $query->getRows());
         $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xlsx';
-        require_once(PATH_site . 'typo3conf/ext/recordsmanager/Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php');
+        require_once(Environment::getPublicPath() . '/typo3conf/ext/recordsmanager/Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php');
         $writer = new \XLSXWriter();
         $writer->writeSheet($rows);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

@@ -16,6 +16,7 @@ use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -72,7 +73,8 @@ class InsertController extends ActionController
         // All find PIDs
         if (count($pids) > 0) {
             foreach ($pids as $pid) {
-                $rootline = $temp_sys_page->getRootLine($pid['pid']);
+                $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['pid']);
+                $rootline = $rootlineUtility->get();
                 $path = $this->getPathFromRootline($rootline, 30);
                 $pidsFind[] = ['pid' => $pid['pid'], 'path' => $path, 'nbrecords' => $pid['nbrecords']];
             }
@@ -102,7 +104,8 @@ class InsertController extends ActionController
                             $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
                         );
                     $nb = $queryBuilder->execute()->rowCount();
-                    $rootline = $temp_sys_page->getRootLine($pid['uid']);
+                    $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['uid']);
+                    $rootline = $rootlineUtility->get();
                     $path = $this::getPathFromRootline($rootline, 30);
                     $pidsAdmin[] = ['pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb];
                 }
@@ -182,7 +185,7 @@ class InsertController extends ActionController
      */
     public function getBrowserUrl()
     {
-        return BackendUtility::getModuleUrl('wizard_element_browser');
+        return \Sng\Recordsmanager\Utility\Misc::getModuleUrl('wizard_element_browser');
     }
 
     /**
@@ -193,11 +196,11 @@ class InsertController extends ActionController
     public function redirectToForm($id)
     {
         $arguments = $this->request->getArguments();
-        $returnUrl = BackendUtility::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
+        $returnUrl = \Sng\Recordsmanager\Utility\Misc::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
         if (!empty($arguments['menuitem'])) {
             $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
         }
-        $editLink = BackendUtility::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
+        $editLink = \Sng\Recordsmanager\Utility\Misc::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
         // disabledFields
         $this->disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
