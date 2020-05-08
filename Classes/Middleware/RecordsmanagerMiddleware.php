@@ -16,12 +16,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Sng\Recordsmanager\Controller\ExportController;
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Query;
-use TYPO3\CMS\Core\Http\NullResponse;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RecordsmanagerMiddleware implements MiddlewareInterface
 {
+    /**
+     * Current configuration record
+     *
+     * @var array
+     */
+    protected $currentConfig = [];
 
     /**
      * Process an incoming server request and return a response, optionally delegating
@@ -42,9 +46,6 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         // Remove any output produced until now
         ob_clean();
 
-        /** @var Response $response */
-        $this->response = GeneralUtility::makeInstance(Response::class);
-
         $this->setCurrentConfig($this->getConfig());
         $query = $this->buildQuery();
         if (!empty($this->currentConfig['authlogin']) && !empty($this->currentConfig['authpassword'])) {
@@ -63,8 +64,6 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
 
         $this->exportRecords($query, $this->getFormat());
         exit;
-
-        return new NullResponse();
     }
 
     /**

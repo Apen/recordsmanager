@@ -2,8 +2,6 @@
 
 namespace Sng\Recordsmanager\Controller;
 
-use Sng\Recordsmanager\Utility\Flexfill;
-use TYPO3\CMS\Core\Utility\HttpUtility;
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -11,11 +9,13 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Config;
+use Sng\Recordsmanager\Utility\Flexfill;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -185,7 +185,7 @@ class InsertController extends ActionController
      */
     public function getBrowserUrl()
     {
-        return \Sng\Recordsmanager\Utility\Misc::getModuleUrl('wizard_element_browser');
+        return Misc::getModuleUrl('wizard_element_browser');
     }
 
     /**
@@ -196,11 +196,11 @@ class InsertController extends ActionController
     public function redirectToForm($id)
     {
         $arguments = $this->request->getArguments();
-        $returnUrl = \Sng\Recordsmanager\Utility\Misc::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
+        $returnUrl = Misc::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
         if (!empty($arguments['menuitem'])) {
             $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
         }
-        $editLink = \Sng\Recordsmanager\Utility\Misc::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
+        $editLink = Misc::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
         // disabledFields
         $this->disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
