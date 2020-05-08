@@ -1,5 +1,10 @@
-recordsmanager : records management in a backend module
-=======================================================
+# recordsmanager
+
+[![Latest Stable Version](https://img.shields.io/packagist/v/apen/recordsmanager?label=version)](https://packagist.org/packages/apen/recordsmanager)
+[![Total Downloads](https://img.shields.io/packagist/dt/apen/recordsmanager)](https://packagist.org/packages/apen/recordsmanager)
+[![TYPO3](https://img.shields.io/badge/TYPO3-9.5-orange.svg?style=flat-square)](https://typo3.org/)
+[![TYPO3](https://img.shields.io/badge/TYPO3-10.4-orange.svg?style=flat-square)](https://typo3.org/)
+
 >  Add modules to easily manage your records (insert, edit and export in backend/eID) in one place.
 
 ## What does it do?
@@ -190,7 +195,7 @@ https://www.example.com/index.php?eID=recordsmanager&eidkey=xxx&format=json
 
 There is also some extra GET parameter that are interesting:
 * format : json OR excel (default)
-* pid : allow to specify a PID in the url (it adds an SQL query “AND pid=xxx”)
+* pid : allow to specify a PID in the url (it adds anSQL query “AND pid=xxx”)
 
 > "Export" and "Export eID" feature support "powermail" formated results (XML).
 
