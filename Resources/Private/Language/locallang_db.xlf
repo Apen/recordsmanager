@@ -94,6 +94,9 @@
 			<trans-unit id="tx_recordsmanager_config.type.I.3">
 				<source><![CDATA[Export eID]]></source>
 			</trans-unit>
+			<trans-unit id="tx_recordsmanager_config.checkpid">
+				<source><![CDATA[Check Pid]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
