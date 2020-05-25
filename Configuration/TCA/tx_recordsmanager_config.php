@@ -224,11 +224,19 @@ $tx_recordsmanager_config = [
                 'size' => '30',
             ]
         ],
+        'checkpid' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.checkpid',
+            'config' => [
+                'type' => 'check',
+                'default' => '1'
+            ]
+        ],
     ],
     'types' => [
         '0' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfields, sqlfieldsinsert, extrawhere, extragroupby, extraorderby, extralimit, permsgroup'],
         '1' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfieldsinsert, insertdefaultpid, permsgroup'],
-        '2' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, exportmode, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, exportfilterfield, dateformat, permsgroup, excludefields'],
+        '2' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, exportmode, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, exportfilterfield, dateformat, permsgroup, excludefields, checkpid'],
         '3' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, eidkey, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, dateformat, excludefields, hidefields, extrats, authlogin, authpassword']
     ],
     'palettes' => [

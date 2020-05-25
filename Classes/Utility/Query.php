@@ -34,6 +34,8 @@ class Query
             $pids = $this->checkPids();
             if (count($pids) > 0) {
                 $this->query['WHERE'] .= ' AND pid IN (' . implode(',', $pids) . ')';
+            } else {
+                $this->query['WHERE'] .= ' AND 1=2';
             }
         }
 
