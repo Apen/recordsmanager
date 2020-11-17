@@ -2,6 +2,8 @@
 
 namespace Sng\Recordsmanager\Utility;
 
+use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -163,14 +165,10 @@ class Config
                 }
                 // fal reference
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] == 'sys_file_reference') {
+                    $files = [];
                     try {
                         $files = BackendUtility::resolveFileReferences($table, $fieldName, $row);
-                    } catch (\TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException $e) {
-                        /**
-                         * We just catch the exception here
-                         * Reasoning: There is nothing an editor or even admin could do
-                         */
-                    } catch (\TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException $e) {
+                    } catch (FileDoesNotExistException|ResourceDoesNotExistException $e) {
                         /**
                          * We just catch the exception here
                          * Reasoning: There is nothing an editor or even admin could do
