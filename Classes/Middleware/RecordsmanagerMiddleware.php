@@ -16,6 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Sng\Recordsmanager\Controller\ExportController;
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Query;
+use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RecordsmanagerMiddleware implements MiddlewareInterface
@@ -41,6 +43,17 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
 
         if ($recordsmanagerkey === null) {
             return $handler->handle($request);
+        }
+
+        if (!is_object($GLOBALS['BE_USER'])) {
+            $GLOBALS['BE_USER'] = GeneralUtility::makeInstance(FrontendBackendUserAuthentication::class);
+            $GLOBALS['BE_USER']->start();
+            $GLOBALS['BE_USER']->unpack_uc();
+        }
+
+        if (!is_object($GLOBALS['LANG'])) {
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+            $GLOBALS['LANG']->init('default');
         }
 
         // Remove any output produced until now
