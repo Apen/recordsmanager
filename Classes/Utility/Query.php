@@ -164,6 +164,7 @@ class Query
         $pids = [];
         $currentQuery = $this->query;
         $currentQuery['SELECT'] = 'DISTINCT pid';
+        $currentQuery['ORDERBY'] = '';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
         $statement = $connection->prepare(Query::getSqlFromQueryArray($currentQuery));
         $statement->execute();
