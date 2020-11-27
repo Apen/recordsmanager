@@ -140,7 +140,7 @@ class ExportController extends ActionController
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
-        $queryObject = new Query();
+        $queryObject = GeneralUtility::makeInstance( Query::class);
         $queryObject->setConfig($this->currentConfig);
         $queryObject->buildQuery();
 
