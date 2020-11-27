@@ -9,9 +9,9 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Flexfill;
+use Sng\Recordsmanager\Utility\Misc;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
