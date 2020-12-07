@@ -17,7 +17,7 @@
  */
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('Resources')
+    ->exclude('PHP_XLSXWriter')
     ->in(__DIR__ . '/../');
 
 return PhpCsFixer\Config::create()

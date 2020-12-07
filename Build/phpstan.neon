@@ -1,0 +1,11 @@
+parameters:
+  level: 2
+  reportUnmatchedIgnoredErrors: false
+  autoload_files:
+    - ../Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php
+  excludes_analyse:
+    - ../Build/*
+    - ../Resources/*
+  ignoreErrors:
+    - "#Undefined variable: \\$_EXTKEY#"
+    - "#Constant .*? not found.#"

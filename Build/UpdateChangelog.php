@@ -2,9 +2,9 @@
 
 class UpdateChangelog
 {
-    const CHANGELOG_FILE = 'CHANGELOG.md';
-    const GITHUB_URL = 'https://github.com/Apen/recordsmanager/';
-    const GITHUB_TAGS = 'https://api.github.com/repos/Apen/recordsmanager/git/refs/tags';
+    public const CHANGELOG_FILE = 'CHANGELOG.md';
+    public const GITHUB_URL = 'https://github.com/Apen/recordsmanager/';
+    public const GITHUB_TAGS = 'https://api.github.com/repos/Apen/recordsmanager/git/refs/tags';
 
     protected $version;
     protected $versionDate;
