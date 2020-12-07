@@ -42,7 +42,6 @@ class DateViewHelper extends AbstractFormFieldViewHelper
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
-        $this->registerTagAttribute('formName', 'string', 'Form name (need for JS calendar)', true);
     }
 
     /**
@@ -58,7 +57,7 @@ class DateViewHelper extends AbstractFormFieldViewHelper
 
         $parameterArray = [
             'itemFormElName' => $this->arguments['name'],
-            'itemFormElValue' => $this->arguments['value'],
+            'itemFormElValue' => strtotime($this->arguments['value']),
             'fieldConf' => [
                 'config' => [
                     'type' => 'input',
@@ -71,9 +70,7 @@ class DateViewHelper extends AbstractFormFieldViewHelper
 
         $options = [
             'renderType' => 'inputDateTime',
-            //            'table'          => 'inputDateTime',
             'fieldName' => $this->arguments['name'],
-            //            'databaseRow'    => [],
             'parameterArray' => $parameterArray
         ];
 
