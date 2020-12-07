@@ -58,7 +58,7 @@ class EditController extends ActionController
     {
         $arguments = $this->request->getArguments();
 
-        $queryObject = GeneralUtility::makeInstance( Query::class);
+        $queryObject = GeneralUtility::makeInstance(Query::class);
         $queryObject->setConfig($this->currentConfig);
         $queryObject->buildQuery();
 

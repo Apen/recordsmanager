@@ -2,8 +2,8 @@
 
 namespace Sng\Recordsmanager\Utility;
 
-use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
-use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -11,8 +11,8 @@ use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -173,6 +173,7 @@ class Config
                          * We just catch the exception here
                          * Reasoning: There is nothing an editor or even admin could do
                          */
+
                     }
                     $newFiles = [];
                     $newFilesMetas = [];
