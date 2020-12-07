@@ -37,7 +37,7 @@ class ExportController extends ActionController
 
         $this->buildCalendar();
         $query = $this->buildQuery();
-        $query->setCheckPids(false);
+        $query->setCheckPids((bool)$this->currentConfig['checkpid']);
         $query->setConfig($this->currentConfig);
         $query->setExportMode(true);
         $query->execQuery();
