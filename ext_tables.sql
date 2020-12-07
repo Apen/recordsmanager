@@ -10,6 +10,7 @@ CREATE TABLE tx_recordsmanager_config (
   deleted tinyint(4) DEFAULT '0' NOT NULL,
   hidden tinyint(4) DEFAULT '0' NOT NULL,
   sorting int(11) unsigned DEFAULT '0' NOT NULL,
+  checkpid int(11) DEFAULT '0' NOT NULL,
   title tinytext,
   type tinytext,
   sqltable tinytext,
