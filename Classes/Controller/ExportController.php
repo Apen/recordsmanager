@@ -43,8 +43,6 @@ class ExportController extends ActionController
         $query->execQuery();
         $this->exportRecords($query);
 
-        $this->view->assign('moreThanSeven', version_compare(TYPO3_version, '7.0.0', '>='));
-
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $this->request->getArguments());
         $this->view->assign('menuitems', $allConfigs);
@@ -61,9 +59,26 @@ class ExportController extends ActionController
      */
     public function buildCalendar()
     {
-        $arguments = $this->request->getArguments();
+        $arguments = $this->getAllArguments();
         $this->view->assign('startdate', $arguments['startdate']);
         $this->view->assign('enddate', $arguments['enddate']);
+        // ugly fix to work with widget and TYPO3 <10, will be delete later
+        $_GET['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['startdate'] = $arguments['startdate'];
+        $_GET['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['enddate'] = $arguments['enddate'];
+    }
+
+    public function getAllArguments()
+    {
+        $arguments = $this->request->getArguments();
+        if (!empty($arguments['@widget_0'])) {
+            if (!empty($arguments['@widget_0']['startdate']) && empty($arguments['startdate'])) {
+                $arguments['startdate'] = $arguments['@widget_0']['startdate'];
+            }
+            if (!empty($arguments['@widget_0']['enddate']) && empty($arguments['enddate'])) {
+                $arguments['enddate'] = $arguments['@widget_0']['enddate'];
+            }
+        }
+        return $arguments;
     }
 
     /**
@@ -140,7 +155,7 @@ class ExportController extends ActionController
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
-        $queryObject = GeneralUtility::makeInstance( Query::class);
+        $queryObject = GeneralUtility::makeInstance(Query::class);
         $queryObject->setConfig($this->currentConfig);
         $queryObject->buildQuery();
 
