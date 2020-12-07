@@ -21,7 +21,7 @@
         </f:then>
         <f:else>
             <li style="display:inline;">
-                <f:widget.link arguments="{currentPage: 0}" addQueryStringMethod="GET,POST">
+                <f:widget.link arguments="{currentPage: 0}" addQueryStringMethod="GET">
                     <rm:spriteManagerIcon iconName="actions-view-paging-first"/>
                 </f:widget.link>
             </li>
@@ -40,7 +40,7 @@
         </f:then>
         <f:else>
             <li style="display:inline;">
-                <f:widget.link arguments="{currentPage: pagination.previousPage}" addQueryStringMethod="GET,POST">
+                <f:widget.link arguments="{currentPage: pagination.previousPage}" addQueryStringMethod="GET">
                     <rm:spriteManagerIcon iconName="actions-view-paging-previous"/>
                 </f:widget.link>
             </li>
@@ -59,7 +59,7 @@
         </f:then>
         <f:else>
             <li style="display:inline;">
-                <f:widget.link arguments="{currentPage: pagination.nextPage}" addQueryStringMethod="GET,POST">
+                <f:widget.link arguments="{currentPage: pagination.nextPage}" addQueryStringMethod="GET">
                     <rm:spriteManagerIcon iconName="actions-view-paging-next"/>
                 </f:widget.link>
             </li>
@@ -79,7 +79,7 @@
         </f:then>
         <f:else>
             <li style="display:inline;">
-                <f:widget.link arguments="{currentPage: pagination.numberOfPages}" addQueryStringMethod="GET,POST">
+                <f:widget.link arguments="{currentPage: pagination.numberOfPages}" addQueryStringMethod="GET">
                     <rm:spriteManagerIcon iconName="actions-view-paging-last"/>
                 </f:widget.link>
             </li>
