@@ -177,21 +177,23 @@ class Config
                     }
                     $newFiles = [];
                     $newFilesMetas = [];
-                    foreach ($files as $file) {
-                        if (GeneralUtility::inList($excludeFields, $fieldName)) {
-                            $newFiles [] = $file->getUid();
-                        } else {
-                            $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
+                    if (!empty($files)) {
+                        foreach ($files as $file) {
+                            if (GeneralUtility::inList($excludeFields, $fieldName)) {
+                                $newFiles [] = $file->getUid();
+                            } else {
+                                $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
+                            }
+                            $properties = $file->getProperties();
+                            $newFilesMetas [] = [
+                                'uid' => $file->getUid(),
+                                'path' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
+                                'title' => $properties['title'],
+                                'description' => $properties['description'],
+                                'alternative' => $properties['alternative'],
+                                'link' => $properties['link'],
+                            ];
                         }
-                        $properties = $file->getProperties();
-                        $newFilesMetas [] = [
-                            'uid' => $file->getUid(),
-                            'path' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
-                            'title' => $properties['title'],
-                            'description' => $properties['description'],
-                            'alternative' => $properties['alternative'],
-                            'link' => $properties['link'],
-                        ];
                     }
                     if (!empty($newFiles)) {
                         $record[$fieldName] = implode(', ', $newFiles);
