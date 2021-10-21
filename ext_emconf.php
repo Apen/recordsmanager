@@ -4,7 +4,7 @@ $EM_CONF['recordsmanager'] = [
     'title' => 'Records management in a BE module',
     'description' => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
     'category' => 'module',
-    'version' => '1.5.2',
+    'version' => '1.6.0-dev',
     'state' => 'stable',
     'uploadfolder' => true,
     'createDirs' => '',
@@ -16,7 +16,7 @@ $EM_CONF['recordsmanager'] = [
         [
             'depends' =>
                 [
-                    'typo3' => '9.5.0-10.4.99',
+                    'typo3' => '10.4.0-11.5.99',
                 ],
             'conflicts' =>
                 [],

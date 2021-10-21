@@ -4,62 +4,62 @@
 
 <f:section name="content">
 
-    <f:if condition="{rows}">
-        <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 20, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
-            <div class="table-fit">
-                <table class="typo3-dblist table table-hover">
-                    <thead>
-                    <tr class="t3-row-header">
-                        <f:for each="{headers}" as="headerlabel" key="headerfield">
-                            <th class="cell">
-                                {headerlabel}
-                                <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
-                                    <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
-                                </f:link.action>
-                                <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
-                                    <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
-                                </f:link.action>
-                            </th>
-                        </f:for>
-                        <th class="cell"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <f:for each="{paginatedRows}" as="row">
-                        <tr class="db_list_normal">
-                            <f:for each="{row}" as="field">
-                                <td class="cell">{field}</td>
-                            </f:for>
-                            <td class="cell">
-                                <a onclick="top.launchView('{currentconfig.sqltable}','{row.uid}','');return false;" href="#" class="btn btn-default">
-                                    <rm:spriteManagerIcon iconName="actions-document-info"/>
-                                </a>
-                                <a onclick="jumpToUrl('{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}');" href="#" class="btn btn-default">
-                                    <rm:spriteManagerIcon iconName="actions-document-open"/>
-                                </a>
-                                <a onclick="return deleteRecord('{currentconfig.sqltable}','{row.uid}');" href="#" class="btn btn-default">
-                                    <rm:spriteManagerIcon iconName="actions-edit-delete"/>
-                                </a>
-                            </td>
-                        </tr>
+    <f:if condition="{paginator.paginatedItems}">
+        <div class="table-fit">
+            <table class="typo3-dblist table table-hover">
+                <thead>
+                <tr class="t3-row-header">
+                    <f:for each="{headers}" as="headerlabel" key="headerfield">
+                        <th class="cell">
+                            {headerlabel}
+                            <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
+                                <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
+                            </f:link.action>
+                            <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
+                                <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
+                            </f:link.action>
+                        </th>
                     </f:for>
-                    </tbody>
-                </table>
-            </div>
-        </rm:widget.paginate>
+                    <th class="cell"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{paginator.paginatedItems}" as="row">
+                    <tr class="db_list_normal">
+                        <f:for each="{row}" as="field">
+                            <td class="cell">{field}</td>
+                        </f:for>
+                        <td class="cell">
+                            <a onclick="top.TYPO3.InfoWindow.showItem('{currentconfig.sqltable}','{row.uid}','');return false;" href="#" class="btn btn-default">
+                                <rm:spriteManagerIcon iconName="actions-document-info"/>
+                            </a>
+                            <a onclick="jumpToUrl('{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}');" href="#" class="btn btn-default">
+                                <rm:spriteManagerIcon iconName="actions-document-open"/>
+                            </a>
+                            <a onclick="return deleteRecord('{currentconfig.sqltable}','{row.uid}');" href="#" class="btn btn-default">
+                                <rm:spriteManagerIcon iconName="actions-edit-delete"/>
+                            </a>
+                        </td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </div>
+        <f:render partial="Pagination" arguments="{_all}"/>
     </f:if>
 
-    <script language="javascript" type="text/javascript">
-        function jumpToUrl(URL) {
-            document.location = URL;
+    <script type="text/javascript">
+      function jumpToUrl (URL) {
+        document.location = URL
+      }
+
+      function deleteRecord (table, id) {
+        var areyousure = "<f:format.htmlspecialchars>{f:translate(key:'areyousure') -> f:format.raw()}</f:format.htmlspecialchars>"
+        var deleteurl = "{deleteurl -> f:format.raw()}"
+        if (confirm(areyousure)) {
+          jumpToUrl(deleteurl)
         }
-        function deleteRecord(table, id) {
-            var areyousure = "{f:translate(key:'areyousure') -> f:format.raw()}";
-            var deleteurl = "{deleteurl -> f:format.raw()}";
-            if (confirm(areyousure)) {
-                jumpToUrl(deleteurl);
-            }
-            return false;
-        }
-        </script>
+        return false
+      }
+    </script>
 </f:section>

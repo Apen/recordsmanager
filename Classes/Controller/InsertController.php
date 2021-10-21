@@ -17,20 +17,14 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
-class InsertController extends ActionController
+class InsertController extends AbstractController
 {
+
     /**
      * @var array
      */
-    protected $currentConfig = [];
-
-    /**
-     * @var string
-     */
-    private $disableFields;
+    protected array $currentConfig = [];
 
     /**
      * action index
@@ -38,6 +32,7 @@ class InsertController extends ActionController
     public function indexAction()
     {
         $allConfigs = Config::getAllConfigs(1);
+        $this->createMenu('index', $allConfigs);
 
         $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->printNeededJSFunctions();
@@ -48,9 +43,9 @@ class InsertController extends ActionController
 
         $this->currentConfig = $allConfigs[0];
         $this->setCurrentConfig();
+
         $arguments = $this->request->getArguments();
 
-        $temp_sys_page = GeneralUtility::makeInstance(PageRepository::class);
         $addWhere = ' AND ' . $GLOBALS['BE_USER']->getPagePermsClause(1) . ' ';
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
@@ -64,8 +59,6 @@ class InsertController extends ActionController
             )
             ->groupBy($this->currentConfig['sqltable'] . '.pid');
         $pids = $queryBuilder->execute()->fetchAll();
-
-        $content = '';
 
         $pidsFind = [];
         $pidsAdmin = [];
@@ -81,7 +74,7 @@ class InsertController extends ActionController
         }
 
         // Admin specified PIDs
-        if ($this->currentConfig['insertdefaultpid'] != '') {
+        if ($this->currentConfig['insertdefaultpid'] !== '') {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
             $queryBuilder
                 ->select('uid', 'title')
@@ -116,7 +109,6 @@ class InsertController extends ActionController
         $this->view->assign('pidsadmin', $pidsAdmin);
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $arguments);
-        $this->view->assign('menuitems', $allConfigs);
         $this->view->assign('returnurl', $this->getReturnUrl());
         $this->view->assign('browserurl', $this->getBrowserUrl());
 
@@ -124,6 +116,9 @@ class InsertController extends ActionController
         if (!empty($arguments['create'])) {
             $this->redirectToForm($arguments['create']);
         }
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -202,9 +197,9 @@ class InsertController extends ActionController
         }
         $editLink = Misc::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
         // disabledFields
-        $this->disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
+        $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
-            $editLink .= '&recordsHide=' . $this->disableFields;
+            $editLink .= '&recordsHide=' . $disableFields;
         }
         HttpUtility::redirect($editLink);
     }

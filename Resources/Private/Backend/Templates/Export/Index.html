@@ -28,37 +28,35 @@
 
     </f:form>
 
-    <f:if condition="{rows}">
-        <rm:widget.paginate objects="{rows}" as="paginatedRows" configuration="{itemsPerPage: 20, insertAbove: 1, insertBelow: 1, pagesAfter: 1, pagesBefore: 1, forceFirstPrevNextlast: 1}">
-            <div class="table-fit">
-                <table class="typo3-dblist table table-hover">
-                    <thead>
-                    <tr class="t3-row-header">
-                        <f:for each="{headers}" as="headerlabel" key="headerfield">
-                            <th class="cell">
-                                {headerlabel}
-                                <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
-                                    <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
-                                </f:link.action>
-                                <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
-                                    <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
-                                </f:link.action>
-                            </th>
+    <f:if condition="{paginator.paginatedItems}">
+        <div class="table-fit">
+            <table class="typo3-dblist table table-hover">
+                <thead>
+                <tr class="t3-row-header">
+                    <f:for each="{headers}" as="headerlabel" key="headerfield">
+                        <th class="cell">
+                            {headerlabel}
+                            <f:link.action arguments="{orderby:'{headerfield}%20DESC',menuitem:'{currentconfig.uid}'}">
+                                <rm:spriteManagerIcon iconName="status-status-sorting-desc"/>
+                            </f:link.action>
+                            <f:link.action arguments="{orderby:'{headerfield}%20ASC',menuitem:'{currentconfig.uid}'}">
+                                <rm:spriteManagerIcon iconName="status-status-sorting-asc"/>
+                            </f:link.action>
+                        </th>
+                    </f:for>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{paginator.paginatedItems}" as="row">
+                    <tr class="db_list_normal">
+                        <f:for each="{row}" as="field">
+                            <td class="cell">{field}</td>
                         </f:for>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <f:for each="{paginatedRows}" as="row">
-                        <tr class="db_list_normal">
-                            <f:for each="{row}" as="field">
-                                <td class="cell">{field}</td>
-                            </f:for>
-                        </tr>
-                    </f:for>
-                    </tbody>
-                </table>
-            </div>
-        </rm:widget.paginate>
+                </f:for>
+                </tbody>
+            </table>
+        </div>
     </f:if>
 
     <f:for each="{exportmodes}" as="exportmode">

@@ -33,10 +33,6 @@ class DateViewHelper extends AbstractFormFieldViewHelper
 
     /**
      * Initialize the arguments.
-     *
-     * @author Sebastian Kurfürst <sebastian@typo3.org>
-     * @author Christopher Hlubek <hlubek@networkteam.com>
-     * @api
      */
     public function initializeArguments()
     {
@@ -48,7 +44,6 @@ class DateViewHelper extends AbstractFormFieldViewHelper
      * Render the tag.
      *
      * @return string rendered tag.
-     * @api
      */
     public function render()
     {

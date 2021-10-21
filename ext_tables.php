@@ -44,7 +44,7 @@ if (TYPO3_MODE == 'BE') {
                 'insert', // Submodule key
                 '', // Position
                 [
-                    'Insert' => 'index',
+                    \Sng\Recordsmanager\Controller\InsertController::class => 'index',
                 ],
                 [
                     'access' => 'user,group',
@@ -61,7 +61,7 @@ if (TYPO3_MODE == 'BE') {
                 'edit', // Submodule key
                 '', // Position
                 [
-                    'Edit' => 'index',
+                    \Sng\Recordsmanager\Controller\EditController::class => 'index',
                 ],
                 [
                     'access' => 'user,group',
@@ -78,7 +78,7 @@ if (TYPO3_MODE == 'BE') {
                 'export', // Submodule key
                 '', // Position
                 [
-                    'Export' => 'index',
+                    \Sng\Recordsmanager\Controller\ExportController::class => 'index',
                 ],
                 [
                     'access' => 'user,group',

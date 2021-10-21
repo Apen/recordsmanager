@@ -1,5 +1,8 @@
 # Module configuration
 module.tx_recordsmanager {
+	settings {
+		list.paginate.maximumNumberOfLinks = 5
+	}
 	view {
 		templateRootPath = EXT:recordsmanager/Resources/Private/Backend/Templates/
 		partialRootPath = EXT:recordsmanager/Resources/Private/Backend/Partials/

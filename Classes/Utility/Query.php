@@ -39,7 +39,7 @@ class Query
             }
         }
 
-        if ($this->isPowermail2()) {
+        if ($this->isPowermail()) {
             $this->query['SELECT'] = '*';
         }
         return $this->query;
@@ -93,6 +93,7 @@ class Query
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
         $statement->execute();
+//        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($statement->, '*');
 
         $first = true;
         $rows = [];
@@ -100,18 +101,18 @@ class Query
         if (!empty($this->config['hidefields'])) {
             $fieldsToHide = GeneralUtility::trimExplode(',', $this->config['hidefields']);
         }
-        if ($this->isPowermail2()) {
+        if ($this->isPowermail()) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
         }
         while ($row = $statement->fetch()) {
-            if ($this->isPowermail2()) {
+            if ($this->isPowermail()) {
                 $mail = $mailRepository->findByUid($row['uid']);
             }
             if ($first) {
                 $first = false;
                 $this->headers = Config::getResultRowTitles($row, $this->query['FROM']);
-                if ($this->isPowermail2()) {
+                if ($this->isPowermail()) {
                     $this->headers = array_intersect_key($this->headers, array_flip(GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
                     $powermailHeaders = [];
                     foreach ($mail->getAnswers() as $answer) {
@@ -125,7 +126,7 @@ class Query
                 }
             }
             $records = Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
-            if ($this->isPowermail2()) {
+            if ($this->isPowermail()) {
                 foreach ($mail->getAnswers() as $answer) {
                     $records [] = $answer->getValue();
                 }
@@ -177,10 +178,12 @@ class Query
         return $pids;
     }
 
-    public function isPowermail2()
+    public function isPowermail()
     {
-        return ($this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
-            GeneralUtility::inList('2,3', $this->config['type']);
+        return (
+            $this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
+            GeneralUtility::inList('2,3', $this->config['type']
+            );
     }
 
     public function setConfig($config)
