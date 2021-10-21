@@ -17,16 +17,17 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-class EditController extends ActionController
+class EditController extends AbstractController
 {
     protected $currentConfig;
 
     /**
-     * action index
+     * @param int        $currentPage
      */
-    public function indexAction()
+    public function indexAction(int $currentPage = 1)
     {
         $allConfigs = Config::getAllConfigs(0);
+        $this->createMenu('index', $allConfigs);
 
         if (empty($allConfigs)) {
             return null;
@@ -38,8 +39,9 @@ class EditController extends ActionController
         $query = $this->buildQuery();
         $query->execQuery();
 
+        $this->buildPagination($query->getRows(), $currentPage);
+
         $this->view->assign('headers', $query->getHeaders());
-        $this->view->assign('rows', $query->getRows());
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $this->request->getArguments());
         $this->view->assign('menuitems', $allConfigs);
@@ -47,6 +49,9 @@ class EditController extends ActionController
         $this->view->assign('deleteurl', $this->getDeleteUrl());
         $this->view->assign('baseediturl', $this->getBaseEditUrl());
         $this->view->assign('disableFields', implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
     }
 
     /**

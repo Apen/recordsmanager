@@ -17,16 +17,17 @@ use TYPO3\CMS\Core\Utility\CsvUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-class ExportController extends ActionController
+class ExportController extends AbstractController
 {
     protected $currentConfig;
 
     /**
      * action index
      */
-    public function indexAction()
+    public function indexAction(int $currentPage = 1)
     {
         $allConfigs = Config::getAllConfigs(2);
+        $this->createMenu('index', $allConfigs);
 
         if (empty($allConfigs)) {
             return null;
@@ -41,17 +42,19 @@ class ExportController extends ActionController
         $query->setConfig($this->currentConfig);
         $query->setExportMode(true);
         $query->execQuery();
+        $this->buildPagination($query->getRows(), $currentPage);
         $this->exportRecords($query);
 
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $this->request->getArguments());
-        $this->view->assign('menuitems', $allConfigs);
 
         if ($query->getNbRows() > 0) {
             $this->view->assign('headers', $query->getHeaders());
-            $this->view->assign('rows', $query->getRows());
             $this->view->assign('exportmodes', $this->getExportUrls());
         }
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
     }
 
     /**

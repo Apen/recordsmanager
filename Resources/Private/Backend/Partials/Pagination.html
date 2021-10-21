@@ -1,0 +1,52 @@
+<nav>
+    <ul class="pagination pagination-lg">
+        <f:if condition="{pagination.previousPageNumber} && {pagination.previousPageNumber} >= {pagination.firstPageNumber}">
+            <f:then>
+                <li class="page-item">
+                    <a class="page-link" href="{f:uri.action(addQueryString:1,arguments:{currentPage: 1,overwriteDemand:overwriteDemand})}">
+                        &lt;&lt;
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{f:uri.action(addQueryString:1,arguments:{currentPage: pagination.previousPageNumber,overwriteDemand:overwriteDemand})}">
+                        &lt;
+                    </a>
+                </li>
+            </f:then>
+        </f:if>
+        <f:if condition="{pagination.hasLessPages}">
+            <li class="page-item"><a class="page-link" href="#">…</a></li>
+        </f:if>
+        <f:for each="{pagination.pages}" as="page">
+            <f:if condition="{page.isCurrent}">
+                <f:then>
+                    <li class="page-item active"><a class="page-link" href="#">{page.number}</a></li>
+                </f:then>
+                <f:else>
+                    <li class="page-item">
+                        <a class="page-link" href="{f:uri.action(addQueryString:1,arguments:{currentPage: page.number,overwriteDemand:overwriteDemand})}" title="{page.number}">
+                            {page.number}
+                        </a>
+                    </li>
+                </f:else>
+            </f:if>
+        </f:for>
+        <f:if condition="{pagination.hasMorePages}">
+            <li class="page-item"><a class="page-link" href="#">…</a></li>
+        </f:if>
+        <f:if condition="{pagination.nextPageNumber} && {pagination.nextPageNumber} <= {pagination.lastPageNumber}">
+            <f:then>
+                <li class="page-item">
+                    <a class="page-link" href="{f:uri.action(addQueryString:1,arguments:{currentPage: pagination.nextPageNumber,overwriteDemand:overwriteDemand})}">
+                        &gt;
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{f:uri.action(addQueryString:1,arguments:{currentPage: pagination.lastPageNumber,overwriteDemand:overwriteDemand})}">
+                        &gt;&gt;
+                    </a>
+                </li>
+            </f:then>
+        </f:if>
+    </ul>
+</nav>
