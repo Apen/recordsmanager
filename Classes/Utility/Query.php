@@ -182,7 +182,9 @@ class Query
     {
         return (
             $this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
-            GeneralUtility::inList('2,3', $this->config['type']
+            GeneralUtility::inList(
+                '2,3',
+                $this->config['type']
             );
     }
 

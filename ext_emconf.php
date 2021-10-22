@@ -6,7 +6,6 @@ $EM_CONF['recordsmanager'] = [
     'category' => 'module',
     'version' => '1.6.0-dev',
     'state' => 'stable',
-    'uploadfolder' => true,
     'createDirs' => '',
     'clearcacheonload' => true,
     'author' => 'CERDAN Yohann [Site-nGo]',

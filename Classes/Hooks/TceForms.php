@@ -14,7 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TceForms implements FormDataProviderInterface
 {
-
     /**
      * Add form data to result array
      *

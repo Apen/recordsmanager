@@ -14,13 +14,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Flexfill
 {
-
     /**
      * List of exclude fields that are not process in insert/edit view
      *
      * @var string
      */
-    const excludeFields = 'uid,pid,deleted,t3ver_oid,t3ver_id,t3ver_wsid,t3ver_label,t3ver_state,t3ver_stage,t3ver_count,t3ver_tstamp,t3ver_move_id,t3_origuid,l18n_parent,l18n_diffsource';
+    public const excludeFields = 'uid,pid,deleted,t3ver_oid,t3ver_id,t3ver_wsid,t3ver_label,t3ver_state,t3ver_stage,t3ver_count,t3ver_tstamp,t3ver_move_id,t3_origuid,l18n_parent,l18n_diffsource';
 
     /**
      * @param array  $params

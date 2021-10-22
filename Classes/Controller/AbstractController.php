@@ -9,8 +9,6 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
 use Sng\Recordsmanager\Pagination\SimplePagination;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
