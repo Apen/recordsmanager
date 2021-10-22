@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 class InsertController extends AbstractController
 {
-
     /**
      * @var array
      */

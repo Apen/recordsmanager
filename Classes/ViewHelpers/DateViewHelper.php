@@ -25,7 +25,6 @@ use TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormFieldViewHelper;
  */
 class DateViewHelper extends AbstractFormFieldViewHelper
 {
-
     /**
      * @var string
      */

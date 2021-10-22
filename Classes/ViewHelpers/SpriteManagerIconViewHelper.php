@@ -17,12 +17,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Displays sprite icon identified by iconName key
  *
- * @author Felix Kopp <felix-source@phorax.com>
  * @internal
  */
 class SpriteManagerIconViewHelper extends AbstractViewHelper
 {
-
     /**
      * Plain HTML should be returned, no output escaping allowed
      *

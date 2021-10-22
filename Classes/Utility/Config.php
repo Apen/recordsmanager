@@ -18,7 +18,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class Config
 {
-
     /**
      * Get all config of recordsmanager
      *
@@ -173,7 +172,6 @@ class Config
                          * We just catch the exception here
                          * Reasoning: There is nothing an editor or even admin could do
                          */
-
                     }
                     $newFiles = [];
                     $newFilesMetas = [];

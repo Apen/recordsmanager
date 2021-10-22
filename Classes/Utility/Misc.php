@@ -17,7 +17,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class Misc
 {
-
     /**
      * This function return an array with ###value###
      *

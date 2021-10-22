@@ -15,7 +15,6 @@ use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class EditController extends AbstractController
 {
