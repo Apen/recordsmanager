@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Utility;
 
 /*
@@ -30,7 +32,7 @@ class Query
      */
     public function getQuery()
     {
-        if ($this->checkPids === true && TYPO3_MODE == 'BE') {
+        if ($this->checkPids === true && TYPO3_MODE === 'BE') {
             $pids = $this->checkPids();
             if (count($pids) > 0) {
                 $this->query['WHERE'] .= ' AND pid IN (' . implode(',', $pids) . ')';
@@ -42,6 +44,7 @@ class Query
         if ($this->isPowermail()) {
             $this->query['SELECT'] = '*';
         }
+
         return $this->query;
     }
 
@@ -63,14 +66,15 @@ class Query
 
         $this->query['FROM'] = $this->config['sqltable'];
         $this->query['WHERE'] = '1=1 AND deleted=0';
-        $this->query['WHERE'] .= ($this->config['extrawhere'] != '') ? ' ' . $this->config['extrawhere'] : '';
-        $this->query['GROUPBY'] = ($this->config['extragroupby'] != '') ? $this->config['extragroupby'] : '';
-        $this->query['ORDERBY'] = ($this->config['extraorderby'] != '') ? $this->config['extraorderby'] : '';
-        $this->query['LIMIT'] = ($this->config['extralimit'] != '') ? $this->config['extralimit'] : '';
+        $this->query['WHERE'] .= ($this->config['extrawhere'] !== '') ? ' ' . $this->config['extrawhere'] : '';
+        $this->query['GROUPBY'] = ($this->config['extragroupby'] !== '') ? $this->config['extragroupby'] : '';
+        $this->query['ORDERBY'] = ($this->config['extraorderby'] !== '') ? $this->config['extraorderby'] : '';
+        $this->query['LIMIT'] = ($this->config['extralimit'] !== '') ? $this->config['extralimit'] : '';
     }
 
     /**
      * @param array $queryArray
+     *
      * @return string
      */
     public static function getSqlFromQueryArray(array $queryArray)
@@ -79,6 +83,7 @@ class Query
         $sql .= !empty($queryArray['GROUPBY']) ? ' GROUP BY ' . $queryArray['GROUPBY'] : '';
         $sql .= !empty($queryArray['ORDERBY']) ? ' ORDER BY ' . $queryArray['ORDERBY'] : '';
         $sql .= !empty($queryArray['LIMIT']) ? ' LIMIT ' . $queryArray['LIMIT'] : '';
+
         return $sql;
     }
 
@@ -120,7 +125,7 @@ class Query
                     }
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
-                if (($this->exportMode === true) && ($this->config['type'] == 3)) {
+                if (($this->exportMode === true) && ($this->config['type'] === 3)) {
                     $extraTsHeaders = array_keys(Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
                     $this->headers = array_merge($this->headers, ['recordsmanagerkey'], $extraTsHeaders);
                 }
@@ -132,7 +137,7 @@ class Query
                 }
                 $records = array_intersect_key($records, $this->headers);
             }
-            if (($this->exportMode === true) && ($this->config['type'] == 3)) {
+            if (($this->exportMode === true) && ($this->config['type'] === 3)) {
                 $arrayToEncode = [];
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
                 $arrayToEncode['uidrecord'] = $records['uid'];
@@ -167,7 +172,7 @@ class Query
         $currentQuery['SELECT'] = 'DISTINCT pid';
         $currentQuery['ORDERBY'] = '';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
-        $statement = $connection->prepare(Query::getSqlFromQueryArray($currentQuery));
+        $statement = $connection->prepare(self::getSqlFromQueryArray($currentQuery));
         $statement->execute();
         while ($row = $statement->fetch()) {
             $pageinfo = BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
@@ -175,13 +180,14 @@ class Query
                 $pids[] = $row['pid'];
             }
         }
+
         return $pids;
     }
 
     public function isPowermail()
     {
         return (
-            $this->query['FROM'] == 'tx_powermail_domain_model_mails' || $this->query['FROM'] == 'tx_powermail_domain_model_mail') &&
+            $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
             GeneralUtility::inList(
                 '2,3',
                 $this->config['type']

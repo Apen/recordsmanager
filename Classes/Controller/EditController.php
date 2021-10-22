@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Controller;
 
 /*
@@ -21,7 +23,7 @@ class EditController extends AbstractController
     protected $currentConfig;
 
     /**
-     * @param int        $currentPage
+     * @param int $currentPage
      */
     public function indexAction(int $currentPage = 1)
     {
@@ -50,6 +52,7 @@ class EditController extends AbstractController
         $this->view->assign('disableFields', implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
 
         $this->moduleTemplate->setContent($this->view->render());
+
         return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
     }
 
@@ -81,6 +84,7 @@ class EditController extends AbstractController
     public function getReturnUrl()
     {
         $arguments = $this->request->getArguments();
+
         return $this->uriBuilder->reset()->setAddQueryString(true)->uriFor();
     }
 
@@ -94,6 +98,7 @@ class EditController extends AbstractController
         $arguments = $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
         $deleteUrl = Misc::getModuleUrl('tce_db');
+
         return $deleteUrl . ('&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1');
     }
 
@@ -120,7 +125,8 @@ class EditController extends AbstractController
                 ->from('tx_recordsmanager_config')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
-                );
+                )
+            ;
             $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }

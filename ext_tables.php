@@ -4,11 +4,12 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-if (TYPO3_MODE == 'BE') {
+if (TYPO3_MODE === 'BE') {
     $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class);
     $conf = $extensionConfiguration->get('recordsmanager');
+    \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($conf, '*');
 
-    if (($conf['enabledAdd'] == 1) || ($conf['enabledEdit'] == 1) || ($conf['enabledExport'] == 1)) {
+    if (((int)$conf['enabledAdd'] === 1) || ((int)$conf['enabledEdit'] === 1) || ((int)$conf['enabledExport'] === 1)) {
 
         // add module after 'Web'
         if (!isset($GLOBALS['TBE_MODULES']['txrecordsmanagerM1'])) {
@@ -38,7 +39,7 @@ if (TYPO3_MODE == 'BE') {
             ]
         );
 
-        if ($conf['enabledAdd'] == 1) {
+        if ((int)$conf['enabledAdd'] === 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'Sng.recordsmanager',
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
@@ -55,7 +56,7 @@ if (TYPO3_MODE == 'BE') {
             );
         }
 
-        if ($conf['enabledEdit'] == 1) {
+        if ((int)$conf['enabledEdit'] === 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'Sng.recordsmanager',
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
@@ -72,7 +73,7 @@ if (TYPO3_MODE == 'BE') {
             );
         }
 
-        if ($conf['enabledExport'] == 1) {
+        if ((int)$conf['enabledExport'] === 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'Sng.recordsmanager',
                 'txrecordsmanagerM1', // Make module a submodule of 'web'

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Controller;
 
 /*
@@ -56,7 +58,8 @@ class InsertController extends AbstractController
             ->where(
                 'pages.uid=' . $this->currentConfig['sqltable'] . '.pid AND ' . $this->currentConfig['sqltable'] . '.deleted=0 ' . $addWhere
             )
-            ->groupBy($this->currentConfig['sqltable'] . '.pid');
+            ->groupBy($this->currentConfig['sqltable'] . '.pid')
+        ;
         $pids = $queryBuilder->execute()->fetchAll();
 
         $pidsFind = [];
@@ -84,7 +87,8 @@ class InsertController extends AbstractController
                 ->andWhere(
                     '1=1 ' . $addWhere
                 )
-                ->orderBy('title', 'ASC');
+                ->orderBy('title', 'ASC')
+            ;
             $pids = $queryBuilder->execute()->fetchAll();
             if (count($pids) > 0) {
                 foreach ($pids as $pid) {
@@ -94,7 +98,8 @@ class InsertController extends AbstractController
                         ->from($this->currentConfig['sqltable'])
                         ->where(
                             $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
-                        );
+                        )
+                    ;
                     $nb = $queryBuilder->execute()->rowCount();
                     $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['uid']);
                     $rootline = $rootlineUtility->get();
@@ -117,6 +122,7 @@ class InsertController extends AbstractController
         }
 
         $this->moduleTemplate->setContent($this->view->render());
+
         return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
     }
 
@@ -128,6 +134,7 @@ class InsertController extends AbstractController
     public function getReturnUrl()
     {
         $arguments = $this->request->getArguments();
+
         return $this->uriBuilder->reset()->setAddQueryString(true)->uriFor();
     }
 
@@ -137,7 +144,9 @@ class InsertController extends AbstractController
      *
      * @param array $rl  A rootline array!
      * @param int   $len The max length of each title from the rootline.
+     *
      * @return string The path in the form "/page title/This is another pageti.../Another page
+     *
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::getConfigArray()
      */
     public function getPathFromRootline($rl, $len = 20)
@@ -145,12 +154,13 @@ class InsertController extends AbstractController
         $path = '';
         if (is_array($rl)) {
             $c = count($rl);
-            for ($a = 0; $a < $c; $a++) {
+            for ($a = 0; $a < $c; ++$a) {
                 if ($rl[$a]['uid']) {
                     $path .= '/' . GeneralUtility::fixed_lgd_cs(strip_tags($rl[$a]['title']), $len);
                 }
             }
         }
+
         return $path;
     }
 
@@ -167,7 +177,8 @@ class InsertController extends AbstractController
                 ->from('tx_recordsmanager_config')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
-                );
+                )
+            ;
             $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }

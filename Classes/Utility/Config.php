@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Utility;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -23,6 +26,7 @@ class Config
      *
      * @param int    $type
      * @param string $mode
+     *
      * @return array
      */
     public static function getAllConfigs($type, $mode = 'db')
@@ -35,7 +39,8 @@ class Config
             ->where(
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT))
             )
-            ->orderBy('sorting', 'ASC');
+            ->orderBy('sorting', 'ASC')
+        ;
         $allItems = $queryBuilder->execute()->fetchAll();
         $usergroups = explode(',', $GLOBALS['BE_USER']->user['usergroup']);
         if (!empty($allItems)) {
@@ -47,6 +52,7 @@ class Config
                 }
             }
         }
+
         return $items;
     }
 
@@ -54,6 +60,7 @@ class Config
      * Get a eid config of recordsmanager
      *
      * @param string $eidkey
+     *
      * @return array
      */
     public static function getEidConfig($eidkey)
@@ -65,15 +72,17 @@ class Config
             ->where(
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \PDO::PARAM_INT)),
                 $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \PDO::PARAM_STR))
-            );
+            )
+        ;
         $row = $queryBuilder->execute()->fetch();
         if (!empty($row)) {
             return $row;
         }
-        $jsonConfigs = \Sng\Recordsmanager\Utility\Config::loadJsonConfigs();
+        $jsonConfigs = self::loadJsonConfigs();
         if (!empty($jsonConfigs[3][$eidkey])) {
             return $jsonConfigs[3][$eidkey];
         }
+
         return null;
     }
 
@@ -98,6 +107,7 @@ class Config
                 }
             }
         }
+
         return $jsonConfigs;
     }
 
@@ -106,6 +116,7 @@ class Config
      *
      * @param array  $row
      * @param string $table
+     *
      * @return array
      */
     public static function getResultRowTitles($row, $table)
@@ -115,6 +126,7 @@ class Config
         foreach ($row as $fieldName => $fieldValue) {
             $tableHeader[$fieldName] = Misc::getLanguageService()->sL($conf['columns'][$fieldName]['label'] ?: $fieldName);
         }
+
         return $tableHeader;
     }
 
@@ -125,6 +137,7 @@ class Config
      * @param string $table
      * @param string $excludeFields
      * @param bool   $export
+     *
      * @return array
      */
     public static function getResultRow($row, $table, $excludeFields = '', $export = false)
@@ -133,7 +146,7 @@ class Config
         foreach ($row as $fieldName => $fieldValue) {
             if (!GeneralUtility::inList($excludeFields, $fieldName)) {
                 $record[$fieldName] = BackendUtility::getProcessedValueExtra($table, $fieldName, $fieldValue, 0, $row['uid']);
-                if (trim($record[$fieldName]) === 'N/A') {
+                if (is_string($record[$fieldName]) && trim($record[$fieldName]) === 'N/A') {
                     $record[$fieldName] = '';
                 }
             } else {
@@ -142,7 +155,7 @@ class Config
                 } else {
                     $record[$fieldName] = $fieldValue;
                 }
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'input' && (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'datetime') || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] == 'date'))) {
+                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'input' && (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] === 'datetime') || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] === 'date'))) {
                     $record[$fieldName] = $fieldValue;
                 }
                 if (empty($record[$fieldName])) {
@@ -154,7 +167,7 @@ class Config
             }
             if ($export) {
                 // add path to files
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] == 'file' && !empty($record[$fieldName])) {
+                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] === 'file' && !empty($record[$fieldName])) {
                     $files = GeneralUtility::trimExplode(',', $record[$fieldName]);
                     $newFiles = [];
                     foreach ($files as $file) {
@@ -163,12 +176,13 @@ class Config
                     $record[$fieldName] = implode(', ', $newFiles);
                 }
                 // fal reference
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] == 'sys_file_reference') {
+                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] === 'sys_file_reference') {
                     $files = [];
+
                     try {
                         $files = BackendUtility::resolveFileReferences($table, $fieldName, $row);
-                    } catch (FileDoesNotExistException|ResourceDoesNotExistException $e) {
-                        /**
+                    } catch (FileDoesNotExistException | ResourceDoesNotExistException $e) {
+                        /*
                          * We just catch the exception here
                          * Reasoning: There is nothing an editor or even admin could do
                          */
@@ -203,7 +217,7 @@ class Config
                 }
                 // rte
                 if (
-                    $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] == 'text' &&
+                    $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'text' &&
                     (!empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE']) || !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['enableRichtext']))
                 ) {
                     $lCobj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -212,6 +226,7 @@ class Config
                 }
             }
         }
+
         return $record;
     }
 }

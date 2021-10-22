@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Controller;
 
 /*
@@ -66,6 +68,7 @@ class AbstractController extends ActionController
     /**
      * @param string $action
      * @param array  $allConfigs
+     *
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      */
     protected function createMenu(string $action = 'index', array $allConfigs = []): void
@@ -115,15 +118,17 @@ class AbstractController extends ActionController
     /**
      * Returns a response object with either the given html string or the current rendered view as content.
      *
-     * @param string|null $html
+     * @param null|string $html
      */
     protected function htmlResponseCompatibility(string $html = null)
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 10) {
             return $html;
         }
+
         return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
-            ->withBody($this->streamFactory->createStream($html ?? $this->view->render()));
+            ->withBody($this->streamFactory->createStream($html ?? $this->view->render()))
+        ;
     }
 }
