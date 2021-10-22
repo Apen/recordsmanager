@@ -17,7 +17,10 @@ use Sng\Recordsmanager\Controller\ExportController;
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class RecordsmanagerMiddleware implements MiddlewareInterface
@@ -120,7 +123,12 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
             $query->setWhere($query->getWhere() . ' AND pid=' . (int)$pid);
         }
         $query->execQuery();
-        $controller = GeneralUtility::makeInstance(ExportController::class);
+        $controller = GeneralUtility::makeInstance(
+            ExportController::class,
+            GeneralUtility::makeInstance(PageRenderer::class),
+            GeneralUtility::makeInstance(IconFactory::class),
+            GeneralUtility::makeInstance(FlashMessageService::class),
+        );
 
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
