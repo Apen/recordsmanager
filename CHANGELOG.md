@@ -1,6 +1,7 @@
-Latest release : 1.5.2 (2020-12-07 12:04:37 +0100)
+Latest release : 1.6.0 (2021-10-22 17:15:36 +0200)
 
 
+* 1.6.0 (2021-10-22 17:15:36 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.5.2...1.6.0)
 * 1.5.2 (2020-12-07 12:04:37 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.5.1...1.5.2)
 * 1.5.1 (2020-11-17 10:43:07 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.5.0...1.5.1)
 * 1.5.0 (2020-05-08 17:36:33 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.4.6...1.5.0)
