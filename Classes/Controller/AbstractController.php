@@ -62,7 +62,7 @@ class AbstractController extends ActionController
     protected function initializeView(ViewInterface $view): void
     {
 //        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
-//        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/InfoWindow');
+        $this->pageRenderer->addCssInlineBlock('recordsmanager', '.t3js-datetimepicker ~ .input-group-btn > label { margin-bottom: 0; }');
     }
 
     /**
