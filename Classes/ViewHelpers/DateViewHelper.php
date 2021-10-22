@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\ViewHelpers;
 
 /*
@@ -51,7 +53,7 @@ class DateViewHelper extends AbstractFormFieldViewHelper
 
         $parameterArray = [
             'itemFormElName' => $this->arguments['name'],
-            'itemFormElValue' => strtotime($this->arguments['value']),
+            'itemFormElValue' => !empty($this->arguments['value']) ? strtotime($this->arguments['value']) : 0,
             'fieldConf' => [
                 'config' => [
                     'type' => 'input',
@@ -73,6 +75,7 @@ class DateViewHelper extends AbstractFormFieldViewHelper
         $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->mergeResult($inputDateTimeResult);
         $formResultCompiler->printNeededJSFunctions();
+
         return $inputDateTimeResult['html'];
     }
 }

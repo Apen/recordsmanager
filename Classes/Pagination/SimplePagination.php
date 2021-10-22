@@ -20,12 +20,12 @@ class SimplePagination implements PaginationInterface
     protected $maximumNumberOfLinks = 99;
 
     /**
-     * @var int|float
+     * @var float|int
      */
     protected $displayRangeStart;
 
     /**
-     * @var int|float
+     * @var float|int
      */
     protected $displayRangeEnd;
 
@@ -65,7 +65,7 @@ class SimplePagination implements PaginationInterface
     {
         $this->calculateDisplayRange();
         $pages = [];
-        for ($i = $this->displayRangeStart; $i <= $this->displayRangeEnd; $i++) {
+        for ($i = $this->displayRangeStart; $i <= $this->displayRangeEnd; ++$i) {
             $pages[] = ['number' => $i, 'isCurrent' => $i === $this->paginator->getCurrentPageNumber()];
         }
         $this->pages = $pages;

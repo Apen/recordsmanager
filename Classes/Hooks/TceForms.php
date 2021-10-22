@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Hooks;
 
 /*
@@ -18,6 +20,7 @@ class TceForms implements FormDataProviderInterface
      * Add form data to result array
      *
      * @param array $result Initialized result array
+     *
      * @return array Result filled with more data
      */
     public function addData(array $result)
@@ -28,6 +31,7 @@ class TceForms implements FormDataProviderInterface
                 unset($result['processedTca']['columns'][$col]);
             }
         }
+
         return $result;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\ViewHelpers;
 
 /*
@@ -46,6 +48,7 @@ class SpriteManagerIconViewHelper extends AbstractViewHelper
     public function render()
     {
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+
         return $iconFactory->getIcon($this->arguments['iconName'], $this->arguments['size']);
     }
 }

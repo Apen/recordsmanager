@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Middleware;
 
 /*
@@ -38,6 +40,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      *
      * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
+     *
      * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -66,8 +69,8 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         $query = $this->buildQuery();
         if (!empty($this->currentConfig['authlogin']) && !empty($this->currentConfig['authpassword'])) {
             $userAllowed = false;
-            if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && (($_SERVER['PHP_AUTH_USER'] == $this->currentConfig['authlogin']) &&
-                    ($_SERVER['PHP_AUTH_PW'] == $this->currentConfig['authpassword']))) {
+            if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && (($_SERVER['PHP_AUTH_USER'] === $this->currentConfig['authlogin']) &&
+                    ($_SERVER['PHP_AUTH_PW'] === $this->currentConfig['authpassword']))) {
                 $userAllowed = true;
             }
             if (!$userAllowed) {
@@ -93,6 +96,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         if (!empty($format)) {
             return (string)$format;
         }
+
         return 'excel';
     }
 
@@ -137,16 +141,20 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
             case 'xml':
                 header('Content-Type: application/xml');
                 $controller->exportToXML($query, true);
+
                 break;
             case 'csv':
                 $controller->exportToCSV($query, true);
+
                 break;
             case 'excel':
                 $controller->exportToEXCEL($query);
+
                 break;
             case 'json':
                 header('Content-Type: application/json');
                 $this->exportToJson($query);
+
                 break;
         }
     }
@@ -172,6 +180,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         $queryObject->setConfig($this->currentConfig);
         $queryObject->setExportMode(true);
         $queryObject->buildQuery();
+
         return $queryObject;
     }
 

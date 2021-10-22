@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Utility;
 
 /*
@@ -57,11 +59,13 @@ class Flexfill
      * Get TCA description of a table
      *
      * @param string $table
+     *
      * @return array
      */
     public function getTableTCA($table)
     {
         global $TCA;
+
         return $TCA[$table];
     }
 
@@ -89,6 +93,7 @@ class Flexfill
      *
      * @param string $table
      * @param string $defaultFields
+     *
      * @return array
      */
     public static function getDiffFieldsFromTable($table, $defaultFields)
@@ -105,6 +110,7 @@ class Flexfill
                 $fields [] = $value;
             }
         }
+
         return array_diff($fields, explode(',', $defaultFields));
     }
 }

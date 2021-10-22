@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Utility;
 
 /*
@@ -22,6 +24,7 @@ class Misc
      *
      * @param array  $array
      * @param string $markerPrefix
+     *
      * @return array
      */
     public static function convertToMarkerArray($array, $markerPrefix = '')
@@ -30,6 +33,7 @@ class Misc
         foreach ($array as $key => $val) {
             $temp[self::convertToMarker($key, $markerPrefix)] = $val;
         }
+
         return $temp;
     }
 
@@ -38,6 +42,7 @@ class Misc
      *
      * @param string $value
      * @param string $markerPrefix
+     *
      * @return string
      */
     public static function convertToMarker($value, $markerPrefix = '')
@@ -50,6 +55,7 @@ class Misc
      *
      * @param array  $conf
      * @param string $content
+     *
      * @return array
      */
     public static function loadTS($conf, $content)
@@ -57,6 +63,7 @@ class Misc
         $tsparser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $tsparser->setup = $conf;
         $tsparser->parse($content);
+
         return $tsparser->setup;
     }
 
@@ -66,6 +73,7 @@ class Misc
      * @param array  $conf
      * @param array  $data
      * @param string $table
+     *
      * @return array
      */
     public static function loadAndExecTS($conf, $data = [], $table = '')
@@ -92,9 +100,11 @@ class Misc
                                 } else {
                                     $value = (int)$value;
                                 }
+
                                 break;
                             case 'trimexplode':
                                 $value = GeneralUtility::trimExplode($tsValue['sngfunc.']['trimexplode.']['token'], $value);
+
                                 break;
                             default:
                                 break;
@@ -104,6 +114,7 @@ class Misc
                 }
             }
         }
+
         return $datas;
     }
 
@@ -111,23 +122,27 @@ class Misc
      * Returns an integer from a three part version number, eg '4.12.3' -> 4012003
      *
      * @param string $verNumberStr number on format x.x.x
+     *
      * @return int
      */
     public static function intFromVer($verNumberStr)
     {
         $verParts = explode('.', $verNumberStr);
+
         return (int)((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
     }
 
     /**
      * @param string $moduleName
      * @param array  $urlParameters
+     *
      * @return string
      */
     public static function getModuleUrl($moduleName, $urlParameters = [])
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uri = $uriBuilder->buildUriFromRoute($moduleName, $urlParameters);
+
         return (string)$uri;
     }
 
@@ -146,6 +161,7 @@ class Misc
         }
         $LANG = GeneralUtility::makeInstance(LanguageService::class);
         $LANG->init($GLOBALS['BE_USER']->uc['lang']);
+
         return $LANG;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sng\Recordsmanager\Hooks;
 
 /*
@@ -12,17 +14,14 @@ namespace Sng\Recordsmanager\Hooks;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class BeFunc
- */
 class BeFunc
 {
     private static $dateformat;
 
     public function BE_postProcessValue($params)
     {
-        if ($params['colConf']['type'] == 'input' && isset($params['colConf']['eval']) && $params['colConf']['eval'] == 'date') {
-            if (self::$dateformat == null) {
+        if ($params['colConf']['type'] === 'input' && isset($params['colConf']['eval']) && $params['colConf']['eval'] === 'date') {
+            if (self::$dateformat === null) {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
                 $queryBuilder
                     ->select('*')
@@ -30,7 +29,8 @@ class BeFunc
                     ->where(
                         $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT))
                     )
-                    ->orderBy('sorting', 'ASC');
+                    ->orderBy('sorting', 'ASC')
+                ;
                 $items = $queryBuilder->execute()->fetchAll();
                 if (count($items) > 0) {
                     $config = $items[0];
@@ -39,11 +39,12 @@ class BeFunc
                     self::$dateformat = -1;
                 }
             }
-            if (self::$dateformat != null) {
+            if (self::$dateformat !== null) {
                 // remove the parenthesis at the end of the default date format
                 $params['value'] = preg_replace('#\s*\(.+\)#', '', $params['value']);
             }
         }
+
         return $params['value'];
     }
 }
