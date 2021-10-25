@@ -25,10 +25,12 @@ class TceForms implements FormDataProviderInterface
      */
     public function addData(array $result)
     {
-        $recordsHide = explode(',', GeneralUtility::_GP('recordsHide'));
-        if (count($recordsHide) > 0) {
-            foreach ($recordsHide as $col) {
-                unset($result['processedTca']['columns'][$col]);
+        if (!empty(GeneralUtility::_GP('recordsHide'))) {
+            $recordsHide = explode(',', GeneralUtility::_GP('recordsHide'));
+            if (count($recordsHide) > 0) {
+                foreach ($recordsHide as $col) {
+                    unset($result['processedTca']['columns'][$col]);
+                }
             }
         }
 
