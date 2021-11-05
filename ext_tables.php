@@ -7,7 +7,6 @@ if (!defined('TYPO3_MODE')) {
 if (TYPO3_MODE === 'BE') {
     $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class);
     $conf = $extensionConfiguration->get('recordsmanager');
-    \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($conf, '*');
 
     if (((int)$conf['enabledAdd'] === 1) || ((int)$conf['enabledEdit'] === 1) || ((int)$conf['enabledExport'] === 1)) {
 
