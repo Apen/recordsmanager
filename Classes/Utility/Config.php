@@ -39,8 +39,7 @@ class Config
             ->where(
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT))
             )
-            ->orderBy('sorting', 'ASC')
-        ;
+            ->orderBy('sorting', 'ASC');
         $allItems = $queryBuilder->execute()->fetchAll();
         $usergroups = explode(',', $GLOBALS['BE_USER']->user['usergroup']);
         if (!empty($allItems)) {
@@ -72,8 +71,7 @@ class Config
             ->where(
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \PDO::PARAM_INT)),
                 $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \PDO::PARAM_STR))
-            )
-        ;
+            );
         $row = $queryBuilder->execute()->fetch();
         if (!empty($row)) {
             return $row;
@@ -83,7 +81,7 @@ class Config
             return $jsonConfigs[3][$eidkey];
         }
 
-        return null;
+        return [];
     }
 
     /**
@@ -151,7 +149,16 @@ class Config
                 }
             } else {
                 if (!empty($GLOBALS['TCA'][$table]['columns'][$fieldName]) && !GeneralUtility::inList('input,check', $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'])) {
-                    $record[$fieldName] = BackendUtility::getProcessedValue($table, $fieldName, $fieldValue, 0, 1, 1, $row['uid'], true);
+                    $record[$fieldName] = BackendUtility::getProcessedValue(
+                        $table,
+                        $fieldName,
+                        $fieldValue,
+                        0,
+                        true,
+                        true,
+                        $row['uid'],
+                        true
+                    );
                 } else {
                     $record[$fieldName] = $fieldValue;
                 }
