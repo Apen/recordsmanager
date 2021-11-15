@@ -5,7 +5,8 @@ parameters:
     - ../Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php
   excludePaths:
     - ../Build/*
-    - ../Resources/*
+    - **/Resources/*
   ignoreErrors:
     - "#Undefined variable: \\$_EXTKEY#"
     - "#Constant .*? not found.#"
+    - "#Comparison operation \">\" between int<1, max> and 0 is always true.#"
