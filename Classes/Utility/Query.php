@@ -98,7 +98,6 @@ class Query
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
         $statement->execute();
-//        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($statement->, '*');
 
         $first = true;
         $rows = [];
@@ -187,7 +186,7 @@ class Query
     public function isPowermail()
     {
         return (
-            $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
+                $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
             GeneralUtility::inList(
                 '2,3',
                 $this->config['type']
@@ -196,6 +195,7 @@ class Query
 
     public function setConfig($config)
     {
+        $config['type'] = (int)$config['type'];
         $this->config = $config;
     }
 
