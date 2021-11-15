@@ -163,7 +163,7 @@ class ExportController extends AbstractController
         $arguments = $this->request->getArguments();
 
         $filterField = 'tstamp';
-        if (!empty($row['exportfilterfield'])) {
+        if (!empty($this->currentConfig['exportfilterfield'])) {
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
