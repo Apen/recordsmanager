@@ -75,7 +75,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
             }
             if (!$userAllowed) {
                 // active HTTP auth
-                header('WWW-Authenticate: Basic realm="My Realm"');
+                header('WWW-Authenticate: Basic realm="Unauthorized"');
                 header('HTTP/1.0 401 Unauthorized');
                 exit;
             }

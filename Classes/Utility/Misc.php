@@ -63,13 +63,14 @@ class Misc
         $tsparser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $tsparser->setup = $conf;
         $tsparser->parse($content);
+
         return $tsparser->setup;
     }
 
     /**
      * Load a TS string and return array of fields
      *
-     * @param string  $conf
+     * @param array  $conf
      * @param array  $data
      * @param string $table
      *
@@ -127,7 +128,8 @@ class Misc
     public static function intFromVer($verNumberStr)
     {
         $verParts = explode('.', $verNumberStr);
-        return (int)((int)$verParts[0] . str_pad($verParts[1], 3, '0', STR_PAD_LEFT) . str_pad($verParts[2], 3, '0', STR_PAD_LEFT));
+
+        return (int)((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
     }
 
     /**
