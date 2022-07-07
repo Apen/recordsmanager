@@ -88,19 +88,34 @@ class Query
     }
 
     /**
+     * @return \Doctrine\DBAL\Statement
+     */
+    public function prepareAndExecuteQuery()
+    {
+        $queryArray = $this->getQuery();
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
+        $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
+        $statement->execute();
+        return $statement;
+    }
+
+    public function getNbRowsFromStatement()
+    {
+        $statement = $this->prepareAndExecuteQuery();
+        return $statement->rowCount();
+    }
+
+    /**
      * Exec the query (fill headers en rows arrays)
      */
     public function execQuery()
     {
         $mailRepository = null;
         $mail = null;
-        $queryArray = $this->getQuery();
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
-        $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
-        $statement->execute();
+        $this->rows = [];
+        $statement = $this->prepareAndExecuteQuery();
 
         $first = true;
-        $rows = [];
         $fieldsToHide = [];
         if (!empty($this->config['hidefields'])) {
             $fieldsToHide = GeneralUtility::trimExplode(',', $this->config['hidefields']);
@@ -170,6 +185,7 @@ class Query
         $currentQuery = $this->query;
         $currentQuery['SELECT'] = 'DISTINCT pid';
         $currentQuery['ORDERBY'] = '';
+        $currentQuery['LIMIT'] = '';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($currentQuery));
         $statement->execute();
@@ -195,7 +211,6 @@ class Query
 
     public function setConfig($config)
     {
-        $config['type'] = (int)$config['type'];
         $this->config = $config;
     }
 

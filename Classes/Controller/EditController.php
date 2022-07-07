@@ -38,9 +38,7 @@ class EditController extends AbstractController
         $this->setCurrentConfig();
 
         $query = $this->buildQuery();
-        $query->execQuery();
-
-        $this->buildPagination($query->getRows(), $currentPage);
+        $this->buildPagination($query, $currentPage);
 
         $this->view->assign('headers', $query->getHeaders());
         $this->view->assign('currentconfig', $this->currentConfig);
@@ -49,7 +47,12 @@ class EditController extends AbstractController
         $this->view->assign('returnurl', rawurlencode($this->getReturnUrl()));
         $this->view->assign('deleteurl', $this->getDeleteUrl());
         $this->view->assign('baseediturl', $this->getBaseEditUrl());
-        $this->view->assign('disableFields', implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert'])));
+
+        $disableFields = '';
+        if ($this->currentConfig['sqlfieldsinsert'] !== '') {
+            $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
+        }
+        $this->view->assign('disableFields', $disableFields);
 
         $this->moduleTemplate->setContent($this->view->render());
 
@@ -67,6 +70,7 @@ class EditController extends AbstractController
 
         $queryObject = GeneralUtility::makeInstance(Query::class);
         $queryObject->setConfig($this->currentConfig);
+        $queryObject->setCheckPids(false);
         $queryObject->buildQuery();
 
         if (!empty($arguments['orderby'])) {
@@ -125,8 +129,7 @@ class EditController extends AbstractController
                 ->from('tx_recordsmanager_config')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
-                )
-            ;
+                );
             $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }

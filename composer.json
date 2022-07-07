@@ -24,10 +24,5 @@
     "psr-4": {
       "Sng\\Recordsmanager\\": "Classes"
     }
-  },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "recordsmanager"
-    }
   }
 }

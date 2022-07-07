@@ -42,12 +42,12 @@ class ExportController extends AbstractController
         $query->setCheckPids((bool)$this->currentConfig['checkpid']);
         $query->setConfig($this->currentConfig);
         $query->setExportMode(true);
-        $query->execQuery();
-        $this->buildPagination($query->getRows(), $currentPage);
+        $this->buildPagination($query, $currentPage);
         $this->exportRecords($query);
 
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $this->request->getArguments());
+        $this->view->assign('overwriteDemand', $this->request->getArguments()['overwriteDemand'] ?? []);
 
         if ($query->getNbRows() > 0) {
             $this->view->assign('headers', $query->getHeaders());
@@ -65,26 +65,19 @@ class ExportController extends AbstractController
     public function buildCalendar()
     {
         $arguments = $this->getAllArguments();
-        $this->view->assign('startdate', $arguments['startdate']);
-        $this->view->assign('enddate', $arguments['enddate']);
-        // ugly fix to work with widget and TYPO3 <10, will be delete later
-        $_GET['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['startdate'] = $arguments['startdate'];
-        $_GET['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['enddate'] = $arguments['enddate'];
+        $this->view->assign('startdate', $this->getOverwriteDemand('startdate'));
+        $this->view->assign('enddate', $this->getOverwriteDemand('enddate'));
     }
 
     public function getAllArguments()
     {
-        $arguments = $this->request->getArguments();
-        if (!empty($arguments['@widget_0'])) {
-            if (!empty($arguments['@widget_0']['startdate']) && empty($arguments['startdate'])) {
-                $arguments['startdate'] = $arguments['@widget_0']['startdate'];
-            }
-            if (!empty($arguments['@widget_0']['enddate']) && empty($arguments['enddate'])) {
-                $arguments['enddate'] = $arguments['@widget_0']['enddate'];
-            }
-        }
+        return $this->request->getArguments();
+    }
 
-        return $arguments;
+    public function getOverwriteDemand($key)
+    {
+        $arguments = $this->getAllArguments();
+        return $arguments['overwriteDemand'][$key] ?? null;
     }
 
     /**
@@ -116,11 +109,11 @@ class ExportController extends AbstractController
         $arguments = $this->request->getArguments();
         $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
-        if (!empty($arguments['startdate'])) {
-            $urlArguments[$argKey]['startdate'] = $arguments['startdate'];
+        if (!empty($this->getOverwriteDemand('startdate'))) {
+            $urlArguments[$argKey]['startdate'] = $this->getOverwriteDemand('startdate');
         }
-        if (!empty($arguments['enddate'])) {
-            $urlArguments[$argKey]['enddate'] = $arguments['enddate'];
+        if (!empty($this->getOverwriteDemand('enddate'))) {
+            $urlArguments[$argKey]['enddate'] = $this->getOverwriteDemand('enddate');
         }
 
         return $this->uriBuilder->reset()->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
@@ -135,18 +128,17 @@ class ExportController extends AbstractController
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['download'])) {
+            $query->setLimit('');
+            $query->execQuery();
             switch ($arguments['download']) {
                 case 'xml':
                     $this->exportToXML($query);
-
                     break;
                 case 'csv':
                     $this->exportToCSV($query);
-
                     break;
                 case 'excel':
                     $this->exportToEXCEL($query);
-
                     break;
             }
         }
@@ -163,7 +155,7 @@ class ExportController extends AbstractController
         $arguments = $this->request->getArguments();
 
         $filterField = 'tstamp';
-        if (!empty($this->currentConfig['exportfilterfield'])) {
+        if (!empty($row['exportfilterfield'])) {
             $filterField = $this->currentConfig['exportfilterfield'];
         }
 
@@ -175,13 +167,13 @@ class ExportController extends AbstractController
             $queryObject->setOrderBy(rawurldecode($arguments['orderby']));
         }
 
-        if (!empty($arguments['startdate'])) {
-            $tstamp = strtotime($arguments['startdate']);
+        if (!empty($this->getOverwriteDemand('startdate'))) {
+            $tstamp = strtotime($this->getOverwriteDemand('startdate'));
             $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['sqltable'] . '.' . $filterField . '>=' . $tstamp);
         }
 
-        if (!empty($arguments['enddate'])) {
-            $tstamp = strtotime($arguments['enddate']);
+        if (!empty($this->getOverwriteDemand('enddate'))) {
+            $tstamp = strtotime($this->getOverwriteDemand('enddate'));
             $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['sqltable'] . '.' . $filterField . '<=' . $tstamp);
         }
 
@@ -325,8 +317,7 @@ class ExportController extends AbstractController
                 ->from('tx_recordsmanager_config')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
-                )
-            ;
+                );
             $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }

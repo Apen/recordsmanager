@@ -1,12 +1,11 @@
 parameters:
-  level: 5
+  level: 2
   reportUnmatchedIgnoredErrors: false
-  bootstrapFiles:
+  autoload_files:
     - ../Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php
-  excludePaths:
+  excludes_analyse:
     - ../Build/*
-    - **/Resources/*
+    - ../Resources/*
   ignoreErrors:
     - "#Undefined variable: \\$_EXTKEY#"
     - "#Constant .*? not found.#"
-    - "#Comparison operation \">\" between int<1, max> and 0 is always true.#"

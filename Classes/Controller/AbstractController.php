@@ -11,7 +11,9 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Sng\Recordsmanager\Pagination\QueryPaginator;
 use Sng\Recordsmanager\Pagination\SimplePagination;
+use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Beuser\Domain\Model\ModuleData;
@@ -97,22 +99,20 @@ class AbstractController extends ActionController
         }
     }
 
-    protected function buildPagination(array $items, int $currentPage): void
+    protected function buildPagination(Query $query, int $currentPage): void
     {
-        if (count($items) > 0) {
-            $itemsPerPage = 10;
-            if (!empty($this->settings['list']['paginate']['itemsPerPage'])) {
-                $itemsPerPage = (int)$this->settings['list']['paginate']['itemsPerPage'];
-            }
-            $paginator = new ArrayPaginator($items, $currentPage, $itemsPerPage);
-            $pagination = new SimplePagination($paginator);
-            if (!empty($this->settings['list']['paginate']['maximumNumberOfLinks'])) {
-                $pagination->setMaximumNumberOfLinks((int)$this->settings['list']['paginate']['maximumNumberOfLinks']);
-            }
-            $pagination->generate();
-            $this->view->assign('paginator', $paginator);
-            $this->view->assign('pagination', $pagination);
+        $itemsPerPage = 10;
+        if (!empty($this->settings['list']['paginate']['itemsPerPage'])) {
+            $itemsPerPage = (int)$this->settings['list']['paginate']['itemsPerPage'];
         }
+        $paginator = new QueryPaginator($query, $currentPage, $itemsPerPage);
+        $pagination = new SimplePagination($paginator);
+        if (!empty($this->settings['list']['paginate']['maximumNumberOfLinks'])) {
+            $pagination->setMaximumNumberOfLinks((int)$this->settings['list']['paginate']['maximumNumberOfLinks']);
+        }
+        $pagination->generate();
+        $this->view->assign('paginator', $paginator);
+        $this->view->assign('pagination', $pagination);
     }
 
     /**
@@ -128,7 +128,6 @@ class AbstractController extends ActionController
 
         return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
-            ->withBody($this->streamFactory->createStream($html ?? $this->view->render()))
-        ;
+            ->withBody($this->streamFactory->createStream($html ?? $this->view->render()));
     }
 }
