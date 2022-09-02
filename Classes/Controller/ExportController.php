@@ -110,10 +110,10 @@ class ExportController extends AbstractController
         $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
         if (!empty($this->getOverwriteDemand('startdate'))) {
-            $urlArguments[$argKey]['startdate'] = $this->getOverwriteDemand('startdate');
+            $urlArguments[$argKey]['overwriteDemand']['startdate'] = $this->getOverwriteDemand('startdate');
         }
         if (!empty($this->getOverwriteDemand('enddate'))) {
-            $urlArguments[$argKey]['enddate'] = $this->getOverwriteDemand('enddate');
+            $urlArguments[$argKey]['overwriteDemand']['enddate'] = $this->getOverwriteDemand('enddate');
         }
 
         return $this->uriBuilder->reset()->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
