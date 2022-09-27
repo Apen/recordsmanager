@@ -11,8 +11,10 @@ namespace Sng\Recordsmanager\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Sng\Recordsmanager\Events\GetQueryEvent;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -44,6 +46,10 @@ class Query
         if ($this->isPowermail()) {
             $this->query['SELECT'] = '*';
         }
+
+        $event = new GetQueryEvent($this->query);
+        GeneralUtility::makeInstance(EventDispatcher::class)->dispatch($event);
+        $this->query = $event->getQuery();
 
         return $this->query;
     }
