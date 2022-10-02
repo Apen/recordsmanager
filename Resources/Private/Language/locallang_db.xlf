@@ -20,7 +20,7 @@
 				<source><![CDATA[Display date fields in short format]]></source>
 			</trans-unit>
 			<trans-unit id="tx_recordsmanager_config.eidkey">
-				<source><![CDATA[eID key to identify and secure your export (index.php?eID=recordsmanager&eidkey=xxxxxxxxxxxx)]]></source>
+				<source><![CDATA[eID key to identify and secure your export (index.php?recordsmanagerkey=xxxxxxxxxxxx&format=json)]]></source>
 			</trans-unit>
 			<trans-unit id="tx_recordsmanager_config.excludefields">
 				<source><![CDATA[Field list not converted by the TCA]]></source>
