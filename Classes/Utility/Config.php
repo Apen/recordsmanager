@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sng\Recordsmanager\Utility;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /*
@@ -42,7 +43,8 @@ class Config
             ->orderBy('sorting', 'ASC')
         ;
         $allItems = $queryBuilder->execute()->fetchAll();
-        $usergroups = explode(',', $GLOBALS['BE_USER']->user['usergroup']);
+        $usergroups = GeneralUtility::makeInstance(Context::class)->getAspect('backend.user')
+            ->getGroupIds();
         if (!empty($allItems)) {
             foreach ($allItems as $row) {
                 $configgroups = explode(',', $row['permsgroup']);
@@ -124,7 +126,8 @@ class Config
         $tableHeader = [];
         $conf = $GLOBALS['TCA'][$table];
         foreach ($row as $fieldName => $fieldValue) {
-            $tableHeader[$fieldName] = Misc::getLanguageService()->sL($conf['columns'][$fieldName]['label'] ?: $fieldName);
+            $tableHeader[$fieldName] = Misc::getLanguageService()->sL($conf['columns'][$fieldName]['label'] ?? $fieldName);
+
         }
 
         return $tableHeader;
@@ -167,7 +170,9 @@ class Config
             }
             if ($export) {
                 // add path to files
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] === 'file' && !empty($record[$fieldName])) {
+                if (!empty($record[$fieldName])
+                    && !is_null($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] ?? null)
+                    && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] === 'file') {
                     $files = GeneralUtility::trimExplode(',', $record[$fieldName]);
                     $newFiles = [];
                     foreach ($files as $file) {
@@ -176,7 +181,7 @@ class Config
                     $record[$fieldName] = implode(', ', $newFiles);
                 }
                 // fal reference
-                if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'inline' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] === 'sys_file_reference') {
+                if (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'inline' && ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] ?? '') === 'sys_file_reference') {
                     $files = [];
 
                     try {
@@ -217,7 +222,7 @@ class Config
                 }
                 // rte
                 if (
-                    $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'text' &&
+                    ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'text' &&
                     (!empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['wizards']['RTE']) || !empty($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['enableRichtext']))
                 ) {
                     $lCobj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
