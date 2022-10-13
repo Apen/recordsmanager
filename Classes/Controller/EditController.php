@@ -22,9 +22,6 @@ class EditController extends AbstractController
 {
     protected $currentConfig;
 
-    /**
-     * @param int $currentPage
-     */
     public function indexAction(int $currentPage = 1)
     {
         $allConfigs = Config::getAllConfigs(0);
@@ -52,6 +49,7 @@ class EditController extends AbstractController
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
             $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         }
+
         $this->view->assign('disableFields', $disableFields);
 
         $this->moduleTemplate->setContent($this->view->render());
@@ -61,10 +59,8 @@ class EditController extends AbstractController
 
     /**
      * Build the query array
-     *
-     * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery(): \Sng\Recordsmanager\Utility\Query
+    public function buildQuery(): Query
     {
         $arguments = $this->request->getArguments();
 
@@ -82,24 +78,20 @@ class EditController extends AbstractController
 
     /**
      * Get return url
-     *
-     * @return string
      */
     public function getReturnUrl(): string
     {
-        $arguments = $this->request->getArguments();
+        $this->request->getArguments();
 
         return $this->uriBuilder->reset()->setAddQueryString(true)->uriFor();
     }
 
     /**
      * Get url to delete a record
-     *
-     * @return string
      */
     public function getDeleteUrl(): string
     {
-        $arguments = $this->request->getArguments();
+        $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
         $deleteUrl = Misc::getModuleUrl('tce_db');
 
@@ -108,8 +100,6 @@ class EditController extends AbstractController
 
     /**
      * Get url to edit a record
-     *
-     * @return string
      */
     public function getBaseEditUrl(): string
     {

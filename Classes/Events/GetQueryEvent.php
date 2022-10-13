@@ -13,17 +13,11 @@ final class GetQueryEvent
         $this->query = $query;
     }
 
-    /**
-     * @return array
-     */
     public function getQuery(): array
     {
         return $this->query;
     }
 
-    /**
-     * @param array $query
-     */
     public function setQuery(array $query): void
     {
         $this->query = $query;

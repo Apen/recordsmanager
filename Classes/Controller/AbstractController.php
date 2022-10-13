@@ -10,7 +10,7 @@ namespace Sng\Recordsmanager\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use Sng\Recordsmanager\Pagination\QueryPaginator;
 use Sng\Recordsmanager\Pagination\SimplePagination;
 use Sng\Recordsmanager\Utility\Query;
@@ -29,10 +29,15 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class AbstractController extends ActionController
 {
     protected ?ModuleData $moduleData = null;
+
     protected ?ModuleTemplate $moduleTemplate = null;
+
     protected ModuleTemplateFactory $moduleTemplateFactory;
+
     protected PageRenderer $pageRenderer;
+
     protected IconFactory $iconFactory;
+
     protected FlashMessageService $flashMessageService;
 
     public function __construct(
@@ -51,15 +56,12 @@ class AbstractController extends ActionController
      * object is only created once in extbase when multiple actions are called in
      * one call. When those change module state, the second action would see old state.
      */
-    public function initializeAction(): void
+    protected function initializeAction(): void
     {
         $this->moduleTemplate = new ModuleTemplate($this->pageRenderer, $this->iconFactory, $this->flashMessageService, $this->request);
         $this->moduleTemplate->setTitle(LocalizationUtility::translate('LLL:EXT:beuser/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'));
     }
 
-    /**
-     * @param ViewInterface $view
-     */
     protected function initializeView(ViewInterface $view): void
     {
         //        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
@@ -67,16 +69,14 @@ class AbstractController extends ActionController
     }
 
     /**
-     * @param string $action
-     * @param array  $allConfigs
      *
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+     * @throws NoSuchArgumentException
      */
     protected function createMenu(string $action = 'index', array $allConfigs = []): void
     {
         $this->uriBuilder->setRequest($this->request);
 
-        if (count($allConfigs) > 0) {
+        if ($allConfigs !== []) {
             $menu = $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
             $menu->setIdentifier('recordsmanagermenu');
 
@@ -104,11 +104,13 @@ class AbstractController extends ActionController
         if (!empty($this->settings['list']['paginate']['itemsPerPage'])) {
             $itemsPerPage = (int)$this->settings['list']['paginate']['itemsPerPage'];
         }
+
         $paginator = new QueryPaginator($query, $currentPage, $itemsPerPage);
         $pagination = new SimplePagination($paginator);
         if (!empty($this->settings['list']['paginate']['maximumNumberOfLinks'])) {
             $pagination->setMaximumNumberOfLinks((int)$this->settings['list']['paginate']['maximumNumberOfLinks']);
         }
+
         $pagination->generate();
         $this->view->assign('paginator', $paginator);
         $this->view->assign('pagination', $pagination);

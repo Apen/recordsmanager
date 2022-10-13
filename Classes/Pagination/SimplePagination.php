@@ -68,6 +68,7 @@ class SimplePagination implements PaginationInterface
         for ($i = $this->displayRangeStart; $i <= $this->displayRangeEnd; ++$i) {
             $pages[] = ['number' => $i, 'isCurrent' => $i === $this->paginator->getCurrentPageNumber()];
         }
+
         $this->pages = $pages;
     }
 
@@ -109,46 +110,37 @@ class SimplePagination implements PaginationInterface
         if ($maximumNumberOfLinks > $this->paginator->getNumberOfPages()) {
             $maximumNumberOfLinks = $this->paginator->getNumberOfPages();
         }
+
         $delta = floor($maximumNumberOfLinks / 2);
         $this->displayRangeStart = $this->paginator->getCurrentPageNumber() - $delta;
         $this->displayRangeEnd = $this->paginator->getCurrentPageNumber() + $delta - ($maximumNumberOfLinks % 2 === 0 ? 1 : 0);
         if ($this->displayRangeStart < 1) {
             $this->displayRangeEnd -= $this->displayRangeStart - 1;
         }
+
         if ($this->displayRangeEnd > $this->paginator->getNumberOfPages()) {
             $this->displayRangeStart -= $this->displayRangeEnd - $this->paginator->getNumberOfPages();
         }
+
         $this->displayRangeStart = (int)max($this->displayRangeStart, 1);
         $this->displayRangeEnd = (int)min($this->displayRangeEnd, $this->paginator->getNumberOfPages());
     }
 
-    /**
-     * @param int $maximumNumberOfLinks
-     */
     public function setMaximumNumberOfLinks(int $maximumNumberOfLinks): void
     {
         $this->maximumNumberOfLinks = $maximumNumberOfLinks;
     }
 
-    /**
-     * @return array
-     */
     public function getPages(): array
     {
         return $this->pages;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasLessPages(): bool
     {
         return $this->displayRangeStart > 2;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasMorePages(): bool
     {
         return $this->displayRangeEnd + 1 < $this->paginator->getNumberOfPages();

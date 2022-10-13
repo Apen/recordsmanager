@@ -9,14 +9,8 @@ use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 
 final class QueryPaginator extends AbstractPaginator
 {
-    /**
-     * @var \Sng\Recordsmanager\Utility\Query
-     */
     private Query $query;
 
-    /**
-     * @var array
-     */
     private array $paginatedItems = [];
 
     public function __construct(
@@ -42,6 +36,7 @@ final class QueryPaginator extends AbstractPaginator
     {
         $this->query->setLimit($offset . ',' . $itemsPerPage);
         $this->query->execQuery();
+
         $this->paginatedItems = $this->query->getRows();
     }
 

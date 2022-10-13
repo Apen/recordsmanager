@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
+use Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector;
 use Rector\Config\RectorConfig;
 use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
@@ -68,9 +69,11 @@ return static function (RectorConfig $rectorConfig): void {
         '*/Resources/Private/Php/*',
         '*/Resources/Public/*',
         '*/Configuration/TypoScript/*',
+        '*/Configuration/RequestMiddlewares.php',
         AddLiteralSeparatorToNumberRector::class,
         SensitiveConstantNameRector::class,
         PostIncDecToPreIncDecRector::class,
+        UnSpreadOperatorRector::class,
         NameImportingPostRector::class => [
             'ClassAliasMap.php',
             'ext_localconf.php',
