@@ -169,17 +169,6 @@ class Config
                 }
             }
             if ($export) {
-                // add path to files
-                if (!empty($record[$fieldName])
-                    && !is_null($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] ?? null)
-                    && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'group' && $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['internal_type'] === 'file') {
-                    $files = GeneralUtility::trimExplode(',', $record[$fieldName]);
-                    $newFiles = [];
-                    foreach ($files as $file) {
-                        $newFiles[] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['uploadfolder'] . '/' . $file;
-                    }
-                    $record[$fieldName] = implode(', ', $newFiles);
-                }
                 // fal reference
                 if (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'inline' && ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] ?? '') === 'sys_file_reference') {
                     $files = [];
