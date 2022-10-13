@@ -1,11 +1,13 @@
 parameters:
-  level: 2
+  level: 4
   reportUnmatchedIgnoredErrors: false
-  autoload_files:
+  scanFiles:
     - ../Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php
-  excludes_analyse:
+  paths:
+    - ../Classes/
+  excludePaths:
     - ../Build/*
-    - ../Resources/*
+    - ../.Build/*
   ignoreErrors:
     - "#Undefined variable: \\$_EXTKEY#"
     - "#Constant .*? not found.#"

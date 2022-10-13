@@ -10,24 +10,19 @@ namespace Sng\Recordsmanager\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class Misc
 {
     /**
      * This function return an array with ###value###
-     *
-     * @param array  $array
-     * @param string $markerPrefix
-     *
-     * @return array
      */
-    public static function convertToMarkerArray($array, $markerPrefix = '')
+    public static function convertToMarkerArray(array $array, string $markerPrefix = ''): array
     {
         $temp = [];
         foreach ($array as $key => $val) {
@@ -39,26 +34,16 @@ class Misc
 
     /**
      * This function return a string with ###value###
-     *
-     * @param string $value
-     * @param string $markerPrefix
-     *
-     * @return string
      */
-    public static function convertToMarker($value, $markerPrefix = '')
+    public static function convertToMarker(string $value, string $markerPrefix = ''): string
     {
         return '###' . strtoupper($markerPrefix . $value) . '###';
     }
 
     /**
      * Load a TS string
-     *
-     * @param array  $conf
-     * @param string $content
-     *
-     * @return array
      */
-    public static function loadTS($conf, $content)
+    public static function loadTS(array $conf, string $content): array
     {
         $tsparser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $tsparser->setup = $conf;
@@ -69,14 +54,8 @@ class Misc
 
     /**
      * Load a TS string and return array of fields
-     *
-     * @param array  $conf
-     * @param array  $data
-     * @param string $table
-     *
-     * @return array
      */
-    public static function loadAndExecTS($conf, $data = [], $table = '')
+    public static function loadAndExecTS(array $conf, array $data = [], string $table = ''): array
     {
         $tsArray = self::loadTS([], $conf);
         $datas = [];
@@ -110,6 +89,7 @@ class Misc
                                 break;
                         }
                     }
+
                     $datas[$field] = $value;
                 }
             }
@@ -122,23 +102,15 @@ class Misc
      * Returns an integer from a three part version number, eg '4.12.3' -> 4012003
      *
      * @param string $verNumberStr number on format x.x.x
-     *
-     * @return int
      */
-    public static function intFromVer($verNumberStr)
+    public static function intFromVer(string $verNumberStr): int
     {
         $verParts = explode('.', $verNumberStr);
 
         return (int)((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
     }
 
-    /**
-     * @param string $moduleName
-     * @param array  $urlParameters
-     *
-     * @return string
-     */
-    public static function getModuleUrl($moduleName, $urlParameters = [])
+    public static function getModuleUrl(string $moduleName, array $urlParameters = []): string
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uri = $uriBuilder->buildUriFromRoute($moduleName, $urlParameters);
@@ -147,7 +119,7 @@ class Misc
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Localization\LanguageService
+     * @return TypoScriptFrontendController|LanguageService
      */
     public static function getLanguageService()
     {
@@ -155,10 +127,12 @@ class Misc
         if (!empty($GLOBALS['TSFE'])) {
             return $GLOBALS['TSFE'];
         }
+
         // be
         if (!empty($GLOBALS['LANG'])) {
             return $GLOBALS['LANG'];
         }
+
         $LANG = GeneralUtility::makeInstance(LanguageService::class);
         $LANG->init($GLOBALS['BE_USER']->uc['lang']);
 

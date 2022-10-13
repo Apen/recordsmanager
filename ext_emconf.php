@@ -10,29 +10,27 @@
  * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array (
-  'title' => 'Records management in a BE module',
-  'description' => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
-  'category' => 'module',
-  'version' => '1.6.6',
-  'state' => 'stable',
-  'uploadfolder' => true,
-  'clearcacheonload' => true,
-  'author' => 'CERDAN Yohann [Site-nGo]',
-  'author_email' => 'cerdanyohann@yahoo.fr',
-  'author_company' => '',
-  'constraints' => 
-  array (
-    'depends' => 
-    array (
-      'typo3' => '10.4.0-11.5.99',
-    ),
-    'conflicts' => 
-    array (
-    ),
-    'suggests' => 
-    array (
-    ),
-  ),
-);
-
+$EM_CONF[$_EXTKEY] = [
+    'title' => 'Records management in a BE module',
+    'description' => 'Add modules to easily manage your records (insert, edit & export in be/eId) in one place.',
+    'category' => 'module',
+    'version' => '1.6.6',
+    'state' => 'stable',
+    'clearCacheOnLoad' => true,
+    'author' => 'CERDAN Yohann [Site-nGo]',
+    'author_email' => 'cerdanyohann@yahoo.fr',
+    'author_company' => '',
+    'constraints' =>
+    [
+        'depends' =>
+        [
+            'typo3' => '10.4.0-11.5.99',
+        ],
+        'conflicts' =>
+        [
+        ],
+        'suggests' =>
+        [
+        ],
+    ],
+];

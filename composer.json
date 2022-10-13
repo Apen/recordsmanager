@@ -20,6 +20,15 @@
     "php": "^7.4 || ^8.0 || ^8.1",
     "typo3/cms-core": "^10 || ^11"
   },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3",
+    "saschaegerer/phpstan-typo3": "^1",
+    "phpstan/phpstan": "^1",
+    "typo3/testing-framework": "7.x-dev",
+    "ssch/typo3-rector": "^1",
+    "symplify/easy-coding-standard": "^11",
+    "helmich/typo3-typoscript-lint": "^2"
+  },
   "autoload": {
     "psr-4": {
       "Sng\\Recordsmanager\\": "Classes"
@@ -27,7 +36,26 @@
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "recordsmanager"
+      "extension-key": "recordsmanager",
+      "app-dir": ".Build",
+      "web-dir": ".Build/public"
     }
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/cms-composer-installers": true,
+      "typo3/class-alias-loader": true
+    }
+  },
+  "scripts": {
+    "php:ecs": ".Build/bin/ecs check . --config ./Build/ecs.php --fix --ansi",
+    "php:ecsdry": ".Build/bin/ecs check . --config ./Build/ecs.php --ansi",
+    "php:fix": ".Build/bin/php-cs-fixer --config=./Build/.php-cs-fixer.php fix",
+    "php:fixdry": ".Build/bin/php-cs-fixer -vvv --diff --dry-run --config=./Build/.php-cs-fixer.php fix",
+    "php:phpstan": ".Build/bin/phpstan analyse -c  ./Build/phpstan.neon --ansi",
+    "php:rector": ".Build/bin/rector process . -c  ./Build/rector.php --ansi",
+    "php:rectordry": ".Build/bin/rector process . -c  ./Build/rector.php -vvv --dry-run --ansi"
   }
 }

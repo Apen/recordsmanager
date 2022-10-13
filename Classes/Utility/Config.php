@@ -24,13 +24,8 @@ class Config
 {
     /**
      * Get all config of recordsmanager
-     *
-     * @param int    $type
-     * @param string $mode
-     *
-     * @return array
      */
-    public static function getAllConfigs($type, $mode = 'db')
+    public static function getAllConfigs(int $type, string $mode = 'db'): array
     {
         $items = [];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
@@ -40,8 +35,7 @@ class Config
             ->where(
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT))
             )
-            ->orderBy('sorting', 'ASC')
-        ;
+            ->orderBy('sorting', 'ASC');
         $allItems = $queryBuilder->execute()->fetchAll();
         $usergroups = GeneralUtility::makeInstance(Context::class)->getAspect('backend.user')
             ->getGroupIds();
@@ -49,7 +43,7 @@ class Config
             foreach ($allItems as $row) {
                 $configgroups = explode(',', $row['permsgroup']);
                 $checkRights = array_intersect($usergroups, $configgroups);
-                if (($GLOBALS['BE_USER']->isAdmin()) || (count($checkRights) > 0)) {
+                if (($GLOBALS['BE_USER']->isAdmin()) || ($checkRights !== [])) {
                     $items[] = $row;
                 }
             }
@@ -60,12 +54,8 @@ class Config
 
     /**
      * Get a eid config of recordsmanager
-     *
-     * @param string $eidkey
-     *
-     * @return array
      */
-    public static function getEidConfig($eidkey)
+    public static function getEidConfig(string $eidkey): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_recordsmanager_config');
         $queryBuilder
@@ -74,34 +64,33 @@ class Config
             ->where(
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \PDO::PARAM_INT)),
                 $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \PDO::PARAM_STR))
-            )
-        ;
+            );
         $row = $queryBuilder->execute()->fetch();
         if (!empty($row)) {
             return $row;
         }
+
         $jsonConfigs = self::loadJsonConfigs();
         if (!empty($jsonConfigs[3][$eidkey])) {
             return $jsonConfigs[3][$eidkey];
         }
 
-        return null;
+        return [];
     }
 
     /**
      * Load all the json config
-     *
-     * @return array
      */
-    public static function loadJsonConfigs()
+    public static function loadJsonConfigs(): array
     {
         $jsonConfigs = [];
         if (!empty($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'])) {
             foreach ($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'] as $configPath) {
-                $config = json_decode(GeneralUtility::getUrl($configPath), true);
+                $config = json_decode(GeneralUtility::getUrl($configPath), true, 512, JSON_THROW_ON_ERROR);
                 if (!empty($config['extrats'])) {
                     $config['extrats'] = implode("\r\n", $config['extrats']);
                 }
+
                 if (!empty($config['eidkey'])) {
                     $jsonConfigs[$config['type']][$config['eidkey']] = $config;
                 } else {
@@ -115,19 +104,13 @@ class Config
 
     /**
      * Get formated fields names of a row
-     *
-     * @param array  $row
-     * @param string $table
-     *
-     * @return array
      */
-    public static function getResultRowTitles($row, $table)
+    public static function getResultRowTitles(array $row, string $table): array
     {
         $tableHeader = [];
         $conf = $GLOBALS['TCA'][$table];
-        foreach ($row as $fieldName => $fieldValue) {
+        foreach (array_keys($row) as $fieldName) {
             $tableHeader[$fieldName] = Misc::getLanguageService()->sL($conf['columns'][$fieldName]['label'] ?? $fieldName);
-
         }
 
         return $tableHeader;
@@ -135,15 +118,8 @@ class Config
 
     /**
      * Process every columns of a row to convert value
-     *
-     * @param array  $row
-     * @param string $table
-     * @param string $excludeFields
-     * @param bool   $export
-     *
-     * @return array
      */
-    public static function getResultRow($row, $table, $excludeFields = '', $export = false)
+    public static function getResultRow(array $row, string $table, string $excludeFields = '', bool $export = false): array
     {
         $record = [];
         foreach ($row as $fieldName => $fieldValue) {
@@ -158,16 +134,20 @@ class Config
                 } else {
                     $record[$fieldName] = $fieldValue;
                 }
+
                 if ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] === 'input' && (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] === 'datetime') || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['eval'] === 'date'))) {
                     $record[$fieldName] = $fieldValue;
                 }
+
                 if (empty($record[$fieldName])) {
                     $record[$fieldName] = $fieldValue;
                 }
+
                 if (trim($record[$fieldName]) === 'N/A') {
                     $record[$fieldName] = '';
                 }
             }
+
             if ($export) {
                 // fal reference
                 if (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'inline' && ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] ?? '') === 'sys_file_reference') {
@@ -175,32 +155,33 @@ class Config
 
                     try {
                         $files = BackendUtility::resolveFileReferences($table, $fieldName, $row);
-                    } catch (FileDoesNotExistException | ResourceDoesNotExistException $e) {
+                    } catch (FileDoesNotExistException|ResourceDoesNotExistException $e) {
                         /*
                          * We just catch the exception here
                          * Reasoning: There is nothing an editor or even admin could do
                          */
                     }
+
                     $newFiles = [];
                     $newFilesMetas = [];
-                    if (!empty($files)) {
-                        foreach ($files as $file) {
-                            if (GeneralUtility::inList($excludeFields, $fieldName)) {
-                                $newFiles [] = $file->getUid();
-                            } else {
-                                $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
-                            }
-                            $properties = $file->getProperties();
-                            $newFilesMetas [] = [
-                                'uid' => $file->getUid(),
-                                'path' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
-                                'title' => $properties['title'],
-                                'description' => $properties['description'],
-                                'alternative' => $properties['alternative'],
-                                'link' => $properties['link'],
-                            ];
+                    foreach ($files as $file) {
+                        if (GeneralUtility::inList($excludeFields, $fieldName)) {
+                            $newFiles [] = $file->getUid();
+                        } else {
+                            $newFiles [] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl();
                         }
+
+                        $properties = $file->getProperties();
+                        $newFilesMetas [] = [
+                            'uid' => $file->getUid(),
+                            'path' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $file->getPublicUrl(),
+                            'title' => $properties['title'],
+                            'description' => $properties['description'],
+                            'alternative' => $properties['alternative'],
+                            'link' => $properties['link'],
+                        ];
                     }
+
                     if (!empty($newFiles)) {
                         $record[$fieldName] = implode(', ', $newFiles);
                         $record[$fieldName . '_metas'] = $newFilesMetas;
@@ -209,6 +190,7 @@ class Config
                         $record[$fieldName . '_metas'] = '';
                     }
                 }
+
                 // rte
                 if (
                     ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'text' &&

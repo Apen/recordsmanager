@@ -1,6 +1,8 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
+declare(strict_types=1);
+
+if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
@@ -235,10 +237,10 @@ $tx_recordsmanager_config = [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfields, sqlfieldsinsert, extrawhere, extragroupby, extraorderby, extralimit, permsgroup'],
-        '1' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, sqlfieldsinsert, insertdefaultpid, permsgroup'],
-        '2' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, exportmode, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, exportfilterfield, dateformat, permsgroup, excludefields, checkpid'],
-        '3' => ['showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, type;;;;2-2-2, sqltable;;;;3-3-3, eidkey, sqlfields, extrawhere, extragroupby, extraorderby, extralimit, dateformat, excludefields, hidefields, extrats, authlogin, authpassword']
+        '0' => ['showitem' => 'hidden,--palette--;;1,title,--palette--,type,--palette--,sqltable,--palette--,sqlfields,sqlfieldsinsert,extrawhere,extragroupby,extraorderby,extralimit,permsgroup'],
+        '1' => ['showitem' => 'hidden,--palette--;;1,title,--palette--,type,--palette--,sqltable,--palette--,sqlfieldsinsert,insertdefaultpid,permsgroup'],
+        '2' => ['showitem' => 'hidden,--palette--;;1,title,--palette--,type,--palette--,sqltable,--palette--,exportmode,sqlfields,extrawhere,extragroupby,extraorderby,extralimit,exportfilterfield,dateformat,permsgroup,excludefields,checkpid'],
+        '3' => ['showitem' => 'hidden,--palette--;;1,title,--palette--,type,--palette--,sqltable,--palette--,eidkey,sqlfields,extrawhere,extragroupby,extraorderby,extralimit,dateformat,excludefields,hidefields,extrats,authlogin,authpassword']
     ],
     'palettes' => [
         '1' => ['showitem' => '']

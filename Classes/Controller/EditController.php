@@ -64,7 +64,7 @@ class EditController extends AbstractController
      *
      * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery()
+    public function buildQuery(): \Sng\Recordsmanager\Utility\Query
     {
         $arguments = $this->request->getArguments();
 
@@ -85,7 +85,7 @@ class EditController extends AbstractController
      *
      * @return string
      */
-    public function getReturnUrl()
+    public function getReturnUrl(): string
     {
         $arguments = $this->request->getArguments();
 
@@ -97,7 +97,7 @@ class EditController extends AbstractController
      *
      * @return string
      */
-    public function getDeleteUrl()
+    public function getDeleteUrl(): string
     {
         $arguments = $this->request->getArguments();
         $returnUrl = $this->getReturnUrl();
@@ -111,7 +111,7 @@ class EditController extends AbstractController
      *
      * @return string
      */
-    public function getBaseEditUrl()
+    public function getBaseEditUrl(): string
     {
         return Misc::getModuleUrl('record_edit') . '&';
     }
@@ -119,7 +119,7 @@ class EditController extends AbstractController
     /**
      * Set the current config record
      */
-    public function setCurrentConfig()
+    public function setCurrentConfig(): void
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {

@@ -23,11 +23,7 @@ class Flexfill
      */
     public const excludeFields = 'uid,pid,deleted,t3ver_oid,t3ver_id,t3ver_wsid,t3ver_label,t3ver_state,t3ver_stage,t3ver_count,t3ver_tstamp,t3ver_move_id,t3_origuid,l18n_parent,l18n_diffsource';
 
-    /**
-     * @param array  $params
-     * @param object $fObj
-     */
-    public function getTables(&$params, &$fObj)
+    public function getTables(array &$params, object &$fObj): void
     {
         $tables = array_keys($GLOBALS['TCA']);
         sort($tables);
@@ -37,11 +33,7 @@ class Flexfill
         }
     }
 
-    /**
-     * @param array  $params
-     * @param object $fObj
-     */
-    public function getFields(&$params, &$fObj)
+    public function getFields(array &$params, object &$fObj): void
     {
         if (!empty($params['row']['sqltable'])) {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($params['row']['sqltable'][0]);
@@ -57,12 +49,8 @@ class Flexfill
 
     /**
      * Get TCA description of a table
-     *
-     * @param string $table
-     *
-     * @return array
      */
-    public function getTableTCA($table)
+    public function getTableTCA(string $table): array
     {
         global $TCA;
 
@@ -71,11 +59,8 @@ class Flexfill
 
     /**
      * Get columns from TCA by avoid providing some field
-     *
-     * @param array  $params
-     * @param object $fObj
      */
-    public function getEditFields(&$params, &$fObj)
+    public function getEditFields(array &$params, object &$fObj): void
     {
         if (!empty($params['row']['sqltable'])) {
             $tableTCA = self::getTableTCA(is_array($params['row']['sqltable']) ? $params['row']['sqltable'][0] : $params['row']['sqltable']);
@@ -90,22 +75,16 @@ class Flexfill
 
     /**
      * Get an array with all the field to hide in tceform
-     *
-     * @param string $table
-     * @param string $defaultFields
-     *
-     * @return array
      */
-    public static function getDiffFieldsFromTable($table, $defaultFields)
+    public static function getDiffFieldsFromTable(string $table, string $defaultFields): array
     {
         $fields = [];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($table);
         $statement = $connection->prepare('SHOW COLUMNS FROM ' . $table . ' ;');
         $statement->execute();
         while ($row = $statement->fetch()) {
-            $currentField = !empty($row['Field']) ? $row['Field'] : $row[0];
+            $currentField = empty($row['Field']) ? $row[0] : $row['Field'];
             if (!GeneralUtility::inList(self::excludeFields, $currentField)) {
-                $label = $currentField;
                 $value = $currentField;
                 $fields [] = $value;
             }
