@@ -16,8 +16,8 @@
 				<target><![CDATA[Afficher les champs de date au format court]]></target>
 			</trans-unit>
 			<trans-unit id="tx_recordsmanager_config.eidkey" approved="yes">
-				<source><![CDATA[eID key to identify and secure your export (index.php?eID=recordsmanager&eidkey=xxxxxxxxxxxx)]]></source>
-				<target><![CDATA[Clef eID pour identifier et sécuriser votre export (index.php?eID=recordsmanager&eidkey=xxxxxxxxxxxx)]]></target>
+				<source><![CDATA[eID key to identify and secure your export (index.php?recordsmanagerkey=xxxxxxxxxxxx&format=json)]]></source>
+				<target><![CDATA[Clef eID pour identifier et sécuriser votre export (index.php?recordsmanagerkey=xxxxxxxxxxxx&format=json)]]></target>
 			</trans-unit>
 			<trans-unit id="tx_recordsmanager_config.excludefields" approved="yes">
 				<source><![CDATA[Field list not converted by the TCA]]></source>
