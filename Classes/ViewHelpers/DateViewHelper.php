@@ -59,15 +59,24 @@ class DateViewHelper extends AbstractFormFieldViewHelper
                     'type' => 'input',
                     'renderType' => 'inputDateTime',
                     'eval' => 'date',
-                    'default' => 0
-                ]
+                    'default' => 0,
+                ],
             ],
         ];
 
         $options = [
             'renderType' => 'inputDateTime',
+            'tableName' => '',
             'fieldName' => $this->arguments['name'],
-            'parameterArray' => $parameterArray
+            'databaseRow' => [
+                'uid' => 0,
+            ],
+            'processedTca' => [
+                'columns' => [
+                    $this->arguments['name'] => $parameterArray['fieldConf'],
+                ],
+            ],
+            'parameterArray' => $parameterArray,
         ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
