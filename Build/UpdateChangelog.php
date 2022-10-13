@@ -2,11 +2,23 @@
 
 class UpdateChangelog
 {
+    /**
+     * @var string
+     */
     public const CHANGELOG_FILE = 'CHANGELOG.md';
+
+    /**
+     * @var string
+     */
     public const GITHUB_URL = 'https://github.com/Apen/recordsmanager/';
+
+    /**
+     * @var string
+     */
     public const GITHUB_TAGS = 'https://api.github.com/repos/Apen/recordsmanager/git/refs/tags';
 
     protected $version;
+
     protected $versionDate;
 
     public function __construct()
@@ -22,11 +34,11 @@ class UpdateChangelog
         $changelog .= 'Latest release : ' . $this->version . ' (' . $this->versionDate . ")\r\n";
         $changelog .= "\r\n\r\n";
 
-        $allTags = json_decode($this->getUrl(self::GITHUB_TAGS), true);
+        $allTags = json_decode($this->getUrl(self::GITHUB_TAGS), true, 512, JSON_THROW_ON_ERROR);
         $allTagsContent = [];
         $lastTag = '';
-        for ($i = 0; $i < count($allTags); $i++) {
-            $tag = str_replace('refs/tags/', '', $allTags[$i]['ref']);
+        foreach ($allTags as $i => $allTag) {
+            $tag = str_replace('refs/tags/', '', $allTag['ref']);
             $tagDate = trim(shell_exec('git log -1 --format=%ai ' . $tag));
             if ($i === 0) {
                 array_unshift(
@@ -39,6 +51,7 @@ class UpdateChangelog
                     '* ' . $tag . ' (' . $tagDate . ') [Full list of changes](' . self::GITHUB_URL . 'compare/' . $lastTag . '...' . $tag . ')'
                 );
             }
+
             $lastTag = $tag;
         }
 
@@ -61,7 +74,7 @@ class UpdateChangelog
     }
 }
 
-call_user_func(function (): void {
+call_user_func(static function () : void {
     $changelog = new UpdateChangelog();
     $changelog->generate();
 });

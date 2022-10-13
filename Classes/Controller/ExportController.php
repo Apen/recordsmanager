@@ -64,7 +64,7 @@ class ExportController extends AbstractController
      */
     public function buildCalendar(): void
     {
-        $arguments = $this->getAllArguments();
+        $this->getAllArguments();
         $this->view->assign('startdate', $this->getOverwriteDemand('startdate'));
         $this->view->assign('enddate', $this->getOverwriteDemand('enddate'));
     }
@@ -82,8 +82,6 @@ class ExportController extends AbstractController
 
     /**
      * Convert all export modes to urls
-     *
-     * @return array
      */
     public function getExportUrls(): array
     {
@@ -99,19 +97,18 @@ class ExportController extends AbstractController
     /**
      * Get export url
      *
-     * @param string $mode
      *
-     * @return string
      */
     public function getExportUrl(string $mode): string
     {
         $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
-        $arguments = $this->request->getArguments();
+        $this->request->getArguments();
         $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
         if (!empty($this->getOverwriteDemand('startdate'))) {
             $urlArguments[$argKey]['overwriteDemand']['startdate'] = $this->getOverwriteDemand('startdate');
         }
+
         if (!empty($this->getOverwriteDemand('enddate'))) {
             $urlArguments[$argKey]['overwriteDemand']['enddate'] = $this->getOverwriteDemand('enddate');
         }
@@ -121,10 +118,8 @@ class ExportController extends AbstractController
 
     /**
      * Export records if neededl
-     *
-     * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportRecords(\Sng\Recordsmanager\Utility\Query $query): void
+    public function exportRecords(Query $query): void
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['download'])) {
@@ -146,10 +141,8 @@ class ExportController extends AbstractController
 
     /**
      * Build the query array
-     *
-     * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery(): \Sng\Recordsmanager\Utility\Query
+    public function buildQuery(): Query
     {
         $row = null;
         $arguments = $this->request->getArguments();
@@ -182,9 +175,6 @@ class ExportController extends AbstractController
 
     /**
      * Export to XML
-     *
-     * @param \Sng\Recordsmanager\Utility\Query $query
-     * @param bool                              $forceDisplay
      */
     public function exportToXML(Query $query, bool $forceDisplay = false): void
     {
@@ -205,14 +195,12 @@ class ExportController extends AbstractController
             echo utf8_decode($xmlData);
             exit;
         }
+
         echo utf8_decode($xmlData);
     }
 
     /**
      * Export to CSV
-     *
-     * @param \Sng\Recordsmanager\Utility\Query $query
-     * @param bool                              $forceDisplay
      */
     public function exportToCSV(Query $query, bool $forceDisplay = false): void
     {
@@ -223,24 +211,22 @@ class ExportController extends AbstractController
             // utf8 with BOM for Excel
             $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(CsvUtility::csvValues($row), true));
         }
-
-        if (count($rowArr) > 0) {
-            if (!$forceDisplay) {
-                $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
-                $mimeType = 'application/octet-stream';
-                header('Content-Type: ' . $mimeType);
-                header('Content-Disposition: attachment; filename=' . $filename);
-                echo implode(CRLF, $rowArr);
-                exit;
-            }
+        if (!$forceDisplay) {
+            $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
+            $mimeType = 'application/octet-stream';
+            header('Content-Type: ' . $mimeType);
+            header('Content-Disposition: attachment; filename=' . $filename);
             echo implode(CRLF, $rowArr);
+            exit;
         }
+
+        echo implode(CRLF, $rowArr);
     }
 
     /**
      * Export to Excel
      *
-     * @param \Sng\Recordsmanager\Utility\Query $query
+     * @return never
      */
     public function exportToEXCEL(Query $query): void
     {
@@ -259,10 +245,7 @@ class ExportController extends AbstractController
     /**
      * Clean a string
      *
-     * @param string $string
-     * @param bool   $deleteLr
      *
-     * @return string
      */
     public function cleanString(string $string, bool $deleteLr = false): string
     {

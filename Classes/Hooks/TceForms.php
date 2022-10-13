@@ -27,10 +27,8 @@ class TceForms implements FormDataProviderInterface
     {
         if (!empty(GeneralUtility::_GP('recordsHide'))) {
             $recordsHide = explode(',', GeneralUtility::_GP('recordsHide'));
-            if (count($recordsHide) > 0) {
-                foreach ($recordsHide as $col) {
-                    unset($result['processedTca']['columns'][$col]);
-                }
+            foreach ($recordsHide as $col) {
+                unset($result['processedTca']['columns'][$col]);
             }
         }
 

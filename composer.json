@@ -56,6 +56,6 @@
     "php:fixdry": ".Build/bin/php-cs-fixer -vvv --diff --dry-run --config=./Build/.php-cs-fixer.php fix",
     "php:phpstan": ".Build/bin/phpstan analyse -c  ./Build/phpstan.neon --ansi",
     "php:rector": ".Build/bin/rector process . -c  ./Build/rector.php --ansi",
-    "php:rectordry": ".Build/bin/rector process . -c  ./Build/rector.php -vvv --dry-run --ansi"
+    "php:rectordry": ".Build/bin/rector process . -c  ./Build/rector.php --dry-run --ansi"
   }
 }

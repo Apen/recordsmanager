@@ -38,10 +38,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      * Process an incoming server request and return a response, optionally delegating
      * response creation to a handler.
      *
-     * @param ServerRequestInterface  $request
-     * @param RequestHandlerInterface $handler
      *
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -73,6 +70,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
                     ($_SERVER['PHP_AUTH_PW'] === $this->currentConfig['authpassword']))) {
                 $userAllowed = true;
             }
+
             if (!$userAllowed) {
                 // active HTTP auth
                 header('WWW-Authenticate: Basic realm="Unauthorized"');
@@ -87,8 +85,6 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
 
     /**
      * Get the export format passed in URL
-     *
-     * @return string
      */
     public function getFormat(): string
     {
@@ -102,8 +98,6 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
 
     /**
      * Get the config eid passed in URL
-     *
-     * @return string
      */
     public function getConfig(): string
     {
@@ -111,21 +105,20 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         if (!empty($config)) {
             return (string)$config;
         }
+
         die('You need to specify a tx_recordsmanager_config eidkey in a config url parameter (&eidkey=x)');
     }
 
     /**
      * Export records if needed
-     *
-     * @param \Sng\Recordsmanager\Utility\Query $query
-     * @param string                            $mode
      */
-    public function exportRecords(\Sng\Recordsmanager\Utility\Query $query, string $mode): void
+    public function exportRecords(Query $query, string $mode): void
     {
         $pid = GeneralUtility::_GP('pid');
         if (!empty($pid)) {
             $query->setWhere($query->getWhere() . ' AND pid=' . (int)$pid);
         }
+
         $query->execQuery();
         $controller = GeneralUtility::makeInstance(
             ExportController::class,
@@ -161,20 +154,16 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
 
     /**
      * Export to JSON
-     *
-     * @param \Sng\Recordsmanager\Utility\Query $query
      */
     public function exportToJson(Query $query): void
     {
-        echo json_encode($query->getRows());
+        echo json_encode($query->getRows(), JSON_THROW_ON_ERROR);
     }
 
     /**
      * Build the query array
-     *
-     * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery(): \Sng\Recordsmanager\Utility\Query
+    public function buildQuery(): Query
     {
         $queryObject = new Query();
         $queryObject->setConfig($this->currentConfig);
@@ -186,8 +175,6 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
 
     /**
      * Set the current config record
-     *
-     * @param string $eidkey
      */
     public function setCurrentConfig(string $eidkey): void
     {
