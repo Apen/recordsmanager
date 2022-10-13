@@ -35,7 +35,7 @@ class DateViewHelper extends AbstractFormFieldViewHelper
     /**
      * Initialize the arguments.
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
@@ -46,14 +46,14 @@ class DateViewHelper extends AbstractFormFieldViewHelper
      *
      * @return string rendered tag.
      */
-    public function render()
+    public function render(): string
     {
         $this->tag->addAttribute('name', $this->arguments['name']);
         $this->tag->addAttribute('value', $this->arguments['value']);
 
         $parameterArray = [
             'itemFormElName' => $this->arguments['name'],
-            'itemFormElValue' => !empty($this->arguments['value']) ? strtotime($this->arguments['value']) : 0,
+            'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
             'fieldConf' => [
                 'config' => [
                     'type' => 'input',

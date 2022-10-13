@@ -15,7 +15,7 @@ class UpdateChangelog
         $this->versionDate = trim(shell_exec('git log -1 --format=%ai ' . $this->version));
     }
 
-    public function generate()
+    public function generate(): void
     {
         $changelog = '';
 
@@ -61,7 +61,7 @@ class UpdateChangelog
     }
 }
 
-call_user_func(function () {
+call_user_func(function (): void {
     $changelog = new UpdateChangelog();
     $changelog->generate();
 });

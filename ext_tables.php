@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
+if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
@@ -9,7 +9,6 @@ if (TYPO3_MODE === 'BE') {
     $conf = $extensionConfiguration->get('recordsmanager');
 
     if (((int)$conf['enabledAdd'] === 1) || ((int)$conf['enabledEdit'] === 1) || ((int)$conf['enabledExport'] === 1)) {
-
         // add module after 'Web'
         if (!isset($GLOBALS['TBE_MODULES']['txrecordsmanagerM1'])) {
             $temp_TBE_MODULES = [];
@@ -21,12 +20,13 @@ if (TYPO3_MODE === 'BE') {
                     $temp_TBE_MODULES[$key] = $val;
                 }
             }
+
             $GLOBALS['TBE_MODULES'] = $temp_TBE_MODULES;
             unset($temp_TBE_MODULES);
         }
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'Sng.recordsmanager',
+            'Recordsmanager',
             'txrecordsmanagerM1',
             '',
             '',
@@ -40,7 +40,7 @@ if (TYPO3_MODE === 'BE') {
 
         if ((int)$conf['enabledAdd'] === 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'Sng.recordsmanager',
+                'Recordsmanager',
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
                 'insert', // Submodule key
                 '', // Position
@@ -57,7 +57,7 @@ if (TYPO3_MODE === 'BE') {
 
         if ((int)$conf['enabledEdit'] === 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'Sng.recordsmanager',
+                'Recordsmanager',
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
                 'edit', // Submodule key
                 '', // Position
@@ -74,7 +74,7 @@ if (TYPO3_MODE === 'BE') {
 
         if ((int)$conf['enabledExport'] === 1) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'Sng.recordsmanager',
+                'Recordsmanager',
                 'txrecordsmanagerM1', // Make module a submodule of 'web'
                 'export', // Submodule key
                 '', // Position

@@ -62,7 +62,7 @@ class ExportController extends AbstractController
     /**
      * Build the calendar (load js and send datas)
      */
-    public function buildCalendar()
+    public function buildCalendar(): void
     {
         $arguments = $this->getAllArguments();
         $this->view->assign('startdate', $this->getOverwriteDemand('startdate'));
@@ -85,7 +85,7 @@ class ExportController extends AbstractController
      *
      * @return array
      */
-    public function getExportUrls()
+    public function getExportUrls(): array
     {
         $urlsExport = [];
         $modes = GeneralUtility::trimExplode(',', $this->currentConfig['exportmode']);
@@ -103,7 +103,7 @@ class ExportController extends AbstractController
      *
      * @return string
      */
-    public function getExportUrl($mode)
+    public function getExportUrl(string $mode): string
     {
         $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
         $arguments = $this->request->getArguments();
@@ -124,7 +124,7 @@ class ExportController extends AbstractController
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportRecords($query)
+    public function exportRecords(\Sng\Recordsmanager\Utility\Query $query): void
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['download'])) {
@@ -149,7 +149,7 @@ class ExportController extends AbstractController
      *
      * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery()
+    public function buildQuery(): \Sng\Recordsmanager\Utility\Query
     {
         $row = null;
         $arguments = $this->request->getArguments();
@@ -186,7 +186,7 @@ class ExportController extends AbstractController
      * @param \Sng\Recordsmanager\Utility\Query $query
      * @param bool                              $forceDisplay
      */
-    public function exportToXML(Query $query, $forceDisplay = false)
+    public function exportToXML(Query $query, bool $forceDisplay = false): void
     {
         $rows = $query->getRows();
         $xmlData = GeneralUtility::array2xml(
@@ -214,7 +214,7 @@ class ExportController extends AbstractController
      * @param \Sng\Recordsmanager\Utility\Query $query
      * @param bool                              $forceDisplay
      */
-    public function exportToCSV(Query $query, $forceDisplay = false)
+    public function exportToCSV(Query $query, bool $forceDisplay = false): void
     {
         $rowArr = [];
         $rows = array_merge([$query->getHeaders()], $query->getRows());
@@ -242,7 +242,7 @@ class ExportController extends AbstractController
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToEXCEL(Query $query)
+    public function exportToEXCEL(Query $query): void
     {
         $rows = array_merge([$query->getHeaders()], $query->getRows());
         $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xlsx';
@@ -264,7 +264,7 @@ class ExportController extends AbstractController
      *
      * @return string
      */
-    public function cleanString($string, $deleteLr = false)
+    public function cleanString(string $string, bool $deleteLr = false): string
     {
         $quotes = [
             "\xe2\x82\xac" => "\xc2\x80", // EURO SIGN
@@ -293,7 +293,7 @@ class ExportController extends AbstractController
             "\xe2\x80\xba" => "\xc2\x9b", // SINGLE RIGHT-POINTING ANGLE QUOTATION
             "\xc5\x93" => "\xc2\x9c", // LATIN SMALL LIGATURE OE
             "\xc5\xbe" => "\xc2\x9e", // LATIN SMALL LETTER Z WITH CARON
-            "\xc5\xb8" => "\xc2\x9f" // LATIN CAPITAL LETTER Y WITH DIAERESIS
+            "\xc5\xb8" => "\xc2\x9f", // LATIN CAPITAL LETTER Y WITH DIAERESIS
         ];
         $string = strtr($string, $quotes);
         $string = utf8_decode($string);
@@ -307,7 +307,7 @@ class ExportController extends AbstractController
     /**
      * Set the current config record
      */
-    public function setCurrentConfig()
+    public function setCurrentConfig(): void
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {

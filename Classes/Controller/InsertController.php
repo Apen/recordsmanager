@@ -22,9 +22,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 class InsertController extends AbstractController
 {
-    /**
-     * @var array
-     */
     protected array $currentConfig = [];
 
     /**
@@ -50,36 +47,31 @@ class InsertController extends AbstractController
         $addWhere = ' AND ' . $GLOBALS['BE_USER']->getPagePermsClause(1) . ' ';
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
-        $queryBuilder
-            ->select($this->currentConfig['sqltable'] . '.pid', 'pages.title')
+        $queryBuilder->select($this->currentConfig['sqltable'] . '.pid', 'pages.title')
             ->addSelectLiteral('count(' . $this->currentConfig['sqltable'] . '.pid) as "nbrecords"')
             ->from($this->currentConfig['sqltable'])
             ->from('pages')
             ->where(
                 'pages.uid=' . $this->currentConfig['sqltable'] . '.pid AND ' . $this->currentConfig['sqltable'] . '.deleted=0 ' . $addWhere
             )
-            ->groupBy($this->currentConfig['sqltable'] . '.pid')
-        ;
+            ->groupBy($this->currentConfig['sqltable'] . '.pid');
         $pids = $queryBuilder->execute()->fetchAll();
 
         $pidsFind = [];
         $pidsAdmin = [];
 
         // All find PIDs
-        if (count($pids) > 0) {
-            foreach ($pids as $pid) {
-                $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['pid']);
-                $rootline = $rootlineUtility->get();
-                $path = $this->getPathFromRootline($rootline, 30);
-                $pidsFind[] = ['pid' => $pid['pid'], 'path' => $path, 'nbrecords' => $pid['nbrecords']];
-            }
+        foreach ($pids as $pid) {
+            $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['pid']);
+            $rootline = $rootlineUtility->get();
+            $path = $this->getPathFromRootline($rootline, 30);
+            $pidsFind[] = ['pid' => $pid['pid'], 'path' => $path, 'nbrecords' => $pid['nbrecords']];
         }
 
         // Admin specified PIDs
         if ($this->currentConfig['insertdefaultpid'] !== '') {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
-            $queryBuilder
-                ->select('uid', 'title')
+            $queryBuilder->select('uid', 'title')
                 ->from('pages')
                 ->where(
                     $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($this->currentConfig['insertdefaultpid']))
@@ -87,25 +79,21 @@ class InsertController extends AbstractController
                 ->andWhere(
                     '1=1 ' . $addWhere
                 )
-                ->orderBy('title', 'ASC')
-            ;
+                ->orderBy('title', 'ASC');
             $pids = $queryBuilder->execute()->fetchAll();
-            if (count($pids) > 0) {
-                foreach ($pids as $pid) {
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
-                    $queryBuilder
-                        ->select('uid')
-                        ->from($this->currentConfig['sqltable'])
-                        ->where(
-                            $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
-                        )
-                    ;
-                    $nb = $queryBuilder->execute()->rowCount();
-                    $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['uid']);
-                    $rootline = $rootlineUtility->get();
-                    $path = $this::getPathFromRootline($rootline, 30);
-                    $pidsAdmin[] = ['pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb];
-                }
+            foreach ($pids as $pid) {
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
+                $queryBuilder
+                    ->select('uid')
+                    ->from($this->currentConfig['sqltable'])
+                    ->where(
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
+                    );
+                $nb = $queryBuilder->execute()->rowCount();
+                $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['uid']);
+                $rootline = $rootlineUtility->get();
+                $path = $this::getPathFromRootline($rootline, 30);
+                $pidsAdmin[] = ['pid' => $pid['uid'], 'path' => $path, 'nbrecords' => $nb];
             }
         }
 
@@ -118,7 +106,7 @@ class InsertController extends AbstractController
 
         // redirect to tce form
         if (!empty($arguments['create'])) {
-            $this->redirectToForm($arguments['create']);
+            $this->redirectToForm((int)$arguments['create']);
         }
 
         $this->moduleTemplate->setContent($this->view->render());
@@ -126,14 +114,9 @@ class InsertController extends AbstractController
         return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
     }
 
-    /**
-     * Get return url
-     *
-     * @return string
-     */
-    public function getReturnUrl()
+    public function getReturnUrl(): string
     {
-        $arguments = $this->request->getArguments();
+        $this->request->getArguments();
 
         return $this->uriBuilder->reset()->setAddQueryString(true)->uriFor();
     }
@@ -149,15 +132,13 @@ class InsertController extends AbstractController
      *
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::getConfigArray()
      */
-    public function getPathFromRootline($rl, $len = 20)
+    public function getPathFromRootline(array $rl, int $len = 20): string
     {
         $path = '';
-        if (is_array($rl)) {
-            $c = count($rl);
-            for ($a = 0; $a < $c; ++$a) {
-                if ($rl[$a]['uid']) {
-                    $path .= '/' . GeneralUtility::fixed_lgd_cs(strip_tags($rl[$a]['title']), $len);
-                }
+        $c = count($rl);
+        for ($a = 0; $a < $c; ++$a) {
+            if ($rl[$a]['uid']) {
+                $path .= '/' . GeneralUtility::fixed_lgd_cs(strip_tags($rl[$a]['title']), $len);
             }
         }
 
@@ -167,7 +148,7 @@ class InsertController extends AbstractController
     /**
      * Set the current config record
      */
-    public function setCurrentConfig()
+    public function setCurrentConfig(): void
     {
         $arguments = $this->request->getArguments();
         if (!empty($arguments['menuitem'])) {
@@ -177,40 +158,37 @@ class InsertController extends AbstractController
                 ->from('tx_recordsmanager_config')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
-                )
-            ;
+                );
             $this->currentConfig = $queryBuilder->execute()->fetch();
         }
     }
 
     /**
      * Get url to browser pages
-     *
-     * @return string
      */
-    public function getBrowserUrl()
+    public function getBrowserUrl(): string
     {
         return Misc::getModuleUrl('wizard_element_browser');
     }
 
     /**
      * Redirect to the insert form with correct params
-     *
-     * @param int $id
      */
-    public function redirectToForm($id)
+    public function redirectToForm(int $id): void
     {
         $arguments = $this->request->getArguments();
         $returnUrl = Misc::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
         if (!empty($arguments['menuitem'])) {
             $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
         }
+
         $editLink = Misc::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
         // disabledFields
         $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
             $editLink .= '&recordsHide=' . $disableFields;
         }
+
         HttpUtility::redirect($editLink);
     }
 }

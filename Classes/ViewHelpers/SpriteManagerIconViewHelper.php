@@ -33,7 +33,7 @@ class SpriteManagerIconViewHelper extends AbstractViewHelper
     /**
      * Initialize arguments.
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('iconName', 'string', 'as', true);
@@ -42,13 +42,11 @@ class SpriteManagerIconViewHelper extends AbstractViewHelper
 
     /**
      * Prints sprite icon html for $iconName key
-     *
-     * @return string
      */
-    public function render()
+    public function render(): string
     {
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
-        return $iconFactory->getIcon($this->arguments['iconName'], $this->arguments['size']);
+        return (string)$iconFactory->getIcon($this->arguments['iconName'], $this->arguments['size']);
     }
 }

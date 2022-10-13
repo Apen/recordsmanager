@@ -28,5 +28,4 @@ final class GetQueryEvent
     {
         $this->query = $query;
     }
-
 }

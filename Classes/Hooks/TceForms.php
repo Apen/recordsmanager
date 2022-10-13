@@ -23,7 +23,7 @@ class TceForms implements FormDataProviderInterface
      *
      * @return array Result filled with more data
      */
-    public function addData(array $result)
+    public function addData(array $result): array
     {
         if (!empty(GeneralUtility::_GP('recordsHide'))) {
             $recordsHide = explode(',', GeneralUtility::_GP('recordsHide'));

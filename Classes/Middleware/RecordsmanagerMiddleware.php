@@ -90,7 +90,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      *
      * @return string
      */
-    public function getFormat()
+    public function getFormat(): string
     {
         $format = GeneralUtility::_GP('format');
         if (!empty($format)) {
@@ -105,7 +105,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfig(): string
     {
         $config = GeneralUtility::_GP('recordsmanagerkey');
         if (!empty($config)) {
@@ -120,7 +120,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      * @param \Sng\Recordsmanager\Utility\Query $query
      * @param string                            $mode
      */
-    public function exportRecords($query, $mode)
+    public function exportRecords(\Sng\Recordsmanager\Utility\Query $query, string $mode): void
     {
         $pid = GeneralUtility::_GP('pid');
         if (!empty($pid)) {
@@ -164,7 +164,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      *
      * @param \Sng\Recordsmanager\Utility\Query $query
      */
-    public function exportToJson(Query $query)
+    public function exportToJson(Query $query): void
     {
         echo json_encode($query->getRows());
     }
@@ -174,7 +174,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      *
      * @return \Sng\Recordsmanager\Utility\Query
      */
-    public function buildQuery()
+    public function buildQuery(): \Sng\Recordsmanager\Utility\Query
     {
         $queryObject = new Query();
         $queryObject->setConfig($this->currentConfig);
@@ -189,7 +189,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      *
      * @param string $eidkey
      */
-    public function setCurrentConfig($eidkey)
+    public function setCurrentConfig(string $eidkey): void
     {
         $this->currentConfig = Config::getEidConfig($eidkey);
         if (empty($this->currentConfig)) {

@@ -10,33 +10,37 @@ namespace Sng\Recordsmanager\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
+use Doctrine\DBAL\Statement;
 use Sng\Recordsmanager\Events\GetQueryEvent;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class Query
 {
     protected $query;
+
     protected $checkPids = true;
+
     protected $exportMode = false;
+
     protected $headers;
+
     protected $rows = [];
+
     protected $config;
 
     /**
      * Return the current query array
-     *
-     * @return array
      */
-    public function getQuery()
+    public function getQuery(): array
     {
-        if ($this->checkPids === true && TYPO3_MODE === 'BE') {
+        if ($this->checkPids === true && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $pids = $this->checkPids();
-            if (count($pids) > 0) {
+            if ($pids !== []) {
                 $this->query['WHERE'] .= ' AND pid IN (' . implode(',', $pids) . ')';
             } else {
                 $this->query['WHERE'] .= ' AND 1=2';
@@ -57,7 +61,7 @@ class Query
     /**
      * Build the query (fill the query array)
      */
-    public function buildQuery()
+    public function buildQuery(): void
     {
         if (!empty($this->config['sqlfields'])) {
             // we need to have the uid
@@ -73,30 +77,21 @@ class Query
         $this->query['FROM'] = $this->config['sqltable'];
         $this->query['WHERE'] = '1=1 AND deleted=0';
         $this->query['WHERE'] .= ($this->config['extrawhere'] !== '') ? ' ' . $this->config['extrawhere'] : '';
-        $this->query['GROUPBY'] = ($this->config['extragroupby'] !== '') ? $this->config['extragroupby'] : '';
-        $this->query['ORDERBY'] = ($this->config['extraorderby'] !== '') ? $this->config['extraorderby'] : '';
-        $this->query['LIMIT'] = ($this->config['extralimit'] !== '') ? $this->config['extralimit'] : '';
+        $this->query['GROUPBY'] = $this->config['extragroupby'];
+        $this->query['ORDERBY'] = $this->config['extraorderby'];
+        $this->query['LIMIT'] = $this->config['extralimit'];
     }
 
-    /**
-     * @param array $queryArray
-     *
-     * @return string
-     */
-    public static function getSqlFromQueryArray(array $queryArray)
+    public static function getSqlFromQueryArray(array $queryArray): string
     {
         $sql = 'SELECT ' . $queryArray['SELECT'] . ' FROM ' . $queryArray['FROM'] . ' WHERE ' . $queryArray['WHERE'];
-        $sql .= !empty($queryArray['GROUPBY']) ? ' GROUP BY ' . $queryArray['GROUPBY'] : '';
-        $sql .= !empty($queryArray['ORDERBY']) ? ' ORDER BY ' . $queryArray['ORDERBY'] : '';
-        $sql .= !empty($queryArray['LIMIT']) ? ' LIMIT ' . $queryArray['LIMIT'] : '';
+        $sql .= empty($queryArray['GROUPBY']) ? '' : ' GROUP BY ' . $queryArray['GROUPBY'];
+        $sql .= empty($queryArray['ORDERBY']) ? '' : ' ORDER BY ' . $queryArray['ORDERBY'];
 
-        return $sql;
+        return $sql . (empty($queryArray['LIMIT']) ? '' : ' LIMIT ' . $queryArray['LIMIT']);
     }
 
-    /**
-     * @return \Doctrine\DBAL\Statement
-     */
-    public function prepareAndExecuteQuery()
+    public function prepareAndExecuteQuery(): Statement
     {
         $queryArray = $this->getQuery();
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
@@ -114,7 +109,7 @@ class Query
     /**
      * Exec the query (fill headers en rows arrays)
      */
-    public function execQuery()
+    public function execQuery(): void
     {
         $mailRepository = null;
         $mail = null;
@@ -126,14 +121,17 @@ class Query
         if (!empty($this->config['hidefields'])) {
             $fieldsToHide = GeneralUtility::trimExplode(',', $this->config['hidefields']);
         }
+
         if ($this->isPowermail()) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
         }
+
         while ($row = $statement->fetch()) {
             if ($this->isPowermail()) {
                 $mail = $mailRepository->findByUid($row['uid']);
             }
+
             if ($first) {
                 $first = false;
                 $this->headers = Config::getResultRowTitles($row, $this->query['FROM']);
@@ -143,20 +141,25 @@ class Query
                     foreach ($mail->getAnswers() as $answer) {
                         $powermailHeaders [] = $answer->getField()->getTitle();
                     }
+
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
+
                 if (($this->exportMode === true) && ($this->config['type'] === 3)) {
                     $extraTsHeaders = array_keys(Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
                     $this->headers = array_merge($this->headers, ['recordsmanagerkey'], $extraTsHeaders);
                 }
             }
-            $records = Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'], $this->exportMode);
+
+            $records = Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'] ?? '', $this->exportMode);
             if ($this->isPowermail()) {
                 foreach ($mail->getAnswers() as $answer) {
                     $records [] = $answer->getValue();
                 }
+
                 $records = array_intersect_key($records, $this->headers);
             }
+
             if (($this->exportMode === true) && ($this->config['type'] === 3)) {
                 $arrayToEncode = [];
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
@@ -164,28 +167,26 @@ class Query
                 if (empty($this->config['disabledomaininkey'])) {
                     $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
                 }
+
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
                 // add special typoscript value
                 $markerValues = Misc::convertToMarkerArray($records);
                 $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
                 $records = array_merge($records, Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
                 // hide fields if necessary
-                if (!empty($fieldsToHide)) {
-                    foreach ($fieldsToHide as $fieldToHide) {
-                        unset($records[$fieldToHide]);
-                    }
+                foreach ($fieldsToHide as $fieldToHide) {
+                    unset($records[$fieldToHide]);
                 }
             }
+
             $this->rows[] = $records;
         }
     }
 
     /**
      * Return pid that are allow for tu current be_users
-     *
-     * @return array
      */
-    public function checkPids()
+    public function checkPids(): array
     {
         $pids = [];
         $currentQuery = $this->query;
@@ -208,14 +209,14 @@ class Query
     public function isPowermail()
     {
         return (
-                $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
+            $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
             GeneralUtility::inList(
                 '2,3',
                 $this->config['type']
             );
     }
 
-    public function setConfig($config)
+    public function setConfig($config): void
     {
         $this->config = $config;
     }
@@ -225,7 +226,7 @@ class Query
         return $this->config;
     }
 
-    public function setCheckPids($checkPids)
+    public function setCheckPids($checkPids): void
     {
         $this->checkPids = $checkPids;
     }
@@ -235,7 +236,7 @@ class Query
         return $this->checkPids;
     }
 
-    public function setQuery($query)
+    public function setQuery($query): void
     {
         $this->query = $query;
     }
@@ -255,7 +256,7 @@ class Query
         return count($this->rows);
     }
 
-    public function setSelect($value)
+    public function setSelect($value): void
     {
         $this->query['SELECT'] = $value;
     }
@@ -265,7 +266,7 @@ class Query
         return $this->query['SELECT'];
     }
 
-    public function setFrom($value)
+    public function setFrom($value): void
     {
         $this->query['FROM'] = $value;
     }
@@ -275,7 +276,7 @@ class Query
         return $this->query['FROM'];
     }
 
-    public function setWhere($value)
+    public function setWhere($value): void
     {
         $this->query['WHERE'] = $value;
     }
@@ -285,7 +286,7 @@ class Query
         return $this->query['WHERE'];
     }
 
-    public function setGroupBy($value)
+    public function setGroupBy($value): void
     {
         $this->query['GROUPBY'] = $value;
     }
@@ -295,7 +296,7 @@ class Query
         return $this->query['GROUPBY'];
     }
 
-    public function setOrderBy($value)
+    public function setOrderBy($value): void
     {
         $this->query['ORDERBY'] = $value;
     }
@@ -305,7 +306,7 @@ class Query
         return $this->query['ORDERBY'];
     }
 
-    public function setLimit($value)
+    public function setLimit($value): void
     {
         $this->query['LIMIT'] = $value;
     }
@@ -315,7 +316,7 @@ class Query
         return $this->query['LIMIT'];
     }
 
-    public function setExportMode($exportMode)
+    public function setExportMode($exportMode): void
     {
         $this->exportMode = $exportMode;
     }

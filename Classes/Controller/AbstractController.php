@@ -21,7 +21,6 @@ use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
@@ -63,7 +62,7 @@ class AbstractController extends ActionController
      */
     protected function initializeView(ViewInterface $view): void
     {
-//        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
+        //        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
         $this->pageRenderer->addCssInlineBlock('recordsmanager', '.t3js-datetimepicker ~ .input-group-btn > label { margin-bottom: 0; }');
     }
 
@@ -118,7 +117,7 @@ class AbstractController extends ActionController
     /**
      * Returns a response object with either the given html string or the current rendered view as content.
      *
-     * @param null|string $html
+     * @param string|null $html
      */
     protected function htmlResponseCompatibility(string $html = null)
     {
