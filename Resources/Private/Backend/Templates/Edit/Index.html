@@ -30,9 +30,9 @@
                             <td class="cell">{field}</td>
                         </f:for>
                         <td class="cell">
-                            <a onclick="top.TYPO3.InfoWindow.showItem('{currentconfig.sqltable}','{row.uid}','');return false;" href="#" class="btn btn-default">
+                            <button type="button" data-dispatch-action="TYPO3.InfoWindow.showItem" data-dispatch-args-list="{currentconfig.sqltable},{row.uid}" class="btn btn-default">
                                 <rm:spriteManagerIcon iconName="actions-document-info"/>
-                            </a>
+                            </button>
                             <a onclick="jumpToUrl('{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}');" href="#" class="btn btn-default">
                                 <rm:spriteManagerIcon iconName="actions-document-open"/>
                             </a>
