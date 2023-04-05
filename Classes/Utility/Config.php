@@ -143,7 +143,7 @@ class Config
                     $record[$fieldName] = $fieldValue;
                 }
 
-                if (trim($record[$fieldName]) === 'N/A') {
+                if (trim((string)$record[$fieldName]) === 'N/A') {
                     $record[$fieldName] = '';
                 }
             }
