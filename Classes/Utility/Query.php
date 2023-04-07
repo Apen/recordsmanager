@@ -160,7 +160,7 @@ class Query
                 $records = array_intersect_key($records, $this->headers);
             }
 
-            if (($this->exportMode === true) && ($this->config['type'] === 3)) {
+            if (($this->exportMode === true) && ((int)$this->config['type'] === 3)) {
                 $arrayToEncode = [];
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
                 $arrayToEncode['uidrecord'] = $records['uid'];
