@@ -205,4 +205,17 @@ class Config
 
         return $record;
     }
+
+    /**
+     * Get the export format passed in URL
+     */
+    public static function getFormat(): string
+    {
+        $format = GeneralUtility::_GP('format');
+        if (!empty($format)) {
+            return (string)$format;
+        }
+
+        return 'excel';
+    }
 }

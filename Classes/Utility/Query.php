@@ -10,6 +10,7 @@ namespace Sng\Recordsmanager\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 use Doctrine\DBAL\Statement;
 use Sng\Recordsmanager\Events\GetQueryEvent;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -127,8 +128,9 @@ class Query
             $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
         }
 
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetchAssociative()) {
             if ($this->isPowermail()) {
+                /** @var \In2code\Powermail\Domain\Model\Mail $mail */
                 $mail = $mailRepository->findByUid($row['uid']);
             }
 
@@ -139,28 +141,45 @@ class Query
                     $this->headers = array_intersect_key($this->headers, array_flip(GeneralUtility::trimExplode(',', $this->config['sqlfields'])));
                     $powermailHeaders = [];
                     foreach ($mail->getAnswers() as $answer) {
+                        /** @var \In2code\Powermail\Domain\Model\Answer $answer */
                         $powermailHeaders [] = $answer->getField()->getTitle();
                     }
 
                     $this->headers = array_merge($this->headers, $powermailHeaders);
                 }
 
-                if (($this->exportMode === true) && ($this->config['type'] === 3)) {
+                if ($this->isEidExport()) {
                     $extraTsHeaders = array_keys(Misc::loadAndExecTS($this->config['extrats'], $row, $this->query['FROM']));
                     $this->headers = array_merge($this->headers, ['recordsmanagerkey'], $extraTsHeaders);
                 }
             }
 
-            $records = Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'] ?? '', $this->exportMode);
-            if ($this->isPowermail()) {
-                foreach ($mail->getAnswers() as $answer) {
-                    $records [] = $answer->getValue();
-                }
-
-                $records = array_intersect_key($records, $this->headers);
+            if (!$this->isPowermail()) {
+                $records = Config::getResultRow($row, $this->query['FROM'], $this->config['excludefields'] ?? '', $this->exportMode);
+            } else {
+                // if this is a powermail export, we dont need to process all the fields
+                $records = $row;
             }
 
-            if (($this->exportMode === true) && ((int)$this->config['type'] === 3)) {
+            if ($this->isPowermail()) {
+                $records = array_intersect_key($records, $this->headers);
+
+                foreach ($mail->getAnswers() as $answer) {
+                    if (Config::getFormat() === 'json') {
+                        $records [$answer->getField()->getUid()] = [
+                            'label' => $answer->getField()->getTitle(),
+                            'marker' => $answer->getField()->getMarkerOriginal(),
+                            'uid' => $answer->getField()->getUid(),
+                            'value' => $answer->getValue(),
+                        ];
+                    } else {
+                        $records [] = $answer->getValue();
+                    }
+                }
+
+            }
+
+            if ($this->isEidExport()) {
                 $arrayToEncode = [];
                 $arrayToEncode['uidconfig'] = $this->config['uid'];
                 $arrayToEncode['uidrecord'] = $records['uid'];
@@ -181,6 +200,11 @@ class Query
 
             $this->rows[] = $records;
         }
+    }
+
+    protected function isEidExport(): bool
+    {
+        return ($this->exportMode === true) && ($this->config['type'] === 3);
     }
 
     /**
@@ -209,7 +233,7 @@ class Query
     public function isPowermail()
     {
         return (
-            $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
+                $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
             GeneralUtility::inList(
                 '2,3',
                 $this->config['type']

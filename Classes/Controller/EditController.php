@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EditController extends AbstractController
 {
-    protected $currentConfig;
+    protected array $currentConfig;
 
     public function indexAction(int $currentPage = 1)
     {

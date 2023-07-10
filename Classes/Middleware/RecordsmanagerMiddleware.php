@@ -79,21 +79,8 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
             }
         }
 
-        $this->exportRecords($query, $this->getFormat());
+        $this->exportRecords($query, Config::getFormat());
         exit;
-    }
-
-    /**
-     * Get the export format passed in URL
-     */
-    public function getFormat(): string
-    {
-        $format = GeneralUtility::_GP('format');
-        if (!empty($format)) {
-            return (string)$format;
-        }
-
-        return 'excel';
     }
 
     /**
@@ -114,11 +101,6 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      */
     public function exportRecords(Query $query, string $mode): void
     {
-        $pid = GeneralUtility::_GP('pid');
-        if (!empty($pid)) {
-            $query->setWhere($query->getWhere() . ' AND pid=' . (int)$pid);
-        }
-
         $query->execQuery();
         $controller = GeneralUtility::makeInstance(
             ExportController::class,
@@ -169,6 +151,22 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         $queryObject->setConfig($this->currentConfig);
         $queryObject->setExportMode(true);
         $queryObject->buildQuery();
+
+        if (trim($this->currentConfig['extralimit']) === '' && (GeneralUtility::_GP('limit') ?? false)) {
+            $queryObject->setLimit((int)GeneralUtility::_GP('limit'));
+        }
+
+        if (GeneralUtility::_GP('pid') ?? false) {
+            $queryObject->setWhere($queryObject->getWhere() . ' AND pid=' . (int)GeneralUtility::_GP('pid'));
+        }
+
+        if (trim($this->currentConfig['exportfilterfield'] ?? '') !== '' && (GeneralUtility::_GP('start') ?? false)) {
+            $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['exportfilterfield'] . '>=' . (int)GeneralUtility::_GP('start'));
+        }
+
+        if (trim($this->currentConfig['exportfilterfield'] ?? '') !== '' && (GeneralUtility::_GP('end') ?? false)) {
+            $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['exportfilterfield'] . '<=' . (int)GeneralUtility::_GP('end'));
+        }
 
         return $queryObject;
     }
