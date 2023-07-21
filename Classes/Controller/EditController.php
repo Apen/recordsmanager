@@ -120,7 +120,7 @@ class EditController extends AbstractController
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
                 );
-            $this->currentConfig = $queryBuilder->execute()->fetch();
+            $this->currentConfig = $queryBuilder->executeQuery()->fetch();
         }
     }
 }

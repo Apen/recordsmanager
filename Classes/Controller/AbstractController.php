@@ -10,6 +10,7 @@ namespace Sng\Recordsmanager\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use Sng\Recordsmanager\Pagination\QueryPaginator;
 use Sng\Recordsmanager\Pagination\SimplePagination;
@@ -23,7 +24,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class AbstractController extends ActionController
@@ -58,11 +58,11 @@ class AbstractController extends ActionController
      */
     protected function initializeAction(): void
     {
-        $this->moduleTemplate = new ModuleTemplate($this->pageRenderer, $this->iconFactory, $this->flashMessageService, $this->request);
+        $this->moduleTemplate = (GeneralUtility::makeInstance(ModuleTemplateFactory::class))->create($this->request);
         $this->moduleTemplate->setTitle(LocalizationUtility::translate('LLL:EXT:beuser/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'));
     }
 
-    protected function initializeView(ViewInterface $view): void
+    protected function initializeView($view): void
     {
         //        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
         $this->pageRenderer->addCssInlineBlock('recordsmanager', '.t3js-datetimepicker ~ .input-group-btn > label { margin-bottom: 0; }');
@@ -123,10 +123,6 @@ class AbstractController extends ActionController
      */
     protected function htmlResponseCompatibility(string $html = null)
     {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 10) {
-            return $html;
-        }
-
         return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
             ->withBody($this->streamFactory->createStream($html ?? $this->view->render()));

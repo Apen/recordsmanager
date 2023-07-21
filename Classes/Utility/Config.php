@@ -36,7 +36,7 @@ class Config
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT))
             )
             ->orderBy('sorting', 'ASC');
-        $allItems = $queryBuilder->execute()->fetchAll();
+        $allItems = $queryBuilder->executeQuery()->fetchAll();
         $usergroups = GeneralUtility::makeInstance(Context::class)->getAspect('backend.user')
             ->getGroupIds();
         if (!empty($allItems)) {
@@ -65,7 +65,7 @@ class Config
                 $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \PDO::PARAM_INT)),
                 $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \PDO::PARAM_STR))
             );
-        $row = $queryBuilder->execute()->fetch();
+        $row = $queryBuilder->executeQuery()->fetch();
         if (!empty($row)) {
             return $row;
         }

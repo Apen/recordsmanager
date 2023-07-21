@@ -4,92 +4,76 @@ if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-if (TYPO3_MODE === 'BE') {
-    $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class);
-    $conf = $extensionConfiguration->get('recordsmanager');
+// typo3 v11 modules initialization
+$extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class);
+$conf = $extensionConfiguration->get('recordsmanager');
 
-    if (((int)$conf['enabledAdd'] === 1) || ((int)$conf['enabledEdit'] === 1) || ((int)$conf['enabledExport'] === 1)) {
-        // add module after 'Web'
-        if (!isset($GLOBALS['TBE_MODULES']['txrecordsmanagerM1'])) {
-            $temp_TBE_MODULES = [];
-            foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
-                if ($key === 'web') {
-                    $temp_TBE_MODULES[$key] = $val;
-                    $temp_TBE_MODULES['txrecordsmanagerM1'] = $val;
-                } else {
-                    $temp_TBE_MODULES[$key] = $val;
-                }
-            }
+if (((int)$conf['enabledAdd'] === 1) || ((int)$conf['enabledEdit'] === 1) || ((int)$conf['enabledExport'] === 1)) {
 
-            $GLOBALS['TBE_MODULES'] = $temp_TBE_MODULES;
-            unset($temp_TBE_MODULES);
-        }
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+        'Recordsmanager',
+        'txrecordsmanagerM1',
+        '',
+        '',
+        [],
+        [
+            'access' => 'user,group',
+            'icon' => 'EXT:recordsmanager/Resources/Public/Icons/table.png',
+            'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:recordsmanagertitle',
+        ]
+    );
 
+    if ((int)$conf['enabledAdd'] === 1) {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             'Recordsmanager',
             'txrecordsmanagerM1',
+            'insert',
             '',
-            '',
-            [],
+            [
+                \Sng\Recordsmanager\Controller\InsertController::class => 'index',
+            ],
             [
                 'access' => 'user,group',
-                'icon' => 'EXT:recordsmanager/Resources/Public/Icons/table.png',
-                'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:recordsmanagertitle',
+                'icon' => 'EXT:recordsmanager/Resources/Public/Icons/plus.png',
+                'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:inserttitle',
             ]
         );
-
-        if ((int)$conf['enabledAdd'] === 1) {
-            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'Recordsmanager',
-                'txrecordsmanagerM1', // Make module a submodule of 'web'
-                'insert', // Submodule key
-                '', // Position
-                [
-                    \Sng\Recordsmanager\Controller\InsertController::class => 'index',
-                ],
-                [
-                    'access' => 'user,group',
-                    'icon' => 'EXT:recordsmanager/Resources/Public/Icons/plus.png',
-                    'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:inserttitle',
-                ]
-            );
-        }
-
-        if ((int)$conf['enabledEdit'] === 1) {
-            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'Recordsmanager',
-                'txrecordsmanagerM1', // Make module a submodule of 'web'
-                'edit', // Submodule key
-                '', // Position
-                [
-                    \Sng\Recordsmanager\Controller\EditController::class => 'index',
-                ],
-                [
-                    'access' => 'user,group',
-                    'icon' => 'EXT:recordsmanager/Resources/Public/Icons/table-edit.png',
-                    'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:edittitle',
-                ]
-            );
-        }
-
-        if ((int)$conf['enabledExport'] === 1) {
-            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                'Recordsmanager',
-                'txrecordsmanagerM1', // Make module a submodule of 'web'
-                'export', // Submodule key
-                '', // Position
-                [
-                    \Sng\Recordsmanager\Controller\ExportController::class => 'index',
-                ],
-                [
-                    'access' => 'user,group',
-                    'icon' => 'EXT:recordsmanager/Resources/Public/Icons/export.png',
-                    'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:exporttitle',
-                ]
-            );
-        }
     }
 
-    //\TYPO3\CMS\Extbase\Utility\ExtensionUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'recordsmanager');
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:recordsmanager/Configuration/TypoScript/setup.txt">');
+    if ((int)$conf['enabledEdit'] === 1) {
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+            'Recordsmanager',
+            'txrecordsmanagerM1',
+            'edit',
+            '',
+            [
+                \Sng\Recordsmanager\Controller\EditController::class => 'index',
+            ],
+            [
+                'access' => 'user,group',
+                'icon' => 'EXT:recordsmanager/Resources/Public/Icons/table-edit.png',
+                'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:edittitle',
+            ]
+        );
+    }
+
+    if ((int)$conf['enabledExport'] === 1) {
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+            'Recordsmanager',
+            'txrecordsmanagerM1',
+            'export',
+            '',
+            [
+                \Sng\Recordsmanager\Controller\ExportController::class => 'index',
+            ],
+            [
+                'access' => 'user,group',
+                'icon' => 'EXT:recordsmanager/Resources/Public/Icons/export.png',
+                'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:exporttitle',
+            ]
+        );
+    }
 }
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:recordsmanager/Configuration/TypoScript/setup.txt">');
+

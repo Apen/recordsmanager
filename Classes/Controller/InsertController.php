@@ -55,7 +55,7 @@ class InsertController extends AbstractController
                 'pages.uid=' . $this->currentConfig['sqltable'] . '.pid AND ' . $this->currentConfig['sqltable'] . '.deleted=0 ' . $addWhere
             )
             ->groupBy($this->currentConfig['sqltable'] . '.pid');
-        $pids = $queryBuilder->execute()->fetchAll();
+        $pids = $queryBuilder->executeQuery()->fetchAll();
 
         $pidsFind = [];
         $pidsAdmin = [];
@@ -80,7 +80,7 @@ class InsertController extends AbstractController
                     '1=1 ' . $addWhere
                 )
                 ->orderBy('title', 'ASC');
-            $pids = $queryBuilder->execute()->fetchAll();
+            $pids = $queryBuilder->executeQuery()->fetchAll();
             foreach ($pids as $pid) {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
                 $queryBuilder
@@ -89,7 +89,7 @@ class InsertController extends AbstractController
                     ->where(
                         $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
                     );
-                $nb = $queryBuilder->execute()->rowCount();
+                $nb = $queryBuilder->executeQuery()->rowCount();
                 $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['uid']);
                 $rootline = $rootlineUtility->get();
                 $path = $this::getPathFromRootline($rootline, 30);
@@ -103,11 +103,13 @@ class InsertController extends AbstractController
         $this->view->assign('arguments', $arguments);
         $this->view->assign('returnurl', $this->getReturnUrl());
         $this->view->assign('browserurl', $this->getBrowserUrl());
+        $this->view->assign('baseediturl', Misc::getModuleUrl('record_edit') . '&');
 
-        // redirect to tce form
-        if (!empty($arguments['create'])) {
-            $this->redirectToForm((int)$arguments['create']);
+        $disableFields = '';
+        if ($this->currentConfig['sqlfieldsinsert'] !== '') {
+            $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         }
+        $this->view->assign('disableFields', $disableFields);
 
         $this->moduleTemplate->setContent($this->view->render());
 
@@ -116,9 +118,7 @@ class InsertController extends AbstractController
 
     public function getReturnUrl(): string
     {
-        $this->request->getArguments();
-
-        return $this->uriBuilder->reset()->setAddQueryString(true)->uriFor();
+        return rawurlencode($GLOBALS['TYPO3_REQUEST']->getAttribute('normalizedParams')->getRequestUri());
     }
 
     /**
@@ -159,7 +159,7 @@ class InsertController extends AbstractController
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
                 );
-            $this->currentConfig = $queryBuilder->execute()->fetch();
+            $this->currentConfig = $queryBuilder->executeQuery()->fetch();
         }
     }
 
@@ -169,26 +169,5 @@ class InsertController extends AbstractController
     public function getBrowserUrl(): string
     {
         return Misc::getModuleUrl('wizard_element_browser');
-    }
-
-    /**
-     * Redirect to the insert form with correct params
-     */
-    public function redirectToForm(int $id): void
-    {
-        $arguments = $this->request->getArguments();
-        $returnUrl = Misc::getModuleUrl('txrecordsmanagerM1_RecordsmanagerInsert');
-        if (!empty($arguments['menuitem'])) {
-            $returnUrl .= '&tx_recordsmanager_txrecordsmanagerm1_recordsmanagerinsert[menuitem]=' . $arguments['menuitem'];
-        }
-
-        $editLink = Misc::getModuleUrl('record_edit') . '&returnUrl=' . rawurlencode($returnUrl) . '&edit[' . $this->currentConfig['sqltable'] . '][' . $id . ']=new';
-        // disabledFields
-        $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
-        if ($this->currentConfig['sqlfieldsinsert'] !== '') {
-            $editLink .= '&recordsHide=' . $disableFields;
-        }
-
-        HttpUtility::redirect($editLink);
     }
 }

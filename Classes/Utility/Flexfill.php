@@ -38,8 +38,8 @@ class Flexfill
         if (!empty($params['row']['sqltable'])) {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($params['row']['sqltable'][0]);
             $statement = $connection->prepare('SHOW COLUMNS FROM ' . $params['row']['sqltable'][0] . ' ;');
-            $statement->execute();
-            while ($row = $statement->fetch()) {
+            $statement = $statement->executeQuery();
+            while ($row = $statement->fetchAssociative()) {
                 $label = $row['Field'];
                 $value = $row['Field'];
                 $params['items'][] = [$label, $value];
@@ -81,8 +81,8 @@ class Flexfill
         $fields = [];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($table);
         $statement = $connection->prepare('SHOW COLUMNS FROM ' . $table . ' ;');
-        $statement->execute();
-        while ($row = $statement->fetch()) {
+        $statement = $statement->executeQuery();
+        while ($row = $statement->fetchAssociative()) {
             $currentField = empty($row['Field']) ? $row[0] : $row['Field'];
             if (!GeneralUtility::inList(self::excludeFields, $currentField)) {
                 $value = $currentField;

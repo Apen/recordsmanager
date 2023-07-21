@@ -10,7 +10,9 @@ namespace Sng\Recordsmanager\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -55,7 +57,7 @@ class Misc
     /**
      * Load a TS string and return array of fields
      */
-    public static function loadAndExecTS(array $conf, array $data = [], string $table = ''): array
+    public static function loadAndExecTS(string $conf, array $data = [], string $table = ''): array
     {
         $tsArray = self::loadTS([], $conf);
         $datas = [];
@@ -98,18 +100,6 @@ class Misc
         return $datas;
     }
 
-    /**
-     * Returns an integer from a three part version number, eg '4.12.3' -> 4012003
-     *
-     * @param string $verNumberStr number on format x.x.x
-     */
-    public static function intFromVer(string $verNumberStr): int
-    {
-        $verParts = explode('.', $verNumberStr);
-
-        return (int)((int)$verParts[0] . str_pad((int)$verParts[1], 3, '0', STR_PAD_LEFT) . str_pad((int)$verParts[2], 3, '0', STR_PAD_LEFT));
-    }
-
     public static function getModuleUrl(string $moduleName, array $urlParameters = []): string
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
@@ -137,5 +127,21 @@ class Misc
         $LANG->init($GLOBALS['BE_USER']->uc['lang']);
 
         return $LANG;
+    }
+
+    public static function isTypo3V11(): bool
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 11) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function isTypo3V12(): bool
+    {
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 12) {
+            return true;
+        }
+        return false;
     }
 }

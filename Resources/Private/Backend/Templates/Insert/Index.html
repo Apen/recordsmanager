@@ -28,7 +28,9 @@
                     <tr class="bgColor4">
                         <td>
                             <rm:spriteManagerIcon iconName="apps-filetree-folder-default"/>
-                            <f:link.action arguments="{create: '{pidfind.pid}', menuitem:'{currentconfig.uid}'}">{pidfind.path}</f:link.action>
+                            <a href="{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{pidfind.pid}]=new&recordsHide={disableFields}">
+                                {pidfind.path}
+                            </a>
                         </td>
                         <td>{pidfind.pid}</td>
                         <td>{pidfind.nbrecords}</td>
@@ -60,7 +62,9 @@
                     <tr class="bgColor4">
                         <td>
                             <rm:spriteManagerIcon iconName="apps-filetree-folder-default"/>
-                            <f:link.action arguments="{create: '{pidadmin.pid}', menuitem:'{currentconfig.uid}'}">{pidadmin.path}</f:link.action>
+                            <a href="{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{pidadmin.pid}]=new&recordsHide={disableFields}">
+                                {pidadmin.path}
+                            </a>
                         </td>
                         <td>{pidadmin.pid}</td>
                         <td>{pidadmin.nbrecords}</td>

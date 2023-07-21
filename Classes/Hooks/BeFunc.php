@@ -31,7 +31,7 @@ class BeFunc
                     )
                     ->orderBy('sorting', 'ASC')
                 ;
-                $items = $queryBuilder->execute()->fetchAll();
+                $items = $queryBuilder->executeQuery()->fetchAll();
                 if (count($items) > 0) {
                     $config = $items[0];
                     self::$dateformat = $config['dateformat'];

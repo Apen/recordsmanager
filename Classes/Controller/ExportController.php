@@ -12,11 +12,13 @@ namespace Sng\Recordsmanager\Controller;
  */
 
 use Sng\Recordsmanager\Utility\Config;
+use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CsvUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 
 class ExportController extends AbstractController
 {
@@ -47,7 +49,18 @@ class ExportController extends AbstractController
 
         $this->view->assign('currentconfig', $this->currentConfig);
         $this->view->assign('arguments', $this->request->getArguments());
-        $this->view->assign('overwriteDemand', $this->request->getArguments()['overwriteDemand'] ?? []);
+
+        if (Misc::isTypo3V11()) {
+            $this->view->assign('overwriteDemand', $this->request->getArguments()['overwriteDemand'] ?? []);
+        }
+
+        if (Misc::isTypo3V12()) {
+            // params for pagination
+            $this->view->assign('additionalParams',
+                ['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport' => ($this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport'] ?? [])]
+            );
+            $this->view->assign('overwriteDemand', $this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
+        }
 
         if ($query->getNbRows() > 0) {
             $this->view->assign('headers', $query->getHeaders());
@@ -77,7 +90,10 @@ class ExportController extends AbstractController
     public function getOverwriteDemand($key)
     {
         $arguments = $this->getAllArguments();
-        return $arguments['overwriteDemand'][$key] ?? null;
+        if (Misc::isTypo3V11()) {
+            return $arguments['overwriteDemand'][$key] ?? null;
+        }
+        return $arguments['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'][$key] ?? null;
     }
 
     /**
@@ -102,6 +118,9 @@ class ExportController extends AbstractController
     public function getExportUrl(string $mode): string
     {
         $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
+        if (Misc::isTypo3V12()) {
+            $argKey = 'tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport';
+        }
         $this->request->getArguments();
         $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
@@ -122,10 +141,11 @@ class ExportController extends AbstractController
     public function exportRecords(Query $query): void
     {
         $arguments = $this->request->getArguments();
-        if (!empty($arguments['download'])) {
+        $type = $arguments['download'] ?? $arguments['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['download'] ?? '';
+        if ($type !== '') {
             $query->setLimit('');
             $query->execQuery();
-            switch ($arguments['download']) {
+            switch ($type) {
                 case 'xml':
                     $this->exportToXML($query);
                     break;
@@ -301,7 +321,7 @@ class ExportController extends AbstractController
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
                 );
-            $this->currentConfig = $queryBuilder->execute()->fetch();
+            $this->currentConfig = $queryBuilder->executeQuery()->fetch();
         }
     }
 }

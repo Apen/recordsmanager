@@ -11,14 +11,13 @@ namespace Sng\Recordsmanager\Utility;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Result;
 use Sng\Recordsmanager\Events\GetQueryEvent;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class Query
 {
@@ -92,13 +91,12 @@ class Query
         return $sql . (empty($queryArray['LIMIT']) ? '' : ' LIMIT ' . $queryArray['LIMIT']);
     }
 
-    public function prepareAndExecuteQuery(): Statement
+    public function prepareAndExecuteQuery(): Result
     {
         $queryArray = $this->getQuery();
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->config['sqltable']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($queryArray));
-        $statement->execute();
-        return $statement;
+        return $statement->executeQuery();
     }
 
     public function getNbRowsFromStatement()
@@ -124,8 +122,7 @@ class Query
         }
 
         if ($this->isPowermail()) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $mailRepository = $objectManager->get('In2code\\Powermail\\Domain\\Repository\\MailRepository');
+            $mailRepository = GeneralUtility::makeInstance(\In2code\Powermail\Domain\Repository\MailRepository::class);
         }
 
         while ($row = $statement->fetchAssociative()) {
@@ -219,7 +216,7 @@ class Query
         $currentQuery['LIMIT'] = '';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($currentQuery));
-        $statement->execute();
+        $statement->executeQuery();
         while ($row = $statement->fetch()) {
             $pageinfo = BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
             if ($pageinfo !== false) {
