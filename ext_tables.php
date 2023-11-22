@@ -75,5 +75,4 @@ if (((int)$conf['enabledAdd'] === 1) || ((int)$conf['enabledEdit'] === 1) || ((i
     }
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:recordsmanager/Configuration/TypoScript/setup.txt">');
 
