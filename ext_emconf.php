@@ -19,6 +19,9 @@ $EM_CONF['recordsmanager'] = [
         'suggests' => [],
     ],
     'autoload' => [
+        'classmap' => [
+            'Resources/Private/Php/',
+        ],
         'psr-4' => [
             'Sng\\Recordsmanager\\' => 'Classes/',
         ],

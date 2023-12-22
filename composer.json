@@ -30,6 +30,9 @@
     "helmich/typo3-typoscript-lint": "^3"
   },
   "autoload": {
+    "files": [
+      "Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php"
+    ],
     "psr-4": {
       "Sng\\Recordsmanager\\": "Classes"
     }
