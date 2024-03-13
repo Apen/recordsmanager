@@ -252,7 +252,9 @@ class ExportController extends AbstractController
     {
         $rows = array_merge([$query->getHeaders()], $query->getRows());
         $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xlsx';
-        require_once Environment::getPublicPath() . '/typo3conf/ext/recordsmanager/Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php';
+        if (!class_exists('XLSXWriter')) {
+            require_once Environment::getPublicPath() . '/typo3conf/ext/recordsmanager/Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php';
+        }
         $writer = new \XLSXWriter();
         $writer->writeSheet($rows);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
