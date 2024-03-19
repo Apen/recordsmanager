@@ -14,11 +14,10 @@ namespace Sng\Recordsmanager\Controller;
 use Sng\Recordsmanager\Utility\Config;
 use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Query;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CsvUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 
 class ExportController extends AbstractController
 {
@@ -253,7 +252,7 @@ class ExportController extends AbstractController
         $rows = array_merge([$query->getHeaders()], $query->getRows());
         $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.xlsx';
         if (!class_exists('XLSXWriter')) {
-            require_once Environment::getPublicPath() . '/typo3conf/ext/recordsmanager/Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php';
+            require_once ExtensionManagementUtility::extPath('recordsmanager') . 'Resources/Private/Php/PHP_XLSXWriter/xlsxwriter.class.php';
         }
         $writer = new \XLSXWriter();
         $writer->writeSheet($rows);
