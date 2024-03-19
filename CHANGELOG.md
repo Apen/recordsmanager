@@ -1,6 +1,15 @@
-Latest release : 1.6.0 (2021-10-22 17:15:36 +0200)
+Latest release : 1.6.9 (2024-03-19 16:48:12 +0100)
 
 
+* 1.6.9 (2024-03-19 16:48:12 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.8...1.6.9)
+* 1.6.8 (2023-08-31 15:37:44 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.7...1.6.8)
+* 1.6.7 (2022-10-13 16:54:11 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.6...1.6.7)
+* 1.6.6 (2022-09-02 10:56:53 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.5...1.6.6)
+* 1.6.5 (2022-07-07 16:00:17 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.4...1.6.5)
+* 1.6.4 (2022-07-07 15:45:04 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.3...1.6.4)
+* 1.6.3 (2021-11-05 15:05:11 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.2...1.6.3)
+* 1.6.2 (2021-11-04 15:45:03 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.1...1.6.2)
+* 1.6.1 (2021-10-25 18:01:17 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.6.0...1.6.1)
 * 1.6.0 (2021-10-22 17:15:36 +0200) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.5.2...1.6.0)
 * 1.5.2 (2020-12-07 12:04:37 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.5.1...1.5.2)
 * 1.5.1 (2020-11-17 10:43:07 +0100) [Full list of changes](https://github.com/Apen/recordsmanager/compare/1.5.0...1.5.1)
