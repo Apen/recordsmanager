@@ -21,6 +21,7 @@ use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,15 +49,15 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        if (!is_object($GLOBALS['BE_USER'])) {
-            $GLOBALS['BE_USER'] = GeneralUtility::makeInstance(FrontendBackendUserAuthentication::class);
-            $GLOBALS['BE_USER']->start();
-            $GLOBALS['BE_USER']->unpack_uc();
-        }
-
-        if (!is_object($GLOBALS['LANG'])) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-            $GLOBALS['LANG']->init('default');
+        if (!isset($GLOBALS['LANG'])) {
+            $languageServiceFactory = GeneralUtility::makeInstance(
+                LanguageServiceFactory::class
+            );
+            $request = $GLOBALS['TYPO3_REQUEST'];
+            $GLOBALS['LANG'] = $languageServiceFactory->createFromSiteLanguage(
+                $request->getAttribute('language')
+                ?? $request->getAttribute('site')->getDefaultLanguage()
+            );
         }
 
         // Remove any output produced until now
