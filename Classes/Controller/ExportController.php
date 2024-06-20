@@ -50,7 +50,7 @@ class ExportController extends AbstractController
         $this->view->assign('arguments', $this->request->getArguments());
 
         if (Misc::isTypo3V11()) {
-            $this->view->assign('overwriteDemand', $this->request->getArguments()['overwriteDemand'] ?? []);
+            $this->view->assign('overwriteDemand', $this->request->getParsedBody()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
         }
 
         if (Misc::isTypo3V12()) {
@@ -83,15 +83,15 @@ class ExportController extends AbstractController
 
     public function getAllArguments()
     {
+        if (Misc::isTypo3V11()) {
+            return $this->request->getParsedBody();
+        }
         return $this->request->getArguments();
     }
 
     public function getOverwriteDemand($key)
     {
         $arguments = $this->getAllArguments();
-        if (Misc::isTypo3V11()) {
-            return $arguments['overwriteDemand'][$key] ?? null;
-        }
         return $arguments['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'][$key] ?? null;
     }
 
