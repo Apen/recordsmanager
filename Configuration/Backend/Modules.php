@@ -9,7 +9,8 @@ if (((int)$extensionConf['enabledAdd'] === 1) || ((int)$extensionConf['enabledEd
             'labels' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang.xlf:recordsmanagertitle',
             'iconIdentifier' => 'recordsmanager-main',
             'navigationComponent' => '',
-            'aliases' => ['txrecordsmanagerM1'],
+	    'aliases' => ['txrecordsmanagerM1'],
+	    'access' => 'user',
         ],
     ];
 
@@ -22,7 +23,8 @@ if (((int)$extensionConf['enabledAdd'] === 1) || ((int)$extensionConf['enabledEd
             'controllerActions' => [
                 \Sng\Recordsmanager\Controller\InsertController::class => 'index',
             ],
-            'aliases' => ['txrecordsmanagerM1_RecordsmanagerInsert'],
+	    'aliases' => ['txrecordsmanagerM1_RecordsmanagerInsert'],
+	    'access' => 'user',
         ];
     }
 
@@ -34,7 +36,8 @@ if (((int)$extensionConf['enabledAdd'] === 1) || ((int)$extensionConf['enabledEd
             'iconIdentifier' => 'recordsmanager-edit',
             'controllerActions' => [
                 \Sng\Recordsmanager\Controller\EditController::class => 'index',
-            ],
+	    ],
+	    'access' => 'user',
         ];
     }
 
@@ -46,7 +49,8 @@ if (((int)$extensionConf['enabledAdd'] === 1) || ((int)$extensionConf['enabledEd
             'iconIdentifier' => 'recordsmanager-export',
             'controllerActions' => [
                 \Sng\Recordsmanager\Controller\ExportController::class => 'index',
-            ],
+	    ],
+	    'access' => 'user',
         ];
     }
 
