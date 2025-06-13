@@ -6,7 +6,6 @@ $EM_CONF['recordsmanager'] = [
     'category' => 'module',
     'version' => '1.6.9',
     'state' => 'stable',
-    'uploadfolder' => false,
     'clearcacheonload' => false,
     'author' => 'CERDAN Yohann [Site-nGo]',
     'author_email' => 'cerdanyohann@yahoo.fr',

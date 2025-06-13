@@ -27,11 +27,11 @@ class BeFunc
                     ->select('*')
                     ->from('tx_recordsmanager_config')
                     ->where(
-                        $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(2, \PDO::PARAM_INT))
+                        $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(2, \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
                     )
                     ->orderBy('sorting', 'ASC')
                 ;
-                $items = $queryBuilder->executeQuery()->fetchAll();
+                $items = $queryBuilder->executeQuery()->fetchAllAssociative();
                 if (count($items) > 0) {
                     $config = $items[0];
                     self::$dateformat = $config['dateformat'];

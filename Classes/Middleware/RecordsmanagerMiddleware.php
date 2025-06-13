@@ -89,7 +89,7 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
      */
     public function getConfig(): string
     {
-        $config = GeneralUtility::_GP('recordsmanagerkey');
+        $config = $GLOBALS['TYPO3_REQUEST']->getParsedBody()['recordsmanagerkey'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['recordsmanagerkey'] ?? null;
         if (!empty($config)) {
             return (string)$config;
         }
@@ -153,20 +153,20 @@ class RecordsmanagerMiddleware implements MiddlewareInterface
         $queryObject->setExportMode(true);
         $queryObject->buildQuery();
 
-        if (trim($this->currentConfig['extralimit']) === '' && (GeneralUtility::_GP('limit') ?? false)) {
-            $queryObject->setLimit((int)GeneralUtility::_GP('limit'));
+        if (trim($this->currentConfig['extralimit']) === '' && (($GLOBALS['TYPO3_REQUEST']->getParsedBody()['limit'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['limit'] ?? null) ?? false)) {
+            $queryObject->setLimit((int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['limit'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['limit'] ?? null));
         }
 
-        if (GeneralUtility::_GP('pid') ?? false) {
-            $queryObject->setWhere($queryObject->getWhere() . ' AND pid=' . (int)GeneralUtility::_GP('pid'));
+        if (($GLOBALS['TYPO3_REQUEST']->getParsedBody()['pid'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['pid'] ?? null) ?? false) {
+            $queryObject->setWhere($queryObject->getWhere() . ' AND pid=' . (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['pid'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['pid'] ?? null));
         }
 
-        if (trim($this->currentConfig['exportfilterfield'] ?? '') !== '' && (GeneralUtility::_GP('start') ?? false)) {
-            $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['exportfilterfield'] . '>=' . (int)GeneralUtility::_GP('start'));
+        if (trim($this->currentConfig['exportfilterfield'] ?? '') !== '' && (($GLOBALS['TYPO3_REQUEST']->getParsedBody()['start'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['start'] ?? null) ?? false)) {
+            $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['exportfilterfield'] . '>=' . (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['start'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['start'] ?? null));
         }
 
-        if (trim($this->currentConfig['exportfilterfield'] ?? '') !== '' && (GeneralUtility::_GP('end') ?? false)) {
-            $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['exportfilterfield'] . '<=' . (int)GeneralUtility::_GP('end'));
+        if (trim($this->currentConfig['exportfilterfield'] ?? '') !== '' && (($GLOBALS['TYPO3_REQUEST']->getParsedBody()['end'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['end'] ?? null) ?? false)) {
+            $queryObject->setWhere($queryObject->getWhere() . ' AND ' . $this->currentConfig['exportfilterfield'] . '<=' . (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()['end'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['end'] ?? null));
         }
 
         return $queryObject;

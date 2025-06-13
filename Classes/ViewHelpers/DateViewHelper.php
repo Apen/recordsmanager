@@ -39,7 +39,6 @@ class DateViewHelper extends AbstractFormFieldViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerUniversalTagAttributes();
     }
 
     /**
@@ -63,10 +62,9 @@ class DateViewHelper extends AbstractFormFieldViewHelper
                 'fieldConf' => [
                     'label' => 'test',
                     'config' => [
-                        'type' => 'input',
-                        'renderType' => 'inputDateTime',
-                        'eval' => 'date',
+                        'type' => 'datetime',
                         'default' => 0,
+                        'format' => 'date',
                     ],
                 ],
             ];

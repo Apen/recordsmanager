@@ -22,13 +22,13 @@ class EditController extends AbstractController
 {
     protected array $currentConfig;
 
-    public function indexAction(int $currentPage = 1)
+    public function indexAction(int $currentPage = 1): \Psr\Http\Message\ResponseInterface
     {
         $allConfigs = Config::getAllConfigs(0);
         $this->createMenu('index', $allConfigs);
 
         if (empty($allConfigs)) {
-            return null;
+            return $this->htmlResponse(null);
         }
 
         $this->currentConfig = $allConfigs[0];
@@ -54,7 +54,7 @@ class EditController extends AbstractController
 
         $this->moduleTemplate->setContent($this->view->render());
 
-        return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
+        return $this->htmlResponse($this->htmlResponseCompatibility($this->moduleTemplate->renderContent()));
     }
 
     /**
@@ -118,9 +118,9 @@ class EditController extends AbstractController
                 ->select('*')
                 ->from('tx_recordsmanager_config')
                 ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
                 );
-            $this->currentConfig = $queryBuilder->executeQuery()->fetch();
+            $this->currentConfig = $queryBuilder->executeQuery()->fetchAssociative();
         }
     }
 }

@@ -27,7 +27,7 @@ class InsertController extends AbstractController
     /**
      * action index
      */
-    public function indexAction()
+    public function indexAction(): \Psr\Http\Message\ResponseInterface
     {
         $allConfigs = Config::getAllConfigs(1);
         $this->createMenu('index', $allConfigs);
@@ -36,7 +36,7 @@ class InsertController extends AbstractController
         $formResultCompiler->printNeededJSFunctions();
 
         if (empty($allConfigs)) {
-            return null;
+            return $this->htmlResponse(null);
         }
 
         $this->currentConfig = $allConfigs[0];
@@ -55,7 +55,7 @@ class InsertController extends AbstractController
                 'pages.uid=' . $this->currentConfig['sqltable'] . '.pid AND ' . $this->currentConfig['sqltable'] . '.deleted=0 ' . $addWhere
             )
             ->groupBy($this->currentConfig['sqltable'] . '.pid');
-        $pids = $queryBuilder->executeQuery()->fetchAll();
+        $pids = $queryBuilder->executeQuery()->fetchAllAssociative();
 
         $pidsFind = [];
         $pidsAdmin = [];
@@ -80,14 +80,14 @@ class InsertController extends AbstractController
                     '1=1 ' . $addWhere
                 )
                 ->orderBy('title', 'ASC');
-            $pids = $queryBuilder->executeQuery()->fetchAll();
+            $pids = $queryBuilder->executeQuery()->fetchAllAssociative();
             foreach ($pids as $pid) {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->currentConfig['sqltable']);
                 $queryBuilder
                     ->select('uid')
                     ->from($this->currentConfig['sqltable'])
                     ->where(
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \PDO::PARAM_INT))
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid['uid'], \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
                     );
                 $nb = $queryBuilder->executeQuery()->rowCount();
                 $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid['uid']);
@@ -113,7 +113,7 @@ class InsertController extends AbstractController
 
         $this->moduleTemplate->setContent($this->view->render());
 
-        return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
+        return $this->htmlResponse($this->htmlResponseCompatibility($this->moduleTemplate->renderContent()));
     }
 
     public function getReturnUrl(): string
@@ -157,9 +157,9 @@ class InsertController extends AbstractController
                 ->select('*')
                 ->from('tx_recordsmanager_config')
                 ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
                 );
-            $this->currentConfig = $queryBuilder->executeQuery()->fetch();
+            $this->currentConfig = $queryBuilder->executeQuery()->fetchAssociative();
         }
     }
 

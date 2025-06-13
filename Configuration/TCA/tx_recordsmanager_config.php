@@ -12,7 +12,6 @@ $tx_recordsmanager_config = [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'adminOnly' => 1,
         'rootLevel' => -1,
         'type' => 'type',
@@ -23,9 +22,6 @@ $tx_recordsmanager_config = [
             'disabled' => 'hidden',
         ],
         'iconfile' => 'EXT:recordsmanager/Resources/Public/Icons/icon_tx_recordsmanager_config.gif',
-    ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden,title,type,sqltable,sqlfields,sqlfieldsinsert,perms_group'
     ],
     'columns' => [
         'hidden' => [
@@ -52,10 +48,10 @@ $tx_recordsmanager_config = [
                 'renderType' => 'selectSingle',
                 'size' => '1',
                 'items' => [
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.0', 0],
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.1', 1],
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.2', 2],
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.3', 3]
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.0', 'value' => 0],
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.1', 'value' => 1],
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.2', 'value' => 2],
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.type.I.3', 'value' => 3]
                 ],
                 'default' => 0
             ]
@@ -136,9 +132,9 @@ $tx_recordsmanager_config = [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.1', 'xml'],
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.2', 'csv'],
-                    ['LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.3', 'excel'],
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.1', 'value' => 'xml'],
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.2', 'value' => 'csv'],
+                    ['label' => 'LLL:EXT:recordsmanager/Resources/Private/Language/locallang_db.xlf:tx_recordsmanager_config.exportmode.I.3', 'value' => 'excel'],
                 ],
                 'default' => 0,
                 'minitems' => 1,

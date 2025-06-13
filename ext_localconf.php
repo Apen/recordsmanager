@@ -4,12 +4,6 @@ if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(
-    '
-    options.saveDocNew.tx_recordsmanager_config=1
-'
-);
-
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][\Sng\Recordsmanager\Hooks\TceForms::class] = [
     'before' => [
         \TYPO3\CMS\Backend\Form\FormDataProvider\TcaColumnsRemoveUnused::class

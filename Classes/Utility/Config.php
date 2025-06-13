@@ -33,10 +33,10 @@ class Config
             ->select('*')
             ->from('tx_recordsmanager_config')
             ->where(
-                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter($type, \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
             )
             ->orderBy('sorting', 'ASC');
-        $allItems = $queryBuilder->executeQuery()->fetchAll();
+        $allItems = $queryBuilder->executeQuery()->fetchAllAssociative();
         $usergroups = GeneralUtility::makeInstance(Context::class)->getAspect('backend.user')
             ->getGroupIds();
         if (!empty($allItems)) {
@@ -62,10 +62,10 @@ class Config
             ->select('*')
             ->from('tx_recordsmanager_config')
             ->where(
-                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \PDO::PARAM_INT)),
-                $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \PDO::PARAM_STR))
+                $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter(3, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)),
+                $queryBuilder->expr()->like('eidkey', $queryBuilder->createNamedParameter($eidkey, \TYPO3\CMS\Core\Database\Connection::PARAM_STR))
             );
-        $row = $queryBuilder->executeQuery()->fetch();
+        $row = $queryBuilder->executeQuery()->fetchAssociative();
         if (!empty($row)) {
             return $row;
         }
@@ -84,8 +84,8 @@ class Config
     public static function loadJsonConfigs(): array
     {
         $jsonConfigs = [];
-        if (!empty($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'])) {
-            foreach ($GLOBALS['TSFE']->tmpl->setup['module.']['tx_recordsmanager.']['settings.']['configs_json.'] as $configPath) {
+        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['module.']['tx_recordsmanager.']['settings.']['configs_json.'])) {
+            foreach ($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['module.']['tx_recordsmanager.']['settings.']['configs_json.'] as $configPath) {
                 $config = json_decode(GeneralUtility::getUrl($configPath), true, 512, JSON_THROW_ON_ERROR);
                 if (!empty($config['extrats'])) {
                     $config['extrats'] = implode("\r\n", $config['extrats']);
@@ -211,7 +211,7 @@ class Config
      */
     public static function getFormat(): string
     {
-        $format = GeneralUtility::_GP('format');
+        $format = $GLOBALS['TYPO3_REQUEST']->getParsedBody()['format'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['format'] ?? null;
         if (!empty($format)) {
             return (string)$format;
         }

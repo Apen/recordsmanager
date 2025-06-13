@@ -37,7 +37,7 @@ class SpriteManagerIconViewHelper extends AbstractViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('iconName', 'string', 'as', true);
-        $this->registerArgument('size', 'integer', 'size', false, Icon::SIZE_SMALL);
+        $this->registerArgument('size', 'integer', 'size', false, \TYPO3\CMS\Core\Imaging\IconSize::SMALL);
     }
 
     /**
