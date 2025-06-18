@@ -12,7 +12,6 @@ namespace Sng\Recordsmanager\Hooks;
  */
 
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TceForms implements FormDataProviderInterface
 {

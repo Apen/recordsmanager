@@ -230,7 +230,7 @@ class Query
     public function isPowermail()
     {
         return (
-                $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
+            $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
             GeneralUtility::inList(
                 '2,3',
                 $this->config['type']

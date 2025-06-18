@@ -17,7 +17,6 @@ use Sng\Recordsmanager\Utility\Misc;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 class InsertController extends AbstractController

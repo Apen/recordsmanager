@@ -11,7 +11,6 @@ namespace Sng\Recordsmanager\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Sng\Recordsmanager\Utility\Misc;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

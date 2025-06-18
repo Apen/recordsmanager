@@ -7,7 +7,6 @@ namespace Sng\Recordsmanager\Utility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *

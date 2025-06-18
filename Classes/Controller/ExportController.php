@@ -12,7 +12,6 @@ namespace Sng\Recordsmanager\Controller;
  */
 
 use Sng\Recordsmanager\Utility\Config;
-use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CsvUtility;
@@ -50,7 +49,8 @@ class ExportController extends AbstractController
         $this->moduleTemplate->assign('arguments', $this->request->getArguments());
 
         // params for pagination
-        $this->moduleTemplate->assign('additionalParams',
+        $this->moduleTemplate->assign(
+            'additionalParams',
             ['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport' => ($this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport'] ?? [])]
         );
         $this->moduleTemplate->assign('overwriteDemand', $this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
@@ -100,8 +100,6 @@ class ExportController extends AbstractController
 
     /**
      * Get export url
-     *
-     *
      */
     public function getExportUrl(string $mode): string
     {
@@ -251,8 +249,6 @@ class ExportController extends AbstractController
 
     /**
      * Clean a string
-     *
-     *
      */
     public function cleanString(string $string, bool $deleteLr = false): string
     {

@@ -11,8 +11,6 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use Sng\Recordsmanager\Pagination\QueryPaginator;
 use Sng\Recordsmanager\Pagination\SimplePagination;
 use Sng\Recordsmanager\Utility\Query;
@@ -20,11 +18,11 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Beuser\Domain\Model\ModuleData;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class AbstractController extends ActionController
@@ -42,11 +40,10 @@ class AbstractController extends ActionController
     protected FlashMessageService $flashMessageService;
 
     public function __construct(
-        PageRenderer        $pageRenderer,
-        IconFactory         $iconFactory,
+        PageRenderer $pageRenderer,
+        IconFactory $iconFactory,
         FlashMessageService $flashMessageService
-    )
-    {
+    ) {
         $this->pageRenderer = $pageRenderer;
         $this->iconFactory = $iconFactory;
         $this->flashMessageService = $flashMessageService;
@@ -70,7 +67,6 @@ class AbstractController extends ActionController
     }
 
     /**
-     *
      * @throws NoSuchArgumentException
      */
     protected function createMenu(string $action = 'index', array $allConfigs = []): void
