@@ -1,0 +1,3 @@
+templates.apen/recordsmanager {
+    10 = apen/recordsmanager:Resources/Private/Backend
+}

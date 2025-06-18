@@ -11,6 +11,7 @@ namespace Sng\Recordsmanager\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Sng\Recordsmanager\Utility\Misc;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,7 +38,11 @@ class SpriteManagerIconViewHelper extends AbstractViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('iconName', 'string', 'as', true);
-        $this->registerArgument('size', 'integer', 'size', false, \TYPO3\CMS\Core\Imaging\IconSize::SMALL);
+        if (Misc::isTypo3V12()) {
+            $this->registerArgument('size', 'integer', 'size', false, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL);
+        } else {
+            $this->registerArgument('size', 'integer', 'size', false, \TYPO3\CMS\Core\Imaging\IconSize::SMALL);
+        }
     }
 
     /**

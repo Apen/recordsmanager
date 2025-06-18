@@ -55,64 +55,33 @@ class DateViewHelper extends AbstractFormFieldViewHelper
         $debug = $GLOBALS['TYPO3_CONF_VARS']['BE']['debug'];
         $GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = false;
 
-        if (Misc::isTypo3V11()) {
-            $parameterArray = [
-                'itemFormElName' => $this->arguments['name'],
-                'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
-                'fieldConf' => [
-                    'label' => 'test',
-                    'config' => [
-                        'type' => 'datetime',
-                        'default' => 0,
-                        'format' => 'date',
-                    ],
+        $parameterArray = [
+            'itemFormElName' => $this->arguments['name'],
+            'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
+            'itemFormElID' => 'data_notable_0_' . $this->arguments['name'],
+            'fieldConf' => [
+                'label' => '',
+                'config' => [
+                    'type' => 'datetime',
+                    'format' => 'date',
+                    'default' => 0,
                 ],
-            ];
-            $options = [
-                'renderType' => 'inputDateTime',
-                'tableName' => '',
-                'fieldName' => $this->arguments['name'],
-                'databaseRow' => [
-                    'uid' => 0,
+            ],
+        ];
+        $options = [
+            'renderType' => 'datetime',
+            'tableName' => '',
+            'fieldName' => $this->arguments['name'],
+            'databaseRow' => [
+                'uid' => 0,
+            ],
+            'processedTca' => [
+                'columns' => [
+                    $this->arguments['name'] => $parameterArray['fieldConf'],
                 ],
-                'processedTca' => [
-                    'columns' => [
-                        $this->arguments['name'] => $parameterArray['fieldConf'],
-                    ],
-                ],
-                'parameterArray' => $parameterArray,
-            ];
-        }
-
-        if (Misc::isTypo3V12()) {
-            $parameterArray = [
-                'itemFormElName' => $this->arguments['name'],
-                'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
-                'itemFormElID' => 'data_notable_0_' . $this->arguments['name'],
-                'fieldConf' => [
-                    'label' => '',
-                    'config' => [
-                        'type' => 'datetime',
-                        'format' => 'date',
-                        'default' => 0,
-                    ],
-                ],
-            ];
-            $options = [
-                'renderType' => 'datetime',
-                'tableName' => '',
-                'fieldName' => $this->arguments['name'],
-                'databaseRow' => [
-                    'uid' => 0,
-                ],
-                'processedTca' => [
-                    'columns' => [
-                        $this->arguments['name'] => $parameterArray['fieldConf'],
-                    ],
-                ],
-                'parameterArray' => $parameterArray,
-            ];
-        }
+            ],
+            'parameterArray' => $parameterArray,
+        ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $inputDateTimeResult = $nodeFactory->create($options)->render();

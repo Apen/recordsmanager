@@ -11,6 +11,7 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use Sng\Recordsmanager\Pagination\QueryPaginator;
 use Sng\Recordsmanager\Pagination\SimplePagination;
@@ -41,10 +42,11 @@ class AbstractController extends ActionController
     protected FlashMessageService $flashMessageService;
 
     public function __construct(
-        PageRenderer $pageRenderer,
-        IconFactory $iconFactory,
+        PageRenderer        $pageRenderer,
+        IconFactory         $iconFactory,
         FlashMessageService $flashMessageService
-    ) {
+    )
+    {
         $this->pageRenderer = $pageRenderer;
         $this->iconFactory = $iconFactory;
         $this->flashMessageService = $flashMessageService;
@@ -64,7 +66,6 @@ class AbstractController extends ActionController
 
     protected function initializeView($view): void
     {
-        //        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
         $this->pageRenderer->addCssInlineBlock('recordsmanager', '.t3js-datetimepicker ~ .input-group-btn > label { margin-bottom: 0; }');
     }
 
@@ -112,8 +113,8 @@ class AbstractController extends ActionController
         }
 
         $pagination->generate();
-        $this->view->assign('paginator', $paginator);
-        $this->view->assign('pagination', $pagination);
+        $this->moduleTemplate->assign('paginator', $paginator);
+        $this->moduleTemplate->assign('pagination', $pagination);
     }
 
     /**

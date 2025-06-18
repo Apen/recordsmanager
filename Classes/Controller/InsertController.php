@@ -36,7 +36,7 @@ class InsertController extends AbstractController
         $formResultCompiler->printNeededJSFunctions();
 
         if (empty($allConfigs)) {
-            return $this->htmlResponse(null);
+            return $this->htmlResponse('');
         }
 
         $this->currentConfig = $allConfigs[0];
@@ -97,23 +97,22 @@ class InsertController extends AbstractController
             }
         }
 
-        $this->view->assign('pidsfind', $pidsFind);
-        $this->view->assign('pidsadmin', $pidsAdmin);
-        $this->view->assign('currentconfig', $this->currentConfig);
-        $this->view->assign('arguments', $arguments);
-        $this->view->assign('returnurl', $this->getReturnUrl());
-        $this->view->assign('browserurl', $this->getBrowserUrl());
-        $this->view->assign('baseediturl', Misc::getModuleUrl('record_edit') . '&');
+        $this->moduleTemplate->assign('pidsfind', $pidsFind);
+        $this->moduleTemplate->assign('pidsadmin', $pidsAdmin);
+        $this->moduleTemplate->assign('currentconfig', $this->currentConfig);
+        $this->moduleTemplate->assign('arguments', $arguments);
+        $this->moduleTemplate->assign('returnurl', $this->getReturnUrl());
+        $this->moduleTemplate->assign('browserurl', $this->getBrowserUrl());
+        $this->moduleTemplate->assign('baseediturl', Misc::getModuleUrl('record_edit') . '&');
 
         $disableFields = '';
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
             $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         }
-        $this->view->assign('disableFields', $disableFields);
+        $this->moduleTemplate->assign('disableFields', $disableFields);
 
-        $this->moduleTemplate->setContent($this->view->render());
 
-        return $this->htmlResponse($this->htmlResponseCompatibility($this->moduleTemplate->renderContent()));
+        return $this->moduleTemplate->renderResponse('Insert/Index');
     }
 
     public function getReturnUrl(): string

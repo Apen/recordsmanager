@@ -46,29 +46,21 @@ class ExportController extends AbstractController
         $this->buildPagination($query, $currentPage);
         $this->exportRecords($query);
 
-        $this->view->assign('currentconfig', $this->currentConfig);
-        $this->view->assign('arguments', $this->request->getArguments());
+        $this->moduleTemplate->assign('currentconfig', $this->currentConfig);
+        $this->moduleTemplate->assign('arguments', $this->request->getArguments());
 
-        if (Misc::isTypo3V11()) {
-            $this->view->assign('overwriteDemand', $this->request->getParsedBody()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
-        }
-
-        if (Misc::isTypo3V12()) {
-            // params for pagination
-            $this->view->assign('additionalParams',
-                ['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport' => ($this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport'] ?? [])]
-            );
-            $this->view->assign('overwriteDemand', $this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
-        }
+        // params for pagination
+        $this->moduleTemplate->assign('additionalParams',
+            ['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport' => ($this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport'] ?? [])]
+        );
+        $this->moduleTemplate->assign('overwriteDemand', $this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
 
         if ($query->getNbRows() > 0) {
-            $this->view->assign('headers', $query->getHeaders());
-            $this->view->assign('exportmodes', $this->getExportUrls());
+            $this->moduleTemplate->assign('headers', $query->getHeaders());
+            $this->moduleTemplate->assign('exportmodes', $this->getExportUrls());
         }
 
-        $this->moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($this->htmlResponseCompatibility($this->moduleTemplate->renderContent()));
+        return $this->moduleTemplate->renderResponse('Export/Index');
     }
 
     /**
@@ -77,15 +69,12 @@ class ExportController extends AbstractController
     public function buildCalendar(): void
     {
         $this->getAllArguments();
-        $this->view->assign('startdate', $this->getOverwriteDemand('startdate'));
-        $this->view->assign('enddate', $this->getOverwriteDemand('enddate'));
+        $this->moduleTemplate->assign('startdate', $this->getOverwriteDemand('startdate'));
+        $this->moduleTemplate->assign('enddate', $this->getOverwriteDemand('enddate'));
     }
 
     public function getAllArguments()
     {
-        if (Misc::isTypo3V11()) {
-            return $this->request->getParsedBody();
-        }
         return $this->request->getArguments();
     }
 
@@ -116,10 +105,7 @@ class ExportController extends AbstractController
      */
     public function getExportUrl(string $mode): string
     {
-        $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
-        if (Misc::isTypo3V12()) {
-            $argKey = 'tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport';
-        }
+        $argKey = 'tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport';
         $this->request->getArguments();
         $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
@@ -131,7 +117,7 @@ class ExportController extends AbstractController
             $urlArguments[$argKey]['overwriteDemand']['enddate'] = $this->getOverwriteDemand('enddate');
         }
 
-        return $this->uriBuilder->reset()->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
+        return $this->uriBuilder->reset()->setCreateAbsoluteUri(true)->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
     }
 
     /**

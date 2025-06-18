@@ -28,7 +28,7 @@ class EditController extends AbstractController
         $this->createMenu('index', $allConfigs);
 
         if (empty($allConfigs)) {
-            return $this->htmlResponse(null);
+            return $this->htmlResponse('');
         }
 
         $this->currentConfig = $allConfigs[0];
@@ -37,24 +37,23 @@ class EditController extends AbstractController
         $query = $this->buildQuery();
         $this->buildPagination($query, $currentPage);
 
-        $this->view->assign('headers', $query->getHeaders());
-        $this->view->assign('currentconfig', $this->currentConfig);
-        $this->view->assign('arguments', $this->request->getArguments());
-        $this->view->assign('menuitems', $allConfigs);
-        $this->view->assign('returnurl', rawurlencode($this->getReturnUrl()));
-        $this->view->assign('deleteurl', $this->getDeleteUrl());
-        $this->view->assign('baseediturl', $this->getBaseEditUrl());
+        $this->moduleTemplate->assign('headers', $query->getHeaders());
+        $this->moduleTemplate->assign('currentconfig', $this->currentConfig);
+        $this->moduleTemplate->assign('arguments', $this->request->getArguments());
+        $this->moduleTemplate->assign('menuitems', $allConfigs);
+        $this->moduleTemplate->assign('returnurl', rawurlencode($this->getReturnUrl()));
+        $this->moduleTemplate->assign('deleteurl', $this->getDeleteUrl());
+        $this->moduleTemplate->assign('deleteurlbase', $this->getDeleteUrlBase());
+        $this->moduleTemplate->assign('baseediturl', $this->getBaseEditUrl());
 
         $disableFields = '';
         if ($this->currentConfig['sqlfieldsinsert'] !== '') {
             $disableFields = implode(',', Flexfill::getDiffFieldsFromTable($this->currentConfig['sqltable'], $this->currentConfig['sqlfieldsinsert']));
         }
 
-        $this->view->assign('disableFields', $disableFields);
+        $this->moduleTemplate->assign('disableFields', $disableFields);
 
-        $this->moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($this->htmlResponseCompatibility($this->moduleTemplate->renderContent()));
+        return $this->moduleTemplate->renderResponse('Edit/Index');
     }
 
     /**
@@ -96,6 +95,15 @@ class EditController extends AbstractController
         $deleteUrl = Misc::getModuleUrl('tce_db');
 
         return $deleteUrl . ('&cmd["+table+"]["+id+"][delete]=1&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1');
+    }
+
+    public function getDeleteUrlBase(): string
+    {
+        $this->request->getArguments();
+        $returnUrl = $this->getReturnUrl();
+        $deleteUrl = Misc::getModuleUrl('tce_db');
+
+        return $deleteUrl . ('&redirect=' . rawurlencode($returnUrl) . '&prErr=1&uPT=1');
     }
 
     /**

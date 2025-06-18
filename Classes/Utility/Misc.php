@@ -129,14 +129,6 @@ class Misc
         return $LANG;
     }
 
-    public static function isTypo3V11(): bool
-    {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 11) {
-            return true;
-        }
-        return false;
-    }
-
     public static function isTypo3V12(): bool
     {
         if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 12) {
