@@ -2,8 +2,8 @@
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/apen/recordsmanager?label=version)](https://packagist.org/packages/apen/recordsmanager)
 [![Total Downloads](https://img.shields.io/packagist/dt/apen/recordsmanager)](https://packagist.org/packages/apen/recordsmanager)
-[![TYPO3](https://img.shields.io/badge/TYPO3-9.5-orange.svg?style=flat-square)](https://typo3.org/)
-[![TYPO3](https://img.shields.io/badge/TYPO3-10.4-orange.svg?style=flat-square)](https://typo3.org/)
+[![TYPO3](https://img.shields.io/badge/TYPO3-12.4-orange.svg?style=flat-square)](https://typo3.org/)
+[![TYPO3](https://img.shields.io/badge/TYPO3-13.4-orange.svg?style=flat-square)](https://typo3.org/)
 
 >  Add modules to easily manage your records (insert, edit and export in backend/eID) in one place.
 
