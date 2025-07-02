@@ -42,7 +42,7 @@ class BeFunc
 
             if (self::$dateformat !== null) {
                 // remove the parenthesis at the end of the default date format
-                $params['value'] = preg_replace('#\s*\(.+\)#', '', $params['value']);
+                $params['value'] = preg_replace('#\s*\(.+\)#', '', (string)$params['value']);
             }
         }
 
