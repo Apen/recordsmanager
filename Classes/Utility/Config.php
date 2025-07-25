@@ -7,6 +7,7 @@ namespace Sng\Recordsmanager\Utility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+
 /*
  * This file is part of the "recordsmanager" Extension for TYPO3 CMS.
  *
@@ -149,7 +150,13 @@ class Config
 
             if ($export) {
                 // fal reference
-                if (($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'inline' && ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] ?? '') === 'sys_file_reference') {
+                if (
+                    (
+                        ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'inline'
+                        || ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['type'] ?? '') === 'file'
+                    )
+                    && ($GLOBALS['TCA'][$table]['columns'][$fieldName]['config']['foreign_table'] ?? '') === 'sys_file_reference'
+                ) {
                     $files = [];
 
                     try {
