@@ -178,7 +178,7 @@ class Query
 
             if ($this->isEidExport()) {
                 $arrayToEncode = [];
-                $arrayToEncode['uidconfig'] = $this->config['uid'];
+                $arrayToEncode['uidconfig'] = $this->config['uid'] ?? 0;
                 $arrayToEncode['uidrecord'] = $records['uid'];
                 if (empty($this->config['disabledomaininkey'])) {
                     $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
