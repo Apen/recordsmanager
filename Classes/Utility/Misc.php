@@ -28,6 +28,9 @@ class Misc
     {
         $temp = [];
         foreach ($array as $key => $val) {
+            if (is_array($val)) {
+                continue;
+            }
             $temp[self::convertToMarker($key, $markerPrefix)] = $val;
         }
 

@@ -187,7 +187,11 @@ class Query
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
                 // add special typoscript value
                 $markerValues = Misc::convertToMarkerArray($records);
-                $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
+                $extraTs = str_replace(
+                    array_keys($markerValues),
+                    array_values($markerValues),
+                    $this->config['extrats']
+                );
                 $records = array_merge($records, Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
                 // hide fields if necessary
                 foreach ($fieldsToHide as $fieldToHide) {
