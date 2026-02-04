@@ -118,7 +118,7 @@ class AbstractController extends ActionController
      *
      * @param string|null $html
      */
-    protected function htmlResponseCompatibility(string $html = null)
+    protected function htmlResponseCompatibility(?string $html = null)
     {
         return $this->responseFactory->createResponse()
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
