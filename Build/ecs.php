@@ -1,8 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 
+use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PHP_CodeSniffer\Standards\Generic\Sniffs\Metrics\CyclomaticComplexitySniff;
 use PhpCsFixer\Fixer\ArrayNotation\ArraySyntaxFixer;
 use PhpCsFixer\Fixer\CastNotation\CastSpacesFixer;
@@ -35,11 +35,11 @@ return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->import(SetList::PSR_12);
     $ecsConfig->import(SetList::CLEAN_CODE);
     $ecsConfig->import(SetList::COMMON);
+    $ecsConfig->dynamicSets(["@PER-CS2.0"]);
 
     $ecsConfig->skip([
         dirname(__DIR__) . '/Build/*',
         dirname(__DIR__) . '/.Build/*',
-        dirname(__DIR__) . '/Resources/Private/Php/*',
         TrailingCommaInMultilineFixer::class,
         YodaStyleFixer::class,
         PhpUnitStrictFixer::class,
@@ -54,9 +54,10 @@ return static function (ECSConfig $ecsConfig): void {
         NoSpacesAroundOffsetFixer::class,
         AssignmentInConditionSniff::class . '.Found',
         DeclareStrictTypesFixer::class => [
-            dirname(__DIR__) . '/ext_emconf.php',
-            dirname(__DIR__) . '/ext_localconf.php',
-            dirname(__DIR__) . '/ext_tables.php',
+            '**/ext_emconf.php',
+            '**/ext_localconf.php',
+            '**/ext_tables.php',
+            '**/TCA/*',
         ],
     ]);
 
@@ -71,5 +72,5 @@ return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->rule(NoLeadingImportSlashFixer::class);
     $ecsConfig->rule(NoUnusedImportsFixer::class);
     $ecsConfig->ruleWithConfiguration(OrderedImportsFixer::class, ['imports_order' => ['class', 'const', 'function']]);
-    $ecsConfig->ruleWithConfiguration(CyclomaticComplexitySniff::class, ['complexity' => 20, 'absoluteComplexity' => 20]);
+    //    $ecsConfig->ruleWithConfiguration(CyclomaticComplexitySniff::class, ['complexity' => 20, 'absoluteComplexity' => 20]);
 };

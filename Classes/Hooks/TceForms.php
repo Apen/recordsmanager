@@ -12,7 +12,6 @@ namespace Sng\Recordsmanager\Hooks;
  */
 
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TceForms implements FormDataProviderInterface
 {
@@ -25,8 +24,8 @@ class TceForms implements FormDataProviderInterface
      */
     public function addData(array $result): array
     {
-        if (!empty(GeneralUtility::_GP('recordsHide'))) {
-            $recordsHide = explode(',', GeneralUtility::_GP('recordsHide'));
+        if (!empty($GLOBALS['TYPO3_REQUEST']->getParsedBody()['recordsHide'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['recordsHide'] ?? null)) {
+            $recordsHide = explode(',', $GLOBALS['TYPO3_REQUEST']->getParsedBody()['recordsHide'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['recordsHide'] ?? null);
             foreach ($recordsHide as $col) {
                 unset($result['processedTca']['columns'][$col]);
             }

@@ -1,8 +1,8 @@
 {namespace rm=Sng\Recordsmanager\ViewHelpers}
 
-<f:layout name="Default"/>
+<f:layout name="Module"/>
 
-<f:section name="content">
+<f:section name="Content">
 
     <f:if condition="{paginator.paginatedItems}">
         <div class="table-fit">
@@ -33,12 +33,23 @@
                             <button type="button" data-dispatch-action="TYPO3.InfoWindow.showItem" data-dispatch-args-list="{currentconfig.sqltable},{row.uid}" class="btn btn-default">
                                 <rm:spriteManagerIcon iconName="actions-document-info"/>
                             </button>
-                            <a onclick="jumpToUrl('{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}');" href="#" class="btn btn-default">
+                            <a href="{baseediturl}returnUrl={returnurl}&edit[{currentconfig.sqltable}][{row.uid}]=edit&recordsHide={disableFields}" class="btn btn-default">
                                 <rm:spriteManagerIcon iconName="actions-document-open"/>
                             </a>
-                            <a onclick="return deleteRecord('{currentconfig.sqltable}','{row.uid}');" href="#" class="btn btn-default">
+                            <button type="button"
+                                    class="btn btn-default t3js-modal-trigger"
+                                    title="{f:translate(key:'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:delete')}"
+                                    data-severity="warning"
+                                    aria-label="{f:translate(key:'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:delete')}"
+                                    aria-haspopup="dialog"
+                                    data-button-ok-text="{f:translate(key:'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:delete')}"
+                                    data-button-close-text="{f:translate(key:'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:cancel')}"
+                                    data-l10nparent=""
+                                    data-bs-content="{f:translate(key:'areyousure')}"
+                                    data-uri="{deleteurlbase}&cmd[{currentconfig.sqltable}][{row.uid}][delete]=1"
+                                    data-title="{f:translate(key:'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:label.confirm.delete_record.title')}">
                                 <rm:spriteManagerIcon iconName="actions-edit-delete"/>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 </f:for>
@@ -57,7 +68,7 @@
         var areyousure = "<f:format.htmlspecialchars>{f:translate(key:'areyousure') -> f:format.raw()}</f:format.htmlspecialchars>"
         var deleteurl = "{deleteurl -> f:format.raw()}"
         if (confirm(areyousure)) {
-          jumpToUrl(deleteurl)
+          // jumpToUrl(deleteurl)
         }
         return false
       }

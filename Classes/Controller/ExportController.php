@@ -12,7 +12,6 @@ namespace Sng\Recordsmanager\Controller;
  */
 
 use Sng\Recordsmanager\Utility\Config;
-use Sng\Recordsmanager\Utility\Misc;
 use Sng\Recordsmanager\Utility\Query;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\CsvUtility;
@@ -26,13 +25,13 @@ class ExportController extends AbstractController
     /**
      * action index
      */
-    public function indexAction(int $currentPage = 1)
+    public function indexAction(int $currentPage = 1): \Psr\Http\Message\ResponseInterface
     {
         $allConfigs = Config::getAllConfigs(2);
         $this->createMenu('index', $allConfigs);
 
         if (empty($allConfigs)) {
-            return null;
+            return $this->htmlResponse(null);
         }
 
         $this->currentConfig = $allConfigs[0];
@@ -46,29 +45,22 @@ class ExportController extends AbstractController
         $this->buildPagination($query, $currentPage);
         $this->exportRecords($query);
 
-        $this->view->assign('currentconfig', $this->currentConfig);
-        $this->view->assign('arguments', $this->request->getArguments());
+        $this->moduleTemplate->assign('currentconfig', $this->currentConfig);
+        $this->moduleTemplate->assign('arguments', $this->request->getArguments());
 
-        if (Misc::isTypo3V11()) {
-            $this->view->assign('overwriteDemand', $this->request->getParsedBody()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
-        }
-
-        if (Misc::isTypo3V12()) {
-            // params for pagination
-            $this->view->assign('additionalParams',
-                ['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport' => ($this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport'] ?? [])]
-            );
-            $this->view->assign('overwriteDemand', $this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
-        }
+        // params for pagination
+        $this->moduleTemplate->assign(
+            'additionalParams',
+            ['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport' => ($this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport'] ?? [])]
+        );
+        $this->moduleTemplate->assign('overwriteDemand', $this->request->getArguments()['tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport']['overwriteDemand'] ?? []);
 
         if ($query->getNbRows() > 0) {
-            $this->view->assign('headers', $query->getHeaders());
-            $this->view->assign('exportmodes', $this->getExportUrls());
+            $this->moduleTemplate->assign('headers', $query->getHeaders());
+            $this->moduleTemplate->assign('exportmodes', $this->getExportUrls());
         }
 
-        $this->moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponseCompatibility($this->moduleTemplate->renderContent());
+        return $this->moduleTemplate->renderResponse('Export/Index');
     }
 
     /**
@@ -77,15 +69,12 @@ class ExportController extends AbstractController
     public function buildCalendar(): void
     {
         $this->getAllArguments();
-        $this->view->assign('startdate', $this->getOverwriteDemand('startdate'));
-        $this->view->assign('enddate', $this->getOverwriteDemand('enddate'));
+        $this->moduleTemplate->assign('startdate', $this->getOverwriteDemand('startdate'));
+        $this->moduleTemplate->assign('enddate', $this->getOverwriteDemand('enddate'));
     }
 
     public function getAllArguments()
     {
-        if (Misc::isTypo3V11()) {
-            return $this->request->getParsedBody();
-        }
         return $this->request->getArguments();
     }
 
@@ -111,15 +100,10 @@ class ExportController extends AbstractController
 
     /**
      * Get export url
-     *
-     *
      */
     public function getExportUrl(string $mode): string
     {
-        $argKey = strtolower('tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName());
-        if (Misc::isTypo3V12()) {
-            $argKey = 'tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport';
-        }
+        $argKey = 'tx_recordsmanager_txrecordsmanagerm1_recordsmanagerexport';
         $this->request->getArguments();
         $urlArguments = [];
         $urlArguments[$argKey]['download'] = $mode;
@@ -131,7 +115,7 @@ class ExportController extends AbstractController
             $urlArguments[$argKey]['overwriteDemand']['enddate'] = $this->getOverwriteDemand('enddate');
         }
 
-        return $this->uriBuilder->reset()->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
+        return $this->uriBuilder->reset()->setCreateAbsoluteUri(true)->setAddQueryString(true)->setArguments($urlArguments)->uriFor();
     }
 
     /**
@@ -265,8 +249,6 @@ class ExportController extends AbstractController
 
     /**
      * Clean a string
-     *
-     *
      */
     public function cleanString(string $string, bool $deleteLr = false): string
     {
@@ -320,9 +302,9 @@ class ExportController extends AbstractController
                 ->select('*')
                 ->from('tx_recordsmanager_config')
                 ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \PDO::PARAM_INT))
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($arguments['menuitem'], \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
                 );
-            $this->currentConfig = $queryBuilder->executeQuery()->fetch();
+            $this->currentConfig = $queryBuilder->executeQuery()->fetchAssociative();
         }
     }
 }

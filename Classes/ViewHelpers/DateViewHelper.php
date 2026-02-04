@@ -11,7 +11,6 @@ namespace Sng\Recordsmanager\ViewHelpers;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Sng\Recordsmanager\Utility\Misc;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,7 +38,6 @@ class DateViewHelper extends AbstractFormFieldViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerUniversalTagAttributes();
     }
 
     /**
@@ -56,65 +54,33 @@ class DateViewHelper extends AbstractFormFieldViewHelper
         $debug = $GLOBALS['TYPO3_CONF_VARS']['BE']['debug'];
         $GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = false;
 
-        if (Misc::isTypo3V11()) {
-            $parameterArray = [
-                'itemFormElName' => $this->arguments['name'],
-                'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
-                'fieldConf' => [
-                    'label' => 'test',
-                    'config' => [
-                        'type' => 'input',
-                        'renderType' => 'inputDateTime',
-                        'eval' => 'date',
-                        'default' => 0,
-                    ],
+        $parameterArray = [
+            'itemFormElName' => $this->arguments['name'],
+            'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
+            'itemFormElID' => 'data_notable_0_' . $this->arguments['name'],
+            'fieldConf' => [
+                'label' => '',
+                'config' => [
+                    'type' => 'datetime',
+                    'format' => 'date',
+                    'default' => 0,
                 ],
-            ];
-            $options = [
-                'renderType' => 'inputDateTime',
-                'tableName' => '',
-                'fieldName' => $this->arguments['name'],
-                'databaseRow' => [
-                    'uid' => 0,
+            ],
+        ];
+        $options = [
+            'renderType' => 'datetime',
+            'tableName' => '',
+            'fieldName' => $this->arguments['name'],
+            'databaseRow' => [
+                'uid' => 0,
+            ],
+            'processedTca' => [
+                'columns' => [
+                    $this->arguments['name'] => $parameterArray['fieldConf'],
                 ],
-                'processedTca' => [
-                    'columns' => [
-                        $this->arguments['name'] => $parameterArray['fieldConf'],
-                    ],
-                ],
-                'parameterArray' => $parameterArray,
-            ];
-        }
-
-        if (Misc::isTypo3V12()) {
-            $parameterArray = [
-                'itemFormElName' => $this->arguments['name'],
-                'itemFormElValue' => empty($this->arguments['value']) ? 0 : strtotime($this->arguments['value']),
-                'itemFormElID' => 'data_notable_0_' . $this->arguments['name'],
-                'fieldConf' => [
-                    'label' => '',
-                    'config' => [
-                        'type' => 'datetime',
-                        'format' => 'date',
-                        'default' => 0,
-                    ],
-                ],
-            ];
-            $options = [
-                'renderType' => 'datetime',
-                'tableName' => '',
-                'fieldName' => $this->arguments['name'],
-                'databaseRow' => [
-                    'uid' => 0,
-                ],
-                'processedTca' => [
-                    'columns' => [
-                        $this->arguments['name'] => $parameterArray['fieldConf'],
-                    ],
-                ],
-                'parameterArray' => $parameterArray,
-            ];
-        }
+            ],
+            'parameterArray' => $parameterArray,
+        ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $inputDateTimeResult = $nodeFactory->create($options)->render();

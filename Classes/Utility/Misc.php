@@ -28,6 +28,9 @@ class Misc
     {
         $temp = [];
         foreach ($array as $key => $val) {
+            if (is_array($val)) {
+                continue;
+            }
             $temp[self::convertToMarker($key, $markerPrefix)] = $val;
         }
 
@@ -127,14 +130,6 @@ class Misc
         $LANG->init($GLOBALS['BE_USER']->uc['lang']);
 
         return $LANG;
-    }
-
-    public static function isTypo3V11(): bool
-    {
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 11) {
-            return true;
-        }
-        return false;
     }
 
     public static function isTypo3V12(): bool

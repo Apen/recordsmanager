@@ -178,7 +178,7 @@ class Query
 
             if ($this->isEidExport()) {
                 $arrayToEncode = [];
-                $arrayToEncode['uidconfig'] = $this->config['uid'];
+                $arrayToEncode['uidconfig'] = $this->config['uid'] ?? 0;
                 $arrayToEncode['uidrecord'] = $records['uid'];
                 if (empty($this->config['disabledomaininkey'])) {
                     $arrayToEncode['uidserver'] = $_SERVER['SERVER_NAME'];
@@ -187,7 +187,11 @@ class Query
                 $records['recordsmanagerkey'] = md5(serialize($arrayToEncode));
                 // add special typoscript value
                 $markerValues = Misc::convertToMarkerArray($records);
-                $extraTs = str_replace(array_keys($markerValues), array_values($markerValues), $this->config['extrats']);
+                $extraTs = str_replace(
+                    array_keys($markerValues),
+                    array_values($markerValues),
+                    $this->config['extrats']
+                );
                 $records = array_merge($records, Misc::loadAndExecTS($extraTs, $row, $this->query['FROM']));
                 // hide fields if necessary
                 foreach ($fieldsToHide as $fieldToHide) {
@@ -230,7 +234,7 @@ class Query
     public function isPowermail()
     {
         return (
-                $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
+            $this->query['FROM'] === 'tx_powermail_domain_model_mails' || $this->query['FROM'] === 'tx_powermail_domain_model_mail') &&
             GeneralUtility::inList(
                 '2,3',
                 $this->config['type']

@@ -11,7 +11,6 @@ namespace Sng\Recordsmanager\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use Sng\Recordsmanager\Pagination\QueryPaginator;
 use Sng\Recordsmanager\Pagination\SimplePagination;
 use Sng\Recordsmanager\Utility\Query;
@@ -19,11 +18,11 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Beuser\Domain\Model\ModuleData;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class AbstractController extends ActionController
@@ -64,12 +63,10 @@ class AbstractController extends ActionController
 
     protected function initializeView($view): void
     {
-        //        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
         $this->pageRenderer->addCssInlineBlock('recordsmanager', '.t3js-datetimepicker ~ .input-group-btn > label { margin-bottom: 0; }');
     }
 
     /**
-     *
      * @throws NoSuchArgumentException
      */
     protected function createMenu(string $action = 'index', array $allConfigs = []): void
@@ -112,8 +109,8 @@ class AbstractController extends ActionController
         }
 
         $pagination->generate();
-        $this->view->assign('paginator', $paginator);
-        $this->view->assign('pagination', $pagination);
+        $this->moduleTemplate->assign('paginator', $paginator);
+        $this->moduleTemplate->assign('pagination', $pagination);
     }
 
     /**
