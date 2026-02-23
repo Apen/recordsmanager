@@ -220,8 +220,8 @@ class Query
         $currentQuery['LIMIT'] = '';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($currentQuery['FROM']);
         $statement = $connection->prepare(self::getSqlFromQueryArray($currentQuery));
-        $statement->executeQuery();
-        while ($row = $statement->fetch()) {
+        $result = $statement->executeQuery();
+        while ($row = $result->fetchAssociative()) {
             $pageinfo = BackendUtility::readPageAccess($row['pid'], $GLOBALS['BE_USER']->getPagePermsClause(1));
             if ($pageinfo !== false) {
                 $pids[] = $row['pid'];

@@ -195,11 +195,11 @@ class ExportController extends AbstractController
             $mimeType = 'application/octet-stream';
             header('Content-Type: ' . $mimeType);
             header('Content-Disposition: attachment; filename=' . $filename);
-            echo utf8_decode($xmlData);
+            echo mb_convert_encoding($xmlData, 'ISO-8859-1', 'UTF-8');
             exit;
         }
 
-        echo utf8_decode($xmlData);
+        echo mb_convert_encoding($xmlData, 'ISO-8859-1', 'UTF-8');
     }
 
     /**
@@ -212,7 +212,7 @@ class ExportController extends AbstractController
 
         foreach ($rows as $row) {
             // utf8 with BOM for Excel
-            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . utf8_encode(self::cleanString(CsvUtility::csvValues($row), true));
+            $rowArr[] = chr(0xEF) . chr(0xBB) . chr(0xBF) . mb_convert_encoding(self::cleanString(CsvUtility::csvValues($row), true));
         }
         if (!$forceDisplay) {
             $filename = 'TYPO3_' . $query->getFrom() . '_export_' . date('dmy-Hi') . '.csv';
@@ -282,7 +282,7 @@ class ExportController extends AbstractController
             "\xc5\xb8" => "\xc2\x9f", // LATIN CAPITAL LETTER Y WITH DIAERESIS
         ];
         $string = strtr($string, $quotes);
-        $string = utf8_decode($string);
+        $string = mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');
         if ($deleteLr) {
             $string = str_replace(["\r\n", "\n\r", "\n", "\r"], ' ', $string);
         }
